@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Pigeons</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script type="module">
         // Импортируем необходимые функции из Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
@@ -26,31 +26,29 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        // Готовим Telegram Web App
-        window.Telegram.WebApp.ready();
+        // Инициализация Telegram Web App
+        window.addEventListener('DOMContentLoaded', () => {
+            window.Telegram.WebApp.ready();
 
-        // Получаем данные пользователя из Telegram
-        const user = window.Telegram.WebApp.initDataUnsafe.user;
-        console.log('Данные пользователя:', user);
+            // Получаем данные пользователя из Telegram
+            const user = window.Telegram.WebApp.initDataUnsafe.user;
+            console.log('Данные пользователя:', user);
 
-        // Отображение имени пользователя
-        let displayName = user.username || user.first_name || "Неизвестный пользователь";
-        document.addEventListener('DOMContentLoaded', () => {
+            // Отображение имени пользователя
+            let displayName = user.username || user.first_name || "Неизвестный пользователь";
             document.getElementById("header").textContent = `Привет, ${displayName}!`;
-        });
 
-        // Генерация кода
-        document.addEventListener('click', (event) => {
-            if (event.target.id === 'generate-button') {
+            // Обработчики событий для кнопок
+            document.getElementById('generate-button').addEventListener('click', () => {
                 const inviteCode = Math.random().toString(36).substr(2, 6);
                 document.getElementById('code').textContent = `Ваш код: ${inviteCode}`;
                 saveCode(user.id, inviteCode);
-            }
+            });
 
-            if (event.target.id === 'submit-button') {
+            document.getElementById('submit-button').addEventListener('click', () => {
                 const inputCode = document.getElementById('input-code').value;
                 getCode(inputCode);
-            }
+            });
         });
 
         // Функция для сохранения кода в Firebase
