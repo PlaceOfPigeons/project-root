@@ -1,59 +1,61 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Pigeons</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
-    <style>
-        /* Ваши стили здесь */
-    </style>
-</head>
-<body>
-    <div id="header">...</div> <!-- Элемент для отображения имени пользователя -->
-    <button id="generate-button">Сгенерировать код</button>
-    <div id="code"></div>
-    <input type="text" id="input-code" placeholder="Введите код">
-    <button id="submit-button">Отправить код</button>
+    <script type="module">
+        // Импортируем необходимые функции из Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, set, query, orderByChild, equalTo, once } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-    <script>
-        // Инициализация Firebase
+        // Конфигурация вашего Firebase приложения
         const firebaseConfig = {
             apiKey: "AIzaSyAWwSObNeCTqDk8xJg9sa0u4wIvk5JFw8E",
             authDomain: "placeofpigeons.firebaseapp.com",
+            databaseURL: "https://placeofpigeons-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "placeofpigeons",
             storageBucket: "placeofpigeons.appspot.com",
             messagingSenderId: "67354529384",
             appId: "1:67354529384:web:716cf99397eb9002c435dd",
             measurementId: "G-P70KRENL94"
         };
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+
+        // Инициализация Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
 
         // Готовим Telegram Web App
         window.Telegram.WebApp.ready();
 
         // Получаем данные пользователя из Telegram
-        const user = Telegram.WebApp.initDataUnsafe.user;
-        console.log('Данные пользователя:', user); // Для отладки
+        const user = window.Telegram.WebApp.initDataUnsafe.user;
+        console.log('Данные пользователя:', user);
 
         // Отображение имени пользователя
         let displayName = user.username || user.first_name || "Неизвестный пользователь";
-        document.getElementById("header").textContent = `Привет, ${displayName}!`;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById("header").textContent = `Привет, ${displayName}!`;
+        });
 
         // Генерация кода
-        document.getElementById('generate-button').addEventListener('click', () => {
-            const inviteCode = Math.random().toString(36).substr(2, 6);
-            document.getElementById('code').textContent = `Ваш код: ${inviteCode}`;
-            // Сохраняем код в Firebase
-            saveCode(user.id, inviteCode);
+        document.addEventListener('click', (event) => {
+            if (event.target.id === 'generate-button') {
+                const inviteCode = Math.random().toString(36).substr(2, 6);
+                document.getElementById('code').textContent = `Ваш код: ${inviteCode}`;
+                saveCode(user.id, inviteCode);
+            }
+
+            if (event.target.id === 'submit-button') {
+                const inputCode = document.getElementById('input-code').value;
+                getCode(inputCode);
+            }
         });
 
         // Функция для сохранения кода в Firebase
         function saveCode(userId, code) {
-            database.ref('users/' + userId).set({
+            set(ref(database, 'users/' + userId), {
                 code: code,
                 name: user.first_name // или username
             }).then(() => {
@@ -63,19 +65,15 @@
             });
         }
 
-        // Обработчик отправки кода
-        document.getElementById('submit-button').addEventListener('click', () => {
-            const inputCode = document.getElementById('input-code').value;
-            // Логика для проверки кода
-            getCode(inputCode);
-        });
-
         // Функция для получения кода из Firebase
         function getCode(code) {
-            database.ref('users/').orderByChild('code').equalTo(code).once('value').then((snapshot) => {
+            const dbRef = ref(database);
+            const q = query(dbRef.child('users'), orderByChild('code'), equalTo(code));
+
+            once(q, 'value').then((snapshot) => {
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
-                    const userId = Object.keys(userData)[0]; // Получаем ID пользователя
+                    const userId = Object.keys(userData)[0];
                     console.log('Имя пользователя:', userData[userId].name);
                 } else {
                     console.log('Код не найден');
@@ -85,5 +83,27 @@
             });
         }
     </script>
+    <style>
+        /* Ваши стили здесь */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #header {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        #code {
+            margin: 10px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">...</div>
+    <button id="generate-button">Сгенерировать код</button>
+    <div id="code"></div>
+    <input type="text" id="input-code" placeholder="Введите код">
+    <button id="submit-button">Отправить код</button>
 </body>
 </html>
