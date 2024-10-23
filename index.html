@@ -6,11 +6,9 @@
     <title>ProjectPresident</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script type="module">
-        // Импортируем необходимые функции из Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-        // Конфигурация вашего Firebase приложения
         const firebaseConfig = {
             apiKey: "AIzaSyAWwSObNeCTqDk8xJg9sa0u4wIvk5JFw8E",
             authDomain: "placeofpigeons.firebaseapp.com",
@@ -22,41 +20,71 @@
             measurementId: "G-P70KRENL94"
         };
 
-        // Инициализация Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
         window.Telegram.WebApp.ready();
 
         const user = Telegram.WebApp.initDataUnsafe.user;
-        console.log('Данные пользователя:', user); // Для отладки
-
         let displayName = user.username || user.first_name || "Неизвестный пользователь";
         document.getElementById("header").textContent = displayName;
 
-        // Пример функции для сохранения данных в Firebase
-        function saveUserData(userId, data) {
-            set(ref(database, 'users/' + userId), data)
-                .then(() => {
-                    console.log('Данные успешно сохранены!');
-                })
-                .catch((error) => {
-                    console.error('Ошибка сохранения данных:', error);
-                });
-        }
+        const userId = user.id;
+        const userCodeKey = `users/${userId}/code`;
 
-        // Сохранение данных пользователя (например, имя) в Firebase
-        if (user.id) {
-            saveUserData(user.id, { name: displayName });
-        }
+        // Генерация уникального кода
+        const generateUniqueCode = () => Math.random().toString(36).substr(2, 6);
+
+        // Сохранение уникального кода для пользователя
+        const saveUserCode = (code) => {
+            set(ref(database, userCodeKey), {
+                code: code,
+                name: displayName
+            }).then(() => {
+                console.log('Код успешно сохранен!');
+            }).catch((error) => {
+                console.error('Ошибка сохранения кода:', error);
+            });
+        };
+
+        // Проверка наличия кода
+        get(ref(database, userCodeKey)).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log('Код уже существует:', snapshot.val().code);
+            } else {
+                const uniqueCode = generateUniqueCode();
+                saveUserCode(uniqueCode);
+                console.log('Сгенерированный код:', uniqueCode);
+            }
+        }).catch((error) => {
+            console.error('Ошибка получения данных:', error);
+        });
+
+        // Функция для добавления кода другого пользователя
+        const addCode = (codeToAdd) => {
+            const userRef = ref(database, 'users/');
+            get(child(userRef, codeToAdd)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const addedBy = snapshot.val().name;
+                    console.log(`Код добавлен пользователем: ${addedBy}`);
+                } else {
+                    console.log('Код не найден');
+                }
+            }).catch((error) => {
+                console.error('Ошибка получения данных:', error);
+            });
+        };
+
+        // Пример использования функции добавления кода
+        // Здесь вы можете вызвать addCode('код_другого_пользователя') для тестирования
     </script>
     <style>
         body, html {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            background-color: black; /* Черный фон */
-            color: white; /* Белый текст */
+            background-color: black;
+            color: white;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -67,7 +95,7 @@
             padding: 10px;
             text-align: center;
             font-size: 24px;
-            color: white; /* Белый текст в заголовке */
+            color: white;
         }
     </style>
 </head>
