@@ -1,13 +1,13 @@
 // Firebase конфигурация
 const firebaseConfig = {
-    apiKey: "API_KEY",
-    authDomain: "PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://PROJECT_ID.firebaseio.com",
-    projectId: "PROJECT_ID",
-    storageBucket: "PROJECT_ID.appspot.com",
-    messagingSenderId: "SENDER_ID",
-    appId: "APP_ID"
-};
+    apiKey: "AIzaSyAWwSObNeCTqDk8xJg9sa0u4wIvk5JFw8E",
+    authDomain: "placeofpigeons.firebaseapp.com",
+    projectId: "placeofpigeons",
+    storageBucket: "placeofpigeons.appspot.com",
+    messagingSenderId: "67354529384",
+    appId: "1:67354529384:web:716cf99397eb9002c435dd",
+    measurementId: "G-P70KRENL94"
+  };
 
 // Инициализация Firebase
 const app = firebase.initializeApp(firebaseConfig);
