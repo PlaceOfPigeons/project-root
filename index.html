@@ -32,25 +32,26 @@
         const userId = user.id;
         const userCodeKey = `users/${userId}/code`;
 
-        // Генерация уникального кода
         const generateUniqueCode = () => Math.random().toString(36).substr(2, 6);
 
-        // Сохранение уникального кода для пользователя
         const saveUserCode = (code) => {
             set(ref(database, userCodeKey), {
                 code: code,
                 name: displayName
             }).then(() => {
                 console.log('Код успешно сохранен!');
+                document.getElementById('generated-code').textContent = `Ваш код: ${code}`;
             }).catch((error) => {
                 console.error('Ошибка сохранения кода:', error);
             });
         };
 
-        // Проверка наличия кода
+        // Проверка наличия кода при загрузке страницы
         get(ref(database, userCodeKey)).then((snapshot) => {
             if (snapshot.exists()) {
-                console.log('Код уже существует:', snapshot.val().code);
+                const existingCode = snapshot.val().code;
+                document.getElementById('generated-code').textContent = `Ваш код: ${existingCode}`;
+                console.log('Код уже существует:', existingCode);
             } else {
                 const uniqueCode = generateUniqueCode();
                 saveUserCode(uniqueCode);
@@ -60,23 +61,24 @@
             console.error('Ошибка получения данных:', error);
         });
 
-        // Функция для добавления кода другого пользователя
         const addCode = (codeToAdd) => {
             const userRef = ref(database, 'users/');
             get(child(userRef, codeToAdd)).then((snapshot) => {
                 if (snapshot.exists()) {
                     const addedBy = snapshot.val().name;
-                    console.log(`Код добавлен пользователем: ${addedBy}`);
+                    document.getElementById('added-by').textContent = `Код добавлен пользователем: ${addedBy}`;
                 } else {
-                    console.log('Код не найден');
+                    document.getElementById('added-by').textContent = 'Код не найден';
                 }
             }).catch((error) => {
                 console.error('Ошибка получения данных:', error);
             });
         };
 
-        // Пример использования функции добавления кода
-        // Здесь вы можете вызвать addCode('код_другого_пользователя') для тестирования
+        document.getElementById('submit-button').addEventListener('click', () => {
+            const inputCode = document.getElementById('input-code').value;
+            addCode(inputCode);
+        });
     </script>
     <style>
         body, html {
@@ -89,19 +91,47 @@
             display: flex;
             flex-direction: column;
             user-select: none;
+            padding: 20px;
         }
 
         .header {
-            padding: 10px;
             text-align: center;
             font-size: 24px;
             color: white;
         }
+
+        #generated-code {
+            margin: 20px 0;
+            font-size: 18px;
+        }
+
+        #input-code {
+            padding: 10px;
+            margin-right: 10px;
+            width: 200px;
+        }
+
+        #submit-button {
+            padding: 10px;
+            background-color: white;
+            color: black;
+            border: none;
+            cursor: pointer;
+        }
+
+        #added-by {
+            margin-top: 20px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
-    <div class="header" id="header">
-        ProjectPresident
+    <div class="header" id="header">ProjectPresident</div>
+    <div id="generated-code">Ваш код: </div>
+    <div>
+        <input type="text" id="input-code" placeholder="Введите код">
+        <button id="submit-button">Добавить код</button>
     </div>
+    <div id="added-by"></div>
 </body>
 </html>
