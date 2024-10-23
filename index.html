@@ -3,28 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Referral System</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
+    <title>Project Pigeons</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+    <style>
+        /* Ваши стили здесь */
+    </style>
 </head>
 <body>
-    <div id="app">
-        <h1>Привет, <span id="username">...</span></h1>
-        <p>Ваш код для приглашения: <span id="invite-code">...</span></p>
-        <button id="generate-code">Сгенерировать код</button>
+    <div id="username">...</div>
+    <button id="generate-button">Сгенерировать код</button>
+    <div id="code"></div>
+    <input type="text" id="input-code" placeholder="Введите код">
+    <button id="submit-button">Отправить код</button>
 
-        <h2>Ввести код:</h2>
-        <input type="text" id="input-code" placeholder="Введите код">
-        <button id="submit-code">Отправить</button>
+    <script>
+        // Инициализация Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAWwSObNeCTqDk8xJg9sa0u4wIvk5JFw8E",
+            authDomain: "placeofpigeons.firebaseapp.com",
+            projectId: "placeofpigeons",
+            storageBucket: "placeofpigeons.appspot.com",
+            messagingSenderId: "67354529384",
+            appId: "1:67354529384:web:716cf99397eb9002c435dd",
+            measurementId: "G-P70KRENL94"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-        <div id="invited-users">
-            <h3>Пользователи, которые ввели ваш код:</h3>
-            <ul id="users-list"></ul>
-        </div>
-    </div>
+        window.Telegram.WebApp.ready();
 
-    <script src="main.js"></script>
+        const user = Telegram.WebApp.initDataUnsafe.user;
+        const usernameDiv = document.getElementById('username');
+
+        if (user && (user.username || user.first_name)) {
+            const displayName = user.username ? user.username : user.first_name;
+            usernameDiv.textContent = `Привет, ${displayName}!`;
+        } else {
+            usernameDiv.textContent = 'Не удалось получить имя пользователя.';
+        }
+
+        // Генерация кода
+        document.getElementById('generate-button').addEventListener('click', () => {
+            const inviteCode = Math.random().toString(36).substr(2, 6);
+            document.getElementById('code').textContent = `Ваш код: ${inviteCode}`;
+            // Сохраняем код в Firebase
+            saveCode(user.id, inviteCode);
+        });
+
+        function saveCode(userId, code) {
+            database.ref('users/' + userId).set({
+                code: code,
+                name: user.first_name // или username
+            }).then(() => {
+                console.log('Данные успешно сохранены!');
+            }).catch((error) => {
+                console.error('Ошибка сохранения данных:', error);
+            });
+        }
+
+        // Обработчик отправки кода
+        document.getElementById('submit-button').addEventListener('click', () => {
+            const inputCode = document.getElementById('input-code').value;
+            // Логика для проверки кода
+            getCode(inputCode);
+        });
+
+        function getCode(code) {
+            database.ref('users/').orderByChild('code').equalTo(code).once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    const userId = Object.keys(userData)[0]; // Получаем ID пользователя
+                    console.log('Имя пользователя:', userData[userId].name);
+                } else {
+                    console.log('Код не найден');
+                }
+            }).catch((error) => {
+                console.error('Ошибка получения данных:', error);
+            });
+        }
+    </script>
 </body>
 </html>
