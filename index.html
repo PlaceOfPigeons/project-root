@@ -32,13 +32,17 @@
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // Готовим Telegram Web App
         window.Telegram.WebApp.ready();
 
+        // Получаем данные пользователя из Telegram
         const user = Telegram.WebApp.initDataUnsafe.user;
+        console.log('Данные пользователя:', user); // Для отладки
         const usernameDiv = document.getElementById('username');
 
+        // Отображение имени пользователя
         if (user && (user.username || user.first_name)) {
-            const displayName = user.username ? user.username : user.first_name;
+            const displayName = user.username ? user.username : (user.first_name || "Неизвестный пользователь");
             usernameDiv.textContent = `Привет, ${displayName}!`;
         } else {
             usernameDiv.textContent = 'Не удалось получить имя пользователя.';
@@ -52,6 +56,7 @@
             saveCode(user.id, inviteCode);
         });
 
+        // Функция для сохранения кода в Firebase
         function saveCode(userId, code) {
             database.ref('users/' + userId).set({
                 code: code,
@@ -70,6 +75,7 @@
             getCode(inputCode);
         });
 
+        // Функция для получения кода из Firebase
         function getCode(code) {
             database.ref('users/').orderByChild('code').equalTo(code).once('value').then((snapshot) => {
                 if (snapshot.exists()) {
