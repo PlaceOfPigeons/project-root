@@ -63,10 +63,21 @@
 
         const addCode = (codeToAdd) => {
             const userRef = ref(database, 'users/');
-            get(child(userRef, codeToAdd)).then((snapshot) => {
+            get(userRef).then((snapshot) => {
                 if (snapshot.exists()) {
-                    const addedBy = snapshot.val().name;
-                    document.getElementById('added-by').textContent = `Код добавлен пользователем: ${addedBy}`;
+                    const allUsers = snapshot.val();
+                    let found = false;
+                    for (const key in allUsers) {
+                        if (allUsers[key].code === codeToAdd) {
+                            const addedBy = allUsers[key].name;
+                            document.getElementById('added-by').textContent = `Код добавлен пользователем: ${addedBy}`;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        document.getElementById('added-by').textContent = 'Код не найден';
+                    }
                 } else {
                     document.getElementById('added-by').textContent = 'Код не найден';
                 }
