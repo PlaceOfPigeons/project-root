@@ -7,7 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAWwSObNeCTqDk8xJg9sa0u4wIvk5JFw8E",
@@ -26,16 +26,14 @@
         window.Telegram.WebApp.ready();
 
         const user = Telegram.WebApp.initDataUnsafe.user;
-        let displayName = user.username || user.first_name || "Неизвестный пользователь";
-        document.getElementById("header").textContent = displayName;
-
         const userId = user.id;
-        const userCodeKey = `users/${userId}/code`;
+        const displayName = user.username || user.first_name || "Неизвестный пользователь";
+        document.getElementById("header").textContent = displayName;
 
         const generateUniqueCode = () => Math.random().toString(36).substr(2, 6);
 
         const saveUserCode = (code) => {
-            set(ref(database, userCodeKey), {
+            set(ref(database, `users/${userId}`), {
                 code: code,
                 name: displayName
             }).then(() => {
@@ -46,20 +44,21 @@
             });
         };
 
-        // Проверка наличия кода при загрузке страницы
-        get(ref(database, userCodeKey)).then((snapshot) => {
-            if (snapshot.exists()) {
-                const existingCode = snapshot.val().code;
-                document.getElementById('generated-code').textContent = `Ваш код: ${existingCode}`;
-                console.log('Код уже существует:', existingCode);
-            } else {
-                const uniqueCode = generateUniqueCode();
-                saveUserCode(uniqueCode);
-                console.log('Сгенерированный код:', uniqueCode);
-            }
-        }).catch((error) => {
-            console.error('Ошибка получения данных:', error);
-        });
+        const checkUserCode = () => {
+            get(ref(database, `users/${userId}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const existingCode = snapshot.val().code;
+                    document.getElementById('generated-code').textContent = `Ваш код: ${existingCode}`;
+                    console.log('Код уже существует:', existingCode);
+                } else {
+                    const uniqueCode = generateUniqueCode();
+                    saveUserCode(uniqueCode);
+                    console.log('Сгенерированный код:', uniqueCode);
+                }
+            }).catch((error) => {
+                console.error('Ошибка получения данных:', error);
+            });
+        };
 
         const addCode = (codeToAdd) => {
             const userRef = ref(database, 'users/');
@@ -67,9 +66,9 @@
                 if (snapshot.exists()) {
                     const allUsers = snapshot.val();
                     let found = false;
-                    for (const key in allUsers) {
-                        if (allUsers[key].code === codeToAdd) {
-                            const addedBy = allUsers[key].name;
+                    for (const userId in allUsers) {
+                        if (allUsers[userId].code === codeToAdd) {
+                            const addedBy = allUsers[userId].name;
                             document.getElementById('added-by').textContent = `Код добавлен пользователем: ${addedBy}`;
                             found = true;
                             break;
@@ -90,6 +89,9 @@
             const inputCode = document.getElementById('input-code').value;
             addCode(inputCode);
         });
+
+        // Проверяем код пользователя при загрузке страницы
+        checkUserCode();
     </script>
     <style>
         body, html {
