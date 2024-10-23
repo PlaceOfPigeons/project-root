@@ -12,7 +12,7 @@
     </style>
 </head>
 <body>
-    <div id="username">...</div>
+    <div id="header">...</div> <!-- Элемент для отображения имени пользователя -->
     <button id="generate-button">Сгенерировать код</button>
     <div id="code"></div>
     <input type="text" id="input-code" placeholder="Введите код">
@@ -38,15 +38,10 @@
         // Получаем данные пользователя из Telegram
         const user = Telegram.WebApp.initDataUnsafe.user;
         console.log('Данные пользователя:', user); // Для отладки
-        const usernameDiv = document.getElementById('username');
 
         // Отображение имени пользователя
-        if (user && (user.username || user.first_name)) {
-            const displayName = user.username ? user.username : (user.first_name || "Неизвестный пользователь");
-            usernameDiv.textContent = `Привет, ${displayName}!`;
-        } else {
-            usernameDiv.textContent = 'Не удалось получить имя пользователя.';
-        }
+        let displayName = user.username || user.first_name || "Неизвестный пользователь";
+        document.getElementById("header").textContent = `Привет, ${displayName}!`;
 
         // Генерация кода
         document.getElementById('generate-button').addEventListener('click', () => {
