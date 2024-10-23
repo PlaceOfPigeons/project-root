@@ -3,105 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Pigeons</title>
+    <title>ProjectPresident</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script type="module">
-        // Импортируем необходимые функции из Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getDatabase, ref, set, query, orderByChild, equalTo, once } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
-        // Конфигурация вашего Firebase приложения
-        const firebaseConfig = {
-            apiKey: "AIzaSyAWwSObNeCTqDk8xJg9sa0u4wIvk5JFw8E",
-            authDomain: "placeofpigeons.firebaseapp.com",
-            databaseURL: "https://placeofpigeons-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "placeofpigeons",
-            storageBucket: "placeofpigeons.appspot.com",
-            messagingSenderId: "67354529384",
-            appId: "1:67354529384:web:716cf99397eb9002c435dd",
-            measurementId: "G-P70KRENL94"
-        };
-
-        // Инициализация Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        // Инициализация Telegram Web App
-        window.addEventListener('DOMContentLoaded', () => {
-            window.Telegram.WebApp.ready();
-
-            // Получаем данные пользователя из Telegram
-            const user = window.Telegram.WebApp.initDataUnsafe.user;
-            console.log('Данные пользователя:', user);
-
-            // Отображение имени пользователя
-            let displayName = user.username || user.first_name || "Неизвестный пользователь";
-            document.getElementById("header").textContent = `Привет, ${displayName}!`;
-
-            // Обработчики событий для кнопок
-            document.getElementById('generate-button').addEventListener('click', () => {
-                const inviteCode = Math.random().toString(36).substr(2, 6);
-                document.getElementById('code').textContent = `Ваш код: ${inviteCode}`;
-                saveCode(user.id, inviteCode);
-            });
-
-            document.getElementById('submit-button').addEventListener('click', () => {
-                const inputCode = document.getElementById('input-code').value;
-                getCode(inputCode);
-            });
-        });
-
-        // Функция для сохранения кода в Firebase
-        function saveCode(userId, code) {
-            set(ref(database, 'users/' + userId), {
-                code: code,
-                name: user.first_name // или username
-            }).then(() => {
-                console.log('Данные успешно сохранены!');
-            }).catch((error) => {
-                console.error('Ошибка сохранения данных:', error);
-            });
-        }
-
-        // Функция для получения кода из Firebase
-        function getCode(code) {
-            const dbRef = ref(database);
-            const q = query(dbRef.child('users'), orderByChild('code'), equalTo(code));
-
-            once(q, 'value').then((snapshot) => {
-                if (snapshot.exists()) {
-                    const userData = snapshot.val();
-                    const userId = Object.keys(userData)[0];
-                    console.log('Имя пользователя:', userData[userId].name);
-                } else {
-                    console.log('Код не найден');
-                }
-            }).catch((error) => {
-                console.error('Ошибка получения данных:', error);
-            });
-        }
-    </script>
     <style>
-        /* Ваши стили здесь */
-        body {
+        body, html {
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
-            padding: 20px;
+            background-color: black;
+            color: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
         }
-        #header {
+        .header {
+            padding: 10px;
+            text-align: center;
             font-size: 24px;
-            margin-bottom: 20px;
-        }
-        #code {
-            margin: 10px 0;
-            font-weight: bold;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <div id="header">...</div>
-    <button id="generate-button">Сгенерировать код</button>
-    <div id="code"></div>
-    <input type="text" id="input-code" placeholder="Введите код">
-    <button id="submit-button">Отправить код</button>
+    <div class="header" id="header">
+        ProjectPresident
+    </div>
+    
+    <script>
+        window.Telegram.WebApp.ready();
+
+        const user = Telegram.WebApp.initDataUnsafe.user;
+        console.log('Данные пользователя:', user); // Для отладки
+
+        let displayName = user.username || user.first_name || "Неизвестный пользователь";
+        document.getElementById("header").textContent = displayName;
+
+        // Дополнительная логика вашего приложения
+    </script>
 </body>
 </html>
