@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral System</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Привет, <span id="username">...</span></h1>
+        <p>Ваш код для приглашения: <span id="invite-code">...</span></p>
+        <button id="generate-code">Сгенерировать код</button>
+
+        <h2>Ввести код:</h2>
+        <input type="text" id="input-code" placeholder="Введите код">
+        <button id="submit-code">Отправить</button>
+
+        <div id="invited-users">
+            <h3>Пользователи, которые ввели ваш код:</h3>
+            <ul id="users-list"></ul>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
