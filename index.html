@@ -5,6 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProjectPresident</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script type="module">
+        // Импортируем необходимые функции из Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        // Конфигурация вашего Firebase приложения
+        const firebaseConfig = {
+            apiKey: "AIzaSyAWwSObNeCTqDk8xJg9sa0u4wIvk5JFw8E",
+            authDomain: "placeofpigeons.firebaseapp.com",
+            databaseURL: "https://placeofpigeons-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "placeofpigeons",
+            storageBucket: "placeofpigeons.appspot.com",
+            messagingSenderId: "67354529384",
+            appId: "1:67354529384:web:716cf99397eb9002c435dd",
+            measurementId: "G-P70KRENL94"
+        };
+
+        // Инициализация Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        window.Telegram.WebApp.ready();
+
+        const user = Telegram.WebApp.initDataUnsafe.user;
+        console.log('Данные пользователя:', user); // Для отладки
+
+        let displayName = user.username || user.first_name || "Неизвестный пользователь";
+        document.getElementById("header").textContent = displayName;
+
+        // Пример функции для сохранения данных в Firebase
+        function saveUserData(userId, data) {
+            set(ref(database, 'users/' + userId), data)
+                .then(() => {
+                    console.log('Данные успешно сохранены!');
+                })
+                .catch((error) => {
+                    console.error('Ошибка сохранения данных:', error);
+                });
+        }
+
+        // Сохранение данных пользователя (например, имя) в Firebase
+        if (user.id) {
+            saveUserData(user.id, { name: displayName });
+        }
+    </script>
     <style>
         body, html {
             margin: 0;
@@ -17,7 +62,7 @@
             flex-direction: column;
             user-select: none;
         }
-        
+
         .header {
             padding: 10px;
             text-align: center;
@@ -30,17 +75,5 @@
     <div class="header" id="header">
         ProjectPresident
     </div>
-    
-    <script>
-        window.Telegram.WebApp.ready();
-
-        const user = Telegram.WebApp.initDataUnsafe.user;
-        console.log('Данные пользователя:', user); // Для отладки
-
-        let displayName = user.username || user.first_name || "Неизвестный пользователь";
-        document.getElementById("header").textContent = displayName;
-
-        // Дополнительная логика вашего приложения
-    </script>
 </body>
 </html>
