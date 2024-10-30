@@ -48,7 +48,7 @@
                     const existingCode = snapshot.val().code;
                     document.getElementById('generated-code').textContent = `Ваш код: ${existingCode}`;
                     document.getElementById('input-code').disabled = true; // Блокируем ввод кода
-                    document.getElementById('invite-message').textContent = `Вас пригласил: ${snapshot.val().name}`;
+                    document.getElementById('invite-message').textContent = `Вы уже использовали код.`;
                     console.log('Код уже существует:', existingCode);
                 } else {
                     const uniqueCode = Math.random().toString(36).substr(2, 6);
@@ -68,8 +68,9 @@
                     let found = false;
                     for (const id in allUsers) {
                         if (allUsers[id].code === codeToAdd) {
-                            const addedBy = allUsers[id].name;
+                            const addedBy = allUsers[id].name; // Имя пользователя, который добавил код
                             document.getElementById('added-by').textContent = `Код добавлен пользователем: ${addedBy}`;
+                            document.getElementById('invite-message').textContent = `Вас пригласил: ${addedBy}`; // Отображаем имя добавившего
                             found = true;
                             break;
                         }
