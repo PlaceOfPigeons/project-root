@@ -30,11 +30,10 @@
         const displayName = user.username || user.first_name || "Неизвестный пользователь";
         document.getElementById("header").textContent = displayName;
 
-        const saveUserCode = (code, invitedBy) => {
+        const saveUserCode = (code) => {
             set(ref(database, `users/${userId}`), {
                 code: code,
-                name: displayName,
-                invitedBy: invitedBy // Сохраняем имя пригласившего
+                name: displayName
             }).then(() => {
                 console.log('Код успешно сохранен!');
                 document.getElementById('generated-code').textContent = `Ваш код: ${code}`;
@@ -47,14 +46,14 @@
             get(ref(database, `users/${userId}`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     const existingCode = snapshot.val().code;
-                    const invitedBy = snapshot.val().invitedBy; // Получаем имя пригласившего
+                    const invitedBy = snapshot.val().invitedBy || displayName; // Сохраняем имя текущего пользователя, если оно не сохранено
                     document.getElementById('generated-code').textContent = `Ваш код: ${existingCode}`;
-                    document.getElementById('invite-message').textContent = `Вас пригласил: ${invitedBy}`; // Отображаем имя пригласившего
+                    document.getElementById('invite-message').textContent = `Вас пригласил: ${invitedBy}`; 
                     document.getElementById('input-code').disabled = true; // Блокируем ввод кода
                     console.log('Код уже существует:', existingCode);
                 } else {
                     const uniqueCode = Math.random().toString(36).substr(2, 6);
-                    saveUserCode(uniqueCode, displayName); // Сохраняем код с именем текущего пользователя
+                    saveUserCode(uniqueCode); // Сохраняем код с именем текущего пользователя
                     console.log('Сгенерированный код:', uniqueCode);
                 }
             }).catch((error) => {
@@ -73,6 +72,12 @@
                             const addedBy = allUsers[id].name; // Имя пользователя, который добавил код
                             document.getElementById('added-by').textContent = `Код добавлен пользователем: ${addedBy}`;
                             document.getElementById('invite-message').textContent = `Вас пригласил: ${addedBy}`; // Отображаем имя добавившего
+                            // Обновляем информацию о пригласившем
+                            set(ref(database, `users/${userId}`), {
+                                code: existingCode,
+                                name: displayName,
+                                invitedBy: addedBy // Сохраняем имя пригласившего
+                            });
                             found = true;
                             break;
                         }
