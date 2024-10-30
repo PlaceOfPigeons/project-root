@@ -30,8 +30,6 @@
         const displayName = user.username || user.first_name || "Неизвестный пользователь";
         document.getElementById("header").textContent = displayName;
 
-        const generateUniqueCode = () => Math.random().toString(36).substr(2, 6);
-
         const saveUserCode = (code) => {
             set(ref(database, `users/${userId}`), {
                 code: code,
@@ -49,9 +47,10 @@
                 if (snapshot.exists()) {
                     const existingCode = snapshot.val().code;
                     document.getElementById('generated-code').textContent = `Ваш код: ${existingCode}`;
+                    document.getElementById('input-code').disabled = true; // Блокируем ввод кода
                     console.log('Код уже существует:', existingCode);
                 } else {
-                    const uniqueCode = generateUniqueCode();
+                    const uniqueCode = Math.random().toString(36).substr(2, 6);
                     saveUserCode(uniqueCode);
                     console.log('Сгенерированный код:', uniqueCode);
                 }
@@ -66,9 +65,9 @@
                 if (snapshot.exists()) {
                     const allUsers = snapshot.val();
                     let found = false;
-                    for (const userId in allUsers) {
-                        if (allUsers[userId].code === codeToAdd) {
-                            const addedBy = allUsers[userId].name;
+                    for (const id in allUsers) {
+                        if (allUsers[id].code === codeToAdd) {
+                            const addedBy = allUsers[id].name;
                             document.getElementById('added-by').textContent = `Код добавлен пользователем: ${addedBy}`;
                             found = true;
                             break;
