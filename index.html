@@ -30,10 +30,11 @@
         const displayName = user.username || user.first_name || "Неизвестный пользователь";
         document.getElementById("header").textContent = displayName;
 
-        const saveUserCode = (code) => {
+        const saveUserCode = (code, invitedBy) => {
             set(ref(database, `users/${userId}`), {
                 code: code,
-                name: displayName
+                name: displayName,
+                invitedBy: invitedBy // Сохраняем имя пригласившего
             }).then(() => {
                 console.log('Код успешно сохранен!');
                 document.getElementById('generated-code').textContent = `Ваш код: ${code}`;
@@ -46,13 +47,14 @@
             get(ref(database, `users/${userId}`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     const existingCode = snapshot.val().code;
+                    const invitedBy = snapshot.val().invitedBy; // Получаем имя пригласившего
                     document.getElementById('generated-code').textContent = `Ваш код: ${existingCode}`;
+                    document.getElementById('invite-message').textContent = `Вас пригласил: ${invitedBy}`; // Отображаем имя пригласившего
                     document.getElementById('input-code').disabled = true; // Блокируем ввод кода
-                    document.getElementById('invite-message').textContent = `Вы уже использовали код.`;
                     console.log('Код уже существует:', existingCode);
                 } else {
                     const uniqueCode = Math.random().toString(36).substr(2, 6);
-                    saveUserCode(uniqueCode);
+                    saveUserCode(uniqueCode, displayName); // Сохраняем код с именем текущего пользователя
                     console.log('Сгенерированный код:', uniqueCode);
                 }
             }).catch((error) => {
