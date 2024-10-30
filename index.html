@@ -48,6 +48,7 @@
                     const existingCode = snapshot.val().code;
                     document.getElementById('generated-code').textContent = `Ваш код: ${existingCode}`;
                     document.getElementById('input-code').disabled = true; // Блокируем ввод кода
+                    document.getElementById('invite-message').textContent = `Вас пригласил: ${snapshot.val().name}`;
                     console.log('Код уже существует:', existingCode);
                 } else {
                     const uniqueCode = Math.random().toString(36).substr(2, 6);
@@ -135,10 +136,17 @@
             margin-top: 20px;
             font-size: 18px;
         }
+
+        #invite-message {
+            margin-top: 10px;
+            font-size: 18px;
+            color: lightblue;
+        }
     </style>
 </head>
 <body>
     <div class="header" id="header">ProjectPresident</div>
+    <div id="invite-message"></div>
     <div id="generated-code">Ваш код: </div>
     <div>
         <input type="text" id="input-code" placeholder="Введите код">
