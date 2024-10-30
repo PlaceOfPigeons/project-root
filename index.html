@@ -53,8 +53,6 @@
                     if (invitedBy) {
                         document.getElementById('invite-message').textContent = `Вас пригласил: ${invitedBy}`;
                     }
-                    // Не блокируем ввод кода, если код существует
-                    console.log('Код уже существует:', existingCode);
                 } else {
                     const uniqueCode = Math.random().toString(36).substr(2, 6);
                     saveUserCode(uniqueCode);
@@ -76,6 +74,7 @@
                             const addedBy = allUsers[id].name; // Имя пользователя, который добавил код
                             document.getElementById('added-by').textContent = `Код добавлен пользователем: ${addedBy}`;
                             document.getElementById('invite-message').textContent = `Вас пригласил: ${addedBy}`; // Отображаем имя добавившего
+
                             // Обновляем информацию о текущем пользователе
                             update(ref(database, `users/${userId}`), {
                                 invitedBy: addedBy // Сохраняем имя пригласившего
@@ -83,8 +82,10 @@
 
                             // Добавляем текущего пользователя в список использовавших код
                             const usedCodesRef = ref(database, `users/${id}/usedCodes`);
-                            update(usedCodesRef, {
-                                [userId]: displayName // Сохраняем пользователя и его имя
+                            const newUsedCodes = { [userId]: displayName }; // Создаём новый объект для обновления
+                            update(usedCodesRef, newUsedCodes).then(() => {
+                                console.log('Пользователь добавлен в список использовавших код');
+                                displayUsedCodes(id); // Обновляем отображение сразу после добавления
                             });
 
                             found = true;
@@ -106,6 +107,24 @@
             const inputCode = document.getElementById('input-code').value;
             addCode(inputCode);
         });
+
+        const displayUsedCodes = (userId) => {
+            get(ref(database, `users/${userId}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const usedCodes = snapshot.val().usedCodes || {};
+                    const usedList = document.getElementById('used-list');
+                    usedList.innerHTML = ''; // Очищаем предыдущий список
+
+                    for (const id in usedCodes) {
+                        const li = document.createElement('li');
+                        li.textContent = usedCodes[id]; // Добавляем имя пользователя
+                        usedList.appendChild(li);
+                    }
+                }
+            }).catch((error) => {
+                console.error('Ошибка получения данных:', error);
+            });
+        };
 
         // Проверяем код пользователя при загрузке страницы
         checkUserCode();
@@ -178,26 +197,7 @@
     <div id="used-codes">Пользователи, использовавшие ваш код: <ul id="used-list"></ul></div>
     <script>
         // Отображаем пользователей, которые использовали код
-        const displayUsedCodes = () => {
-            get(ref(database, `users/${userId}`)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const usedCodes = snapshot.val().usedCodes || {};
-                    const usedList = document.getElementById('used-list');
-                    usedList.innerHTML = ''; // Очищаем предыдущий список
-
-                    for (const id in usedCodes) {
-                        const li = document.createElement('li');
-                        li.textContent = usedCodes[id]; // Добавляем имя пользователя
-                        usedList.appendChild(li);
-                    }
-                }
-            }).catch((error) => {
-                console.error('Ошибка получения данных:', error);
-            });
-        };
-
-        // Вызываем отображение использованных кодов
-        displayUsedCodes();
+        displayUsedCodes(userId);
     </script>
 </body>
 </html>
