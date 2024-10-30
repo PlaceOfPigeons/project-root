@@ -34,8 +34,8 @@
             set(ref(database, `users/${userId}`), {
                 code: code,
                 name: displayName,
-                invitedBy: null, // по умолчанию, пока код не введён
-                usedCodes: [] // список пользователей, которые использовали код
+                invitedBy: null,
+                usedCodes: []
             }).then(() => {
                 console.log('Код успешно сохранен!');
                 document.getElementById('generated-code').textContent = `Ваш код: ${code}`;
@@ -53,7 +53,7 @@
                     if (invitedBy) {
                         document.getElementById('invite-message').textContent = `Вас пригласил: ${invitedBy}`;
                     }
-                    document.getElementById('input-code').disabled = true; // Блокируем ввод кода
+                    // Не блокируем ввод кода, если код существует
                     console.log('Код уже существует:', existingCode);
                 } else {
                     const uniqueCode = Math.random().toString(36).substr(2, 6);
