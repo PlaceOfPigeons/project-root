@@ -55,6 +55,9 @@
                     }
                     // Отображаем пользователей, использовавших код
                     displayUsedCodes(userId);
+                    // Скрываем кнопку и поле ввода, если код уже введен
+                    document.getElementById('input-code').style.display = 'none';
+                    document.getElementById('submit-button').style.display = 'none';
                 } else {
                     const uniqueCode = Math.random().toString(36).substr(2, 6);
                     saveUserCode(uniqueCode);
@@ -90,6 +93,9 @@
                             });
 
                             found = true;
+                            // Скрываем кнопку и поле ввода после успешного ввода кода
+                            document.getElementById('input-code').style.display = 'none';
+                            document.getElementById('submit-button').style.display = 'none';
                             break;
                         }
                     }
