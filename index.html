@@ -53,6 +53,8 @@
                     if (invitedBy) {
                         document.getElementById('invite-message').textContent = `Вас пригласил: ${invitedBy}`;
                     }
+                    // Отображаем пользователей, использовавших код
+                    displayUsedCodes(userId);
                 } else {
                     const uniqueCode = Math.random().toString(36).substr(2, 6);
                     saveUserCode(uniqueCode);
@@ -107,15 +109,15 @@
             addCode(inputCode);
         });
 
-        const displayUsedCodes = (userId) => {
-            get(ref(database, `users/${userId}/usedCodes`)).then((snapshot) => {
+        const displayUsedCodes = (id) => {
+            get(ref(database, `users/${id}/usedCodes`)).then((snapshot) => {
                 const usedList = document.getElementById('used-list');
                 usedList.innerHTML = ''; // Очищаем предыдущий список
                 if (snapshot.exists()) {
                     const usedCodes = snapshot.val();
-                    for (const id in usedCodes) {
+                    for (const userId in usedCodes) {
                         const li = document.createElement('li');
-                        li.textContent = usedCodes[id]; // Имя пользователя, использовавшего код
+                        li.textContent = usedCodes[userId]; // Имя пользователя, использовавшего код
                         usedList.appendChild(li);
                     }
                 } else {
@@ -195,9 +197,5 @@
     </div>
     <div id="added-by"></div>
     <div id="used-codes">Пользователи, использовавшие ваш код: <ul id="used-list"></ul></div>
-    <script>
-        // Отображаем пользователей, которые использовали код
-        displayUsedCodes(userId);
-    </script>
 </body>
 </html>
