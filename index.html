@@ -30,7 +30,6 @@
   <p id="pointsDisplay">Loading points...</p>
   <button onclick="addBirdPoints()">Add 100 Bird Points</button>
 
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand(); // Расширяем на весь экран
@@ -40,6 +39,7 @@
 
     if (!userId) {
       document.getElementById("pointsDisplay").textContent = "User ID not found.";
+      console.error("User ID not found.");
     } else {
       // Загружаем очки для текущего пользователя
       function loadPoints() {
@@ -47,9 +47,11 @@
           .then(points => {
             const currentPoints = parseInt(points) || 0;
             document.getElementById("pointsDisplay").textContent = `Bird Points: ${currentPoints}`;
+            console.log("Loaded points:", currentPoints);
           })
           .catch(error => {
             document.getElementById("pointsDisplay").textContent = "Error loading points: " + error.message;
+            console.error("Error loading points:", error);
           });
       }
 
@@ -63,9 +65,11 @@
           })
           .then(newPoints => {
             document.getElementById("pointsDisplay").textContent = `Bird Points: ${newPoints}`;
+            console.log("New points saved:", newPoints);
           })
           .catch(error => {
             document.getElementById("pointsDisplay").textContent = "Error saving points: " + error.message;
+            console.error("Error saving points:", error);
           });
       }
 
