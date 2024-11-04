@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bird Points in Telegram Cloud Storage</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <title>Bird Points in Telegram Cloud Storage</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -35,7 +35,7 @@
     const tg = window.Telegram.WebApp;
     tg.expand(); // Расширяем на весь экран
 
-    // Загружаем очки при открытии
+    // Функция для загрузки очков при открытии
     function loadPoints() {
       tg.storage.get('birdPoints')
         .then(points => {
@@ -53,10 +53,9 @@
         .then(points => {
           const currentPoints = parseInt(points) || 0;
           const newPoints = currentPoints + 100;
-          return tg.storage.set('birdPoints', newPoints);
+          return tg.storage.set('birdPoints', newPoints).then(() => newPoints);
         })
-        .then(() => {
-          document.getElementById("pointsDisplay").textContent = "Bird Points: " + (parseInt(tg.storage.get('birdPoints')) || 0);
+        .then(newPoints => {
           document.getElementById("pointsDisplay").textContent = `Bird Points: ${newPoints}`;
         })
         .catch(error => {
