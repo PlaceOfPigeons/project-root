@@ -1,207 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProjectPresident</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAWwSObNeCTqDk8xJg9sa0u4wIvk5JFw8E",
-            authDomain: "placeofpigeons.firebaseapp.com",
-            databaseURL: "https://placeofpigeons-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "placeofpigeons",
-            storageBucket: "placeofpigeons.appspot.com",
-            messagingSenderId: "67354529384",
-            appId: "1:67354529384:web:716cf99397eb9002c435dd",
-            measurementId: "G-P70KRENL94"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        window.Telegram.WebApp.ready();
-
-        const user = Telegram.WebApp.initDataUnsafe.user;
-        const userId = user.id;
-        const displayName = user.username || user.first_name || "Неизвестный пользователь";
-        document.getElementById("header").textContent = displayName;
-
-        const saveUserCode = (code) => {
-            set(ref(database, `users/${userId}`), {
-                code: code,
-                name: displayName,
-                invitedBy: null,
-                usedCodes: {}
-            }).then(() => {
-                console.log('Код успешно сохранен!');
-                document.getElementById('generated-code').textContent = `Ваш код: ${code}`;
-            }).catch((error) => {
-                console.error('Ошибка сохранения кода:', error);
-            });
-        };
-
-        const checkUserCode = () => {
-            get(ref(database, `users/${userId}`)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const existingCode = snapshot.val().code;
-                    const invitedBy = snapshot.val().invitedBy;
-                    document.getElementById('generated-code').textContent = `Ваш код: ${existingCode}`;
-                    if (invitedBy) {
-                        document.getElementById('invite-message').textContent = `Вас пригласил: ${invitedBy}`;
-                    }
-                    // Отображаем пользователей, использовавших код
-                    displayUsedCodes(userId);
-                    // Скрываем кнопку и поле ввода, если код уже введен
-                    document.getElementById('input-code').style.display = 'none';
-                    document.getElementById('submit-button').style.display = 'none';
-                } else {
-                    const uniqueCode = Math.random().toString(36).substr(2, 6);
-                    saveUserCode(uniqueCode);
-                    console.log('Сгенерированный код:', uniqueCode);
-                }
-            }).catch((error) => {
-                console.error('Ошибка получения данных:', error);
-            });
-        };
-
-        const addCode = (codeToAdd) => {
-            const userRef = ref(database, 'users/');
-            get(userRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const allUsers = snapshot.val();
-                    let found = false;
-                    for (const id in allUsers) {
-                        if (allUsers[id].code === codeToAdd) {
-                            const addedBy = allUsers[id].name; 
-                            document.getElementById('added-by').textContent = `Код добавлен пользователем: ${addedBy}`;
-                            document.getElementById('invite-message').textContent = `Вас пригласил: ${addedBy}`; 
-
-                            // Обновляем информацию о текущем пользователе
-                            update(ref(database, `users/${userId}`), {
-                                invitedBy: addedBy 
-                            });
-
-                            // Добавляем текущего пользователя в список использовавших код
-                            const usedCodesRef = ref(database, `users/${id}/usedCodes/${userId}`);
-                            set(usedCodesRef, displayName).then(() => {
-                                console.log('Пользователь добавлен в список использовавших код');
-                                displayUsedCodes(id); // Обновляем отображение сразу после добавления
-                            });
-
-                            found = true;
-                            // Скрываем кнопку и поле ввода после успешного ввода кода
-                            document.getElementById('input-code').style.display = 'none';
-                            document.getElementById('submit-button').style.display = 'none';
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        document.getElementById('added-by').textContent = 'Код не найден';
-                    }
-                } else {
-                    document.getElementById('added-by').textContent = 'Код не найден';
-                }
-            }).catch((error) => {
-                console.error('Ошибка получения данных:', error);
-            });
-        };
-
-        document.getElementById('submit-button').addEventListener('click', () => {
-            const inputCode = document.getElementById('input-code').value;
-            addCode(inputCode);
-        });
-
-        const displayUsedCodes = (id) => {
-            get(ref(database, `users/${id}/usedCodes`)).then((snapshot) => {
-                const usedList = document.getElementById('used-list');
-                usedList.innerHTML = ''; // Очищаем предыдущий список
-                if (snapshot.exists()) {
-                    const usedCodes = snapshot.val();
-                    for (const userId in usedCodes) {
-                        const li = document.createElement('li');
-                        li.textContent = usedCodes[userId]; // Имя пользователя, использовавшего код
-                        usedList.appendChild(li);
-                    }
-                } else {
-                    usedList.innerHTML = '<li>Нет пользователей, использовавших код.</li>'; // Сообщение, если список пуст
-                }
-            }).catch((error) => {
-                console.error('Ошибка получения данных:', error);
-            });
-        };
-
-        // Проверяем код пользователя при загрузке страницы
-        checkUserCode();
-    </script>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: black;
-            color: white;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            user-select: none;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            font-size: 24px;
-            color: white;
-        }
-
-        #generated-code {
-            margin: 20px 0;
-            font-size: 18px;
-        }
-
-        #input-code {
-            padding: 10px;
-            margin-right: 10px;
-            width: 200px;
-        }
-
-        #submit-button {
-            padding: 10px;
-            background-color: white;
-            color: black;
-            border: none;
-            cursor: pointer;
-        }
-
-        #added-by {
-            margin-top: 20px;
-            font-size: 18px;
-        }
-
-        #invite-message {
-            margin-top: 10px;
-            font-size: 18px;
-            color: lightblue;
-        }
-
-        #used-codes {
-            margin-top: 20px;
-            font-size: 18px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bird Points in Telegram Cloud Storage</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <div class="header" id="header">ProjectPresident</div>
-    <div id="invite-message"></div>
-    <div id="generated-code">Ваш код: </div>
-    <div>
-        <input type="text" id="input-code" placeholder="Введите код">
-        <button id="submit-button">Добавить код</button>
-    </div>
-    <div id="added-by"></div>
-    <div id="used-codes">Пользователи, использовавшие ваш код: <ul id="used-list"></ul></div>
+
+  <h1>Bird Points</h1>
+  <p id="pointsDisplay">Loading points...</p>
+  <button onclick="addBirdPoints()">Add 100 Bird Points</button>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // Расширяем на весь экран
+
+    // Загружаем очки при открытии
+    function loadPoints() {
+      tg.storage.get('birdPoints')
+        .then(points => {
+          const currentPoints = parseInt(points) || 0;
+          document.getElementById("pointsDisplay").textContent = `Bird Points: ${currentPoints}`;
+        })
+        .catch(error => {
+          document.getElementById("pointsDisplay").textContent = "Error loading points: " + error.message;
+        });
+    }
+
+    // Функция добавления 100 очков
+    function addBirdPoints() {
+      tg.storage.get('birdPoints')
+        .then(points => {
+          const currentPoints = parseInt(points) || 0;
+          const newPoints = currentPoints + 100;
+          return tg.storage.set('birdPoints', newPoints);
+        })
+        .then(() => {
+          document.getElementById("pointsDisplay").textContent = "Bird Points: " + (parseInt(tg.storage.get('birdPoints')) || 0);
+          document.getElementById("pointsDisplay").textContent = `Bird Points: ${newPoints}`;
+        })
+        .catch(error => {
+          document.getElementById("pointsDisplay").textContent = "Error saving points: " + error.message;
+        });
+    }
+
+    // Загрузка начального значения очков при открытии
+    loadPoints();
+  </script>
+
 </body>
 </html>
