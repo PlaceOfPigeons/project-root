@@ -1,77 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <title>Bird Points Mini App</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      background-color: #f0f0f0;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Web App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
+    <div class="container">
+        <h1>Добро пожаловать, <span id="username"></span>!</h1>
+        <h2>Ваши очки: <span id="points">0</span></h2>
+        <button id="addPoints">Добавить 100 очков</button>
+    </div>
+    <script>
+        // Получаем данные от Telegram
+        const user = Telegram.WebApp.initDataUnsafe.user;
+        const pointsKey = `points_${user.id}`;
 
-  <h1>Bird Points</h1>
-  <p id="pointsDisplay">Loading points...</p>
-  <button onclick="addBirdPoints()">Add 100 Bird Points</button>
+        // Отображаем имя пользователя
+        document.getElementById('username').innerText = user.first_name;
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // Расширяем на весь экран
+        // Получаем очки из локального хранилища
+        let points = localStorage.getItem(pointsKey) || 0;
+        document.getElementById('points').innerText = points;
 
-    // Получаем ID пользователя
-    const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
+        // Обработчик для кнопки добавления очков
+        document.getElementById('addPoints').addEventListener('click', () => {
+            points = parseInt(points) + 100; // Добавляем 100 очков
+            localStorage.setItem(pointsKey, points); // Сохраняем в локальное хранилище
+            document.getElementById('points').innerText = points; // Обновляем отображение очков
+        });
 
-    if (!userId) {
-      document.getElementById("pointsDisplay").textContent = "User ID not found.";
-    } else {
-      // Загружаем очки для текущего пользователя
-      function loadPoints() {
-        tg.storage.get(`birdPoints_${userId}`)
-          .then(points => {
-            const currentPoints = parseInt(points) || 0;
-            document.getElementById("pointsDisplay").textContent = `Bird Points: ${currentPoints}`;
-          })
-          .catch(error => {
-            document.getElementById("pointsDisplay").textContent = "Error loading points: " + error.message;
-          });
-      }
-
-      // Функция добавления 100 очков
-      function addBirdPoints() {
-        tg.storage.get(`birdPoints_${userId}`)
-          .then(points => {
-            const currentPoints = parseInt(points) || 0;
-            const newPoints = currentPoints + 100;
-            return tg.storage.set(`birdPoints_${userId}`, newPoints).then(() => newPoints);
-          })
-          .then(newPoints => {
-            document.getElementById("pointsDisplay").textContent = `Bird Points: ${newPoints}`;
-          })
-          .catch(error => {
-            document.getElementById("pointsDisplay").textContent = "Error saving points: " + error.message;
-          });
-      }
-
-      // Загрузка начального значения очков при открытии
-      loadPoints();
-    }
-  </script>
-
+        // Обновляем интерфейс
+        Telegram.WebApp.onEvent('visibilityChanged', (visible) => {
+            if (visible) {
+                // Обновление данных при возвращении в приложение
+                points = localStorage.getItem(pointsKey) || 0;
+                document.getElementById('points').innerText = points;
+            }
+        });
+    </script>
 </body>
 </html>
