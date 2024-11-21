@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мини-приложение Telegram с очками</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f0f0; }
         .container { text-align: center; }
@@ -67,8 +68,20 @@
             }
         });
 
-        // Функция для развертывания на весь экран
+        // Функция для развертывания на весь экран с использованием requestFullscreen()
         function expandApp() {
+            // Используем метод requestFullscreen() для развертывания на весь экран
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.mozRequestFullScreen) { // Для Firefox
+                document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullscreen) { // Для Chrome, Safari и Opera
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) { // Для IE/Edge
+                document.documentElement.msRequestFullscreen();
+            }
+            
+            // Используем метод tg.expand() для Telegram Web App
             tg.expand();
             console.log("Приложение развернуто на весь экран.");
         }
