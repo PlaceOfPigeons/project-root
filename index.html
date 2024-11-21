@@ -15,6 +15,7 @@
         <h1>Очки в облачном хранилище</h1>
         <button onclick="addPoints()">Добавить 100 очков</button>
         <p id="status">Текущие очки: 0</p>
+        <button onclick="expandApp()">Развернуть на весь экран</button>
     </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -65,6 +66,12 @@
                 updateStatus("Текущие очки: " + currentPoints);
             }
         });
+
+        // Функция для развертывания на весь экран
+        function expandApp() {
+            tg.expand();
+            console.log("Приложение развернуто на весь экран.");
+        }
     </script>
 </body>
 </html>
