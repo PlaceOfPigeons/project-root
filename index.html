@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мини-приложение Telegram с очками</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f0f0; }
         .container { text-align: center; }
@@ -26,24 +25,27 @@
 
         // Функция для добавления 100 очков
         function addPoints() {
-            // Получаем текущее значение очков
             tg.cloudStorage.getItem(key, (error, value) => {
                 if (error) {
-                    updateStatus("Ошибка при получении очков: " + error);
-                } else {
-                    // Если очки еще не установлены, начинаем с 0
-                    let currentPoints = parseInt(value) || 0;
-                    let newPoints = currentPoints + 100;
-
-                    // Сохраняем обновленное значение очков
-                    tg.cloudStorage.setItem(key, newPoints.toString(), (error, success) => {
-                        if (error) {
-                            updateStatus("Ошибка при сохранении очков: " + error);
-                        } else {
-                            updateStatus("Текущие очки: " + newPoints);
-                        }
-                    });
+                    console.error("Ошибка при получении очков:", error);
+                    updateStatus("Ошибка при получении очков");
+                    return;
                 }
+
+                // Если очки еще не установлены, начинаем с 0
+                let currentPoints = parseInt(value) || 0;
+                let newPoints = currentPoints + 100;
+
+                // Сохраняем обновленное значение очков
+                tg.cloudStorage.setItem(key, newPoints.toString(), (error, success) => {
+                    if (error) {
+                        console.error("Ошибка при сохранении очков:", error);
+                        updateStatus("Ошибка при сохранении очков");
+                    } else {
+                        console.log("Очки успешно сохранены:", newPoints);
+                        updateStatus("Текущие очки: " + newPoints);
+                    }
+                });
             });
         }
 
@@ -55,9 +57,11 @@
         // Получение и отображение текущих очков при загрузке
         tg.cloudStorage.getItem(key, (error, value) => {
             if (error) {
-                updateStatus("Ошибка при загрузке очков: " + error);
+                console.error("Ошибка при загрузке очков:", error);
+                updateStatus("Ошибка при загрузке очков");
             } else {
                 let currentPoints = parseInt(value) || 0;
+                console.log("Текущие очки при загрузке:", currentPoints);
                 updateStatus("Текущие очки: " + currentPoints);
             }
         });
