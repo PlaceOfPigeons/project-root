@@ -3,88 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мини-приложение Telegram с очками</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Мини-Игра в Telegram</title>
+    <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
     <style>
-        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f0f0; }
-        .container { text-align: center; }
-        button { padding: 10px 20px; margin-top: 10px; }
+        /* Стили для игры, чтобы она занимала весь экран */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #2b2b2b;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        #game-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #score {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        #start-btn {
+            background-color: #0088cc;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        #start-btn:hover {
+            background-color: #005f7f;
+        }
+
+        .emoji {
+            font-size: 5rem;
+            margin: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        #emoji-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Очки в облачном хранилище</h1>
-        <button onclick="addPoints()">Добавить 100 очков</button>
-        <p id="status">Текущие очки: 0</p>
-        <button onclick="expandApp()">Развернуть на весь экран</button>
+    <div id="game-container">
+        <div id="score">Очки: 0</div>
+        <button id="start-btn">Начать игру</button>
+        <div id="emoji-container">
+            <div class="emoji" id="emoji-1">🍌</div>
+            <div class="emoji" id="emoji-2">💓</div>
+            <div class="emoji" id="emoji-3">🦴</div>
+        </div>
     </div>
 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         // Инициализация Telegram Web App
-        const tg = window.Telegram.WebApp;
-        const key = "points"; // Ключ для хранения очков
+        window.Telegram.WebApp.initData = window.Telegram.WebApp.initData || '';
+        window.Telegram.WebApp.colorScheme = window.Telegram.WebApp.colorScheme || 'light';
+        window.Telegram.WebApp.setHeaderColor("#2b2b2b");
+        window.Telegram.WebApp.setBackgroundColor("#2b2b2b");
+        window.Telegram.WebApp.setBottomBarColor("#2b2b2b");
 
-        // Функция для добавления 100 очков
-        function addPoints() {
-            tg.cloudStorage.getItem(key, (error, value) => {
-                if (error) {
-                    console.error("Ошибка при получении очков:", error);
-                    updateStatus("Ошибка при получении очков");
-                    return;
-                }
+        // Функция для старта игры
+        let score = 0;
+        let isGameStarted = false;
 
-                // Если очки еще не установлены, начинаем с 0
-                let currentPoints = parseInt(value) || 0;
-                let newPoints = currentPoints + 100;
+        function startGame() {
+            isGameStarted = true;
+            score = 0;
+            document.getElementById("score").innerText = "Очки: " + score;
+            document.getElementById("start-btn").style.display = "none";
+            shuffleEmojis();
+        }
 
-                // Сохраняем обновленное значение очков
-                tg.cloudStorage.setItem(key, newPoints.toString(), (error, success) => {
-                    if (error) {
-                        console.error("Ошибка при сохранении очков:", error);
-                        updateStatus("Ошибка при сохранении очков");
-                    } else {
-                        console.log("Очки успешно сохранены:", newPoints);
-                        updateStatus("Текущие очки: " + newPoints);
-                    }
+        // Функция для случайной перестановки эмодзи
+        function shuffleEmojis() {
+            if (isGameStarted) {
+                const emojis = ["🍌", "💓", "🦴"];
+                const shuffled = emojis.sort(() => Math.random() - 0.5);
+                document.getElementById("emoji-1").innerText = shuffled[0];
+                document.getElementById("emoji-2").innerText = shuffled[1];
+                document.getElementById("emoji-3").innerText = shuffled[2];
+
+                // Добавляем обработчик клика на эмодзи
+                document.querySelectorAll('.emoji').forEach(emoji => {
+                    emoji.addEventListener('click', handleEmojiClick);
                 });
-            });
-        }
-
-        // Функция для обновления статуса
-        function updateStatus(message) {
-            document.getElementById("status").innerText = message;
-        }
-
-        // Получение и отображение текущих очков при загрузке
-        tg.cloudStorage.getItem(key, (error, value) => {
-            if (error) {
-                console.error("Ошибка при загрузке очков:", error);
-                updateStatus("Ошибка при загрузке очков");
-            } else {
-                let currentPoints = parseInt(value) || 0;
-                console.log("Текущие очки при загрузке:", currentPoints);
-                updateStatus("Текущие очки: " + currentPoints);
             }
-        });
-
-        // Функция для развертывания на весь экран с использованием requestFullscreen()
-        function expandApp() {
-            // Используем метод requestFullscreen() для развертывания на весь экран
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            } else if (document.documentElement.mozRequestFullScreen) { // Для Firefox
-                document.documentElement.mozRequestFullScreen();
-            } else if (document.documentElement.webkitRequestFullscreen) { // Для Chrome, Safari и Opera
-                document.documentElement.webkitRequestFullscreen();
-            } else if (document.documentElement.msRequestFullscreen) { // Для IE/Edge
-                document.documentElement.msRequestFullscreen();
-            }
-            
-            // Используем метод tg.expand() для Telegram Web App
-            tg.expand();
-            console.log("Приложение развернуто на весь экран.");
         }
+
+        // Функция для обработки клика на эмодзи
+        function handleEmojiClick(event) {
+            if (!isGameStarted) return;
+
+            const clickedEmoji = event.target.innerText;
+            const correctOrder = ["🍌", "💓", "🦴"];
+            const currentEmojis = [
+                document.getElementById("emoji-1").innerText,
+                document.getElementById("emoji-2").innerText,
+                document.getElementById("emoji-3").innerText
+            ];
+
+            if (clickedEmoji === correctOrder[0]) {
+                score += 1;
+                document.getElementById("score").innerText = "Очки: " + score;
+                shuffleEmojis();
+            } else if (clickedEmoji === correctOrder[1] && currentEmojis[0] === correctOrder[0]) {
+                score += 1;
+                document.getElementById("score").innerText = "Очки: " + score;
+                shuffleEmojis();
+            } else if (clickedEmoji === correctOrder[2] && currentEmojis[1] === correctOrder[1]) {
+                score += 10; // Бонусные очки за правильный порядок
+                document.getElementById("score").innerText = "Очки: " + score;
+                shuffleEmojis();
+            }
+        }
+
+        // Добавляем обработчик для кнопки старта
+        document.getElementById("start-btn").addEventListener("click", startGame);
+
+        // Применяем режим полного экрана для мини-приложения
+        window.Telegram.WebApp.expand();
+        window.Telegram.WebApp.requestFullscreen();
     </script>
 </body>
 </html>
