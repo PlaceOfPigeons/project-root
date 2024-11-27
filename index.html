@@ -8,34 +8,45 @@
     body {
       margin: 0;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
       background-color: #000; /* черный фон */
       color: #fff; /* белый текст */
       font-family: Arial, sans-serif;
-      text-align: center;
     }
 
     .username {
-      font-size: 24px;
+      position: absolute;
+      top: 10%;
+      font-size: 20px;
       font-weight: bold;
+      color: #fff;
+    }
+
+    .image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    img {
+      max-width: 80%;
+      height: auto;
     }
   </style>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <div id="content">
-    <p class="username">Загрузка...</p>
+  <p class="username" id="username">Загрузка...</p>
+  <div class="image-container">
+    <img src="cocos.png" alt="Cocos Logo">
   </div>
 
   <script>
     // Инициализация Telegram Web App
     const tg = window.Telegram.WebApp;
-
-            // Применяем режим полного экрана для мини-приложения
-        window.Telegram.WebApp.expand();
-        window.Telegram.WebApp.requestFullscreen();
 
     // Настройка темы
     tg.expand(); // Открыть приложение на весь экран
@@ -45,11 +56,11 @@
     const username = user.username || `${user.first_name} ${user.last_name || ''}`.trim();
 
     // Отображение имени
-    const content = document.getElementById('content');
+    const usernameElement = document.getElementById('username');
     if (username) {
-      content.innerHTML = `<p class="username">Привет, ${username}!</p>`;
+      usernameElement.textContent = `Привет, ${username}!`;
     } else {
-      content.innerHTML = `<p class="username">Не удалось получить имя пользователя</p>`;
+      usernameElement.textContent = `Не удалось получить имя пользователя`;
     }
   </script>
 </body>
