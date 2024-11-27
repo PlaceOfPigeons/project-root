@@ -1,148 +1,52 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мини-Игра в Telegram</title>
-    <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
-    <style>
-        /* Стили для игры, чтобы она занимала весь экран */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #2b2b2b;
-            color: white;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram Mini App</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #000; /* черный фон */
+      color: #fff; /* белый текст */
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
 
-        #game-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        #score {
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
-
-        #start-btn {
-            background-color: #0088cc;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 5px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            border: none;
-            transition: background-color 0.3s;
-        }
-
-        #start-btn:hover {
-            background-color: #005f7f;
-        }
-
-        .emoji {
-            font-size: 5rem;
-            margin: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        #emoji-container {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-        }
-
-    </style>
+    .username {
+      font-size: 24px;
+      font-weight: bold;
+    }
+  </style>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div id="game-container">
-        <div id="score">Очки: 0</div>
-        <button id="start-btn">Начать игру</button>
-        <div id="emoji-container">
-            <div class="emoji" id="emoji-1">🍌</div>
-            <div class="emoji" id="emoji-2">💓</div>
-            <div class="emoji" id="emoji-3">🦴</div>
-        </div>
-    </div>
+  <div id="content">
+    <p class="username">Загрузка...</p>
+  </div>
 
-    <script>
-        // Инициализация Telegram Web App
-        window.Telegram.WebApp.initData = window.Telegram.WebApp.initData || '';
-        window.Telegram.WebApp.colorScheme = window.Telegram.WebApp.colorScheme || 'light';
-        window.Telegram.WebApp.setHeaderColor("#2b2b2b");
-        window.Telegram.WebApp.setBackgroundColor("#2b2b2b");
-        window.Telegram.WebApp.setBottomBarColor("#2b2b2b");
+  <script>
+    // Инициализация Telegram Web App
+    const tg = window.Telegram.WebApp;
 
-        // Функция для старта игры
-        let score = 0;
-        let isGameStarted = false;
+    // Настройка темы
+    tg.expand(); // Открыть приложение на весь экран
 
-        function startGame() {
-            isGameStarted = true;
-            score = 0;
-            document.getElementById("score").innerText = "Очки: " + score;
-            document.getElementById("start-btn").style.display = "none";
-            shuffleEmojis();
-        }
+    // Получение имени или ника
+    const user = tg.initDataUnsafe?.user || {};
+    const username = user.username || `${user.first_name} ${user.last_name || ''}`.trim();
 
-        // Функция для случайной перестановки эмодзи
-        function shuffleEmojis() {
-            if (isGameStarted) {
-                const emojis = ["🍌", "💓", "🦴"];
-                const shuffled = emojis.sort(() => Math.random() - 0.5);
-                document.getElementById("emoji-1").innerText = shuffled[0];
-                document.getElementById("emoji-2").innerText = shuffled[1];
-                document.getElementById("emoji-3").innerText = shuffled[2];
-
-                // Добавляем обработчик клика на эмодзи
-                document.querySelectorAll('.emoji').forEach(emoji => {
-                    emoji.addEventListener('click', handleEmojiClick);
-                });
-            }
-        }
-
-        // Функция для обработки клика на эмодзи
-        function handleEmojiClick(event) {
-            if (!isGameStarted) return;
-
-            const clickedEmoji = event.target.innerText;
-            const correctOrder = ["🍌", "💓", "🦴"];
-            const currentEmojis = [
-                document.getElementById("emoji-1").innerText,
-                document.getElementById("emoji-2").innerText,
-                document.getElementById("emoji-3").innerText
-            ];
-
-            if (clickedEmoji === correctOrder[0]) {
-                score += 1;
-                document.getElementById("score").innerText = "Очки: " + score;
-                shuffleEmojis();
-            } else if (clickedEmoji === correctOrder[1] && currentEmojis[0] === correctOrder[0]) {
-                score += 1;
-                document.getElementById("score").innerText = "Очки: " + score;
-                shuffleEmojis();
-            } else if (clickedEmoji === correctOrder[2] && currentEmojis[1] === correctOrder[1]) {
-                score += 10; // Бонусные очки за правильный порядок
-                document.getElementById("score").innerText = "Очки: " + score;
-                shuffleEmojis();
-            }
-        }
-
-        // Добавляем обработчик для кнопки старта
-        document.getElementById("start-btn").addEventListener("click", startGame);
-
-        // Применяем режим полного экрана для мини-приложения
-        window.Telegram.WebApp.expand();
-        window.Telegram.WebApp.requestFullscreen();
-    </script>
+    // Отображение имени
+    const content = document.getElementById('content');
+    if (username) {
+      content.innerHTML = `<p class="username">Привет, ${username}!</p>`;
+    } else {
+      content.innerHTML = `<p class="username">Не удалось получить имя пользователя</p>`;
+    }
+  </script>
 </body>
 </html>
