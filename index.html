@@ -17,10 +17,13 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: inline-block;
             border-radius: 8px;
+            max-width: 600px;
+            word-wrap: break-word;
         }
         .message {
-            font-size: 1.5em;
+            font-size: 1em;
             color: #333;
+            text-align: left;
         }
         .error {
             color: red;
@@ -31,7 +34,7 @@
 
     <div class="container">
         <h1>Message from Flask Server</h1>
-        <p class="message" id="message">Загрузка...</p>
+        <pre class="message" id="message">Загрузка...</pre>
     </div>
 
     <script>
@@ -40,10 +43,21 @@
             try {
                 const response = await fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/get_data'); // URL вашего Flask сервера
                 if (!response.ok) {
-                    throw new Error('Ошибка при получении данных');
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
                 }
-                const data = await response.json();
-                document.getElementById('message').textContent = data.message; // Отображаем сообщение
+                
+                const textData = await response.text(); // Получаем текст
+                let jsonData;
+
+                // Пробуем удалить HTML-обертку, если она есть
+                try {
+                    jsonData = JSON.parse(textData.replace(/<[^>]*>/g, '')); 
+                } catch (parseError) {
+                    throw new Error('Ошибка парсинга JSON: Проверьте серверный ответ');
+                }
+
+                // Отображаем JSON-данные в читаемом виде
+                document.getElementById('message').textContent = JSON.stringify(jsonData, null, 2);
             } catch (error) {
                 document.getElementById('message').textContent = 'Ошибка: ' + error.message;
                 document.getElementById('message').classList.add('error');
