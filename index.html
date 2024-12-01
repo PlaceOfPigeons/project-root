@@ -29,6 +29,10 @@
         .error {
             color: red;
         }
+        .user-info {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
@@ -36,6 +40,10 @@
     <div class="container">
         <h1>Message from Flask Server</h1>
         <pre class="message" id="message">Загрузка...</pre>
+
+        <div class="user-info" id="user-info">
+            <!-- Информация о пользователе будет отображаться здесь -->
+        </div>
     </div>
 
     <script>
@@ -47,6 +55,17 @@
                 // Получаем информацию о пользователе
                 const telegramUserData = Telegram.WebApp.initDataUnsafe.user;
                 const telegramId = telegramUserData ? telegramUserData.id : null;
+                const telegramUsername = telegramUserData ? telegramUserData.username : 'Не указан';
+                const telegramFirstName = telegramUserData ? telegramUserData.first_name : 'Не указано';
+                const telegramLastName = telegramUserData ? telegramUserData.last_name : 'Не указано';
+
+                // Отображаем информацию о пользователе на странице
+                const userInfoElement = document.getElementById('user-info');
+                userInfoElement.innerHTML = `
+                    <p><strong>Имя:</strong> ${telegramFirstName} ${telegramLastName}</p>
+                    <p><strong>Никнейм:</strong> ${telegramUsername}</p>
+                    <p><strong>Telegram ID:</strong> ${telegramId}</p>
+                `;
 
                 if (telegramId) {
                     console.log('Telegram ID:', telegramId);
@@ -81,9 +100,6 @@
             }
         }
     </script>
-
-    <!-- Подключение Telegram Web App -->
-    
 
 </body>
 </html>
