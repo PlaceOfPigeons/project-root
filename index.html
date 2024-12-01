@@ -16,31 +16,28 @@
       background-color: #000; /* черный фон */
       color: #fff; /* белый текст */
       font-family: Arial, sans-serif;
+      text-align: center;
     }
 
-    .username {
-      position: absolute;
-      top: 10%;
+    .username, .score {
       font-size: 20px;
       font-weight: bold;
-      color: #fff;
+      margin: 10px 0;
     }
 
     .score {
-      position: absolute;
-      top: 20%; /* Под именем */
       font-size: 24px;
-      color: #fff;
     }
 
     .image-container {
       display: flex;
       justify-content: center;
       align-items: center;
+      margin-top: 20px;
     }
 
     img {
-      max-width: 80%;
+      max-width: 90%;
       height: auto;
     }
 
@@ -49,6 +46,35 @@
       display: none;
     }
 
+    /* Адаптивные стили для мобильных устройств */
+    @media (max-width: 768px) {
+      .username {
+        font-size: 18px;
+      }
+
+      .score {
+        font-size: 22px;
+      }
+
+      img {
+        max-width: 95%;
+      }
+    }
+
+    /* Адаптивные стили для экранов с большим разрешением (например, ПК) */
+    @media (min-width: 769px) {
+      .username {
+        font-size: 22px;
+      }
+
+      .score {
+        font-size: 28px;
+      }
+
+      img {
+        max-width: 80%;
+      }
+    }
   </style>
 </head>
 <body>
