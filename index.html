@@ -65,7 +65,7 @@
         // Функция для получения данных с Flask сервера
         async function fetchMessage(telegramId) {
             try {
-                const response = await fetch(`https://your-heroku-app.herokuapp.com/get_data/${telegramId}`);
+                const response = await fetch(`https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/get_data/${telegramId}`);
                 
                 if (!response.ok) {
                     throw new Error(`Ошибка HTTP: ${response.status}`);
