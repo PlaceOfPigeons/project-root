@@ -82,11 +82,12 @@
     // Убедитесь, что Web App готов
     tg.ready();
 
-    // Получение имени пользователя
+    // Получение данных о пользователе
     const user = tg.initDataUnsafe?.user || {};
     const username = `${user.first_name} ${user.last_name || ''}`.trim();
+    const userId = user.id;  // Получаем ID пользователя
 
-    // Отображение имени
+    // Отображение имени пользователя
     const usernameElement = document.getElementById('username');
     if (username) {
       usernameElement.textContent = `Привет, ${username}!`;
@@ -94,26 +95,21 @@
       usernameElement.textContent = 'Не удалось получить имя пользователя';
     }
 
-    // Функция для получения данных с Flask сервера
+    // Функция для получения данных с Flask сервера, с передачей ID пользователя
     async function fetchMessage() {
       try {
-        const response = await fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/get_data'); // URL вашего Flask сервера
+        const response = await fetch(`https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/get_data?user_id=${userId}`); // Передаем ID пользователя
         if (!response.ok) {
           throw new Error(`Ошибка HTTP: ${response.status}`);
         }
         
-        const textData = await response.text(); // Получаем текст
-        let jsonData;
-
-        // Пробуем удалить HTML-обертку, если она есть
-        try {
-          jsonData = JSON.parse(textData.replace(/<[^>]*>/g, '')); 
-        } catch (parseError) {
-          throw new Error('Ошибка парсинга JSON: Проверьте серверный ответ');
+        const jsonData = await response.json(); // Получаем JSON ответ
+        if (jsonData.error) {
+          document.getElementById('message').textContent = jsonData.error;
+          document.getElementById('message').classList.add('error');
+        } else {
+          document.getElementById('message').textContent = `Очки: ${jsonData.score}`;
         }
-
-        // Отображаем JSON-данные в читаемом виде
-        document.getElementById('message').textContent = JSON.stringify(jsonData, null, 2);
       } catch (error) {
         document.getElementById('message').textContent = 'Ошибка: ' + error.message;
         document.getElementById('message').classList.add('error');
