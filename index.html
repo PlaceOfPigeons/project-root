@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Message from Flask Server</title>
+    <script src="https://web.telegram.org/js/telegram-web-app.js"></script>
+    <title>Telegram Web App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,23 +39,39 @@
     </div>
 
     <script>
+        // Инициализация Telegram Web App
+        window.onload = function () {
+            if (window.Telegram && window.Telegram.WebApp) {
+                Telegram.WebApp.ready();  // Ожидаем, пока Telegram Web App будет готов
+
+                // Получаем информацию о пользователе
+                const telegramUserData = Telegram.WebApp.initDataUnsafe.user;
+                const telegramId = telegramUserData ? telegramUserData.id : null;
+
+                if (telegramId) {
+                    console.log('Telegram ID:', telegramId);
+                    // Делаем запрос на сервер с полученным ID
+                    fetchMessage(telegramId);
+                } else {
+                    document.getElementById('message').textContent = 'Ошибка: Не удалось получить Telegram ID';
+                    document.getElementById('message').classList.add('error');
+                }
+            } else {
+                document.getElementById('message').textContent = 'Ошибка: Telegram Web App не найден!';
+                document.getElementById('message').classList.add('error');
+            }
+        };
+
         // Функция для получения данных с Flask сервера
-        async function fetchMessage() {
+        async function fetchMessage(telegramId) {
             try {
-                const response = await fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/get_data'); // URL вашего Flask сервера
+                const response = await fetch(`https://your-heroku-app.herokuapp.com/get_data/${telegramId}`);
+                
                 if (!response.ok) {
                     throw new Error(`Ошибка HTTP: ${response.status}`);
                 }
                 
-                const textData = await response.text(); // Получаем текст
-                let jsonData;
-
-                // Пробуем удалить HTML-обертку, если она есть
-                try {
-                    jsonData = JSON.parse(textData.replace(/<[^>]*>/g, '')); 
-                } catch (parseError) {
-                    throw new Error('Ошибка парсинга JSON: Проверьте серверный ответ');
-                }
+                const jsonData = await response.json(); // Получаем данные в формате JSON
 
                 // Отображаем JSON-данные в читаемом виде
                 document.getElementById('message').textContent = JSON.stringify(jsonData, null, 2);
@@ -63,10 +80,10 @@
                 document.getElementById('message').classList.add('error');
             }
         }
-
-        // Загружаем сообщение при загрузке страницы
-        window.onload = fetchMessage;
     </script>
+
+    <!-- Подключение Telegram Web App -->
+    
 
 </body>
 </html>
