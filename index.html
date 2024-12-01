@@ -49,22 +49,22 @@
     const tg = window.Telegram.WebApp;
 
     // Применяем режим полного экрана для мини-приложения
-        window.Telegram.WebApp.expand();
-        window.Telegram.WebApp.requestFullscreen();
-    
-    // Настройка темы
-    tg.expand(); // Открыть приложение на весь экран
+    window.Telegram.WebApp.expand();
+    window.Telegram.WebApp.requestFullscreen();
 
-    // Получение имени или ника
+    // Убедитесь, что Web App готов
+    tg.ready();
+
+    // Получение имени пользователя
     const user = tg.initDataUnsafe?.user || {};
-    const username = user.username  `${user.first_name} ${user.last_name  ''}`.trim();
+    const username = `${user.first_name} ${user.last_name || ''}`.trim();
 
     // Отображение имени
     const usernameElement = document.getElementById('username');
     if (username) {
-      usernameElement.textContent = Привет, ${username}!;
+      usernameElement.textContent = `Привет, ${username}!`;
     } else {
-      usernameElement.textContent = Не удалось получить имя пользователя;
+      usernameElement.textContent = 'Не удалось получить имя пользователя';
     }
   </script>
 </body>
