@@ -26,6 +26,13 @@
       color: #fff;
     }
 
+    .score {
+      position: absolute;
+      top: 20%; /* Под именем */
+      font-size: 24px;
+      color: #fff;
+    }
+
     .image-container {
       display: flex;
       justify-content: center;
@@ -37,38 +44,20 @@
       height: auto;
     }
 
+    /* Убираем контейнер с текстом "Message from Flask Server" */
     .container {
-      padding: 20px;
-      background-color: white;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: inline-block;
-      border-radius: 8px;
-      max-width: 600px;
-      word-wrap: break-word;
-      color: black;
+      display: none;
     }
 
-    .message {
-      font-size: 1em;
-      color: #333;
-      text-align: left;
-    }
-
-    .error {
-      color: red;
-    }
   </style>
 </head>
 <body>
 
   <p class="username" id="username">Загрузка...</p>
+  <p class="score" id="score">Очки: Загрузка...</p> <!-- Здесь будут отображаться очки -->
+  
   <div class="image-container">
     <img src="cocos.png" alt="Cocos Logo">
-  </div>
-
-  <div class="container">
-    <h1>Message from Flask Server</h1>
-    <pre class="message" id="message">Загрузка...</pre>
   </div>
 
   <script>
@@ -104,19 +93,22 @@
         }
         
         const jsonData = await response.json(); // Получаем JSON ответ
+        const scoreElement = document.getElementById('score');
+
         if (jsonData.error) {
-          document.getElementById('message').textContent = jsonData.error;
-          document.getElementById('message').classList.add('error');
+          scoreElement.textContent = jsonData.error;
+          scoreElement.classList.add('error');
         } else {
-          document.getElementById('message').textContent = `Очки: ${jsonData.score}`;
+          scoreElement.textContent = `Очки: ${jsonData.score}`;
         }
       } catch (error) {
-        document.getElementById('message').textContent = 'Ошибка: ' + error.message;
-        document.getElementById('message').classList.add('error');
+        const scoreElement = document.getElementById('score');
+        scoreElement.textContent = 'Ошибка: ' + error.message;
+        scoreElement.classList.add('error');
       }
     }
 
-    // Загружаем сообщение при загрузке страницы
+    // Загружаем данные при загрузке страницы
     window.onload = fetchMessage;
   </script>
 
