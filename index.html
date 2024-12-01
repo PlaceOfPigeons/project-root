@@ -4,45 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://web.telegram.org/js/telegram-web-app.js"></script>
-    <title>Telegram Web App</title>
+    <title>Информация о пользователе</title>
     <style>
-        body {
+        body, html {
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: #000000;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
             text-align: center;
-            margin-top: 50px;
+        }
+        .header-container {
+            background-color: black;
+            padding: 0;
+            position: fixed;
+            top: 5%;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .header {
+            background-color: white;
+            color: black;
+            text-align: center;
+            padding: 10px;
+            font-size: 24px;
+            border-radius: 20px;
+            margin: 0 5%;
+            cursor: pointer;
+            font-family: 'New Amsterdam', sans-serif;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
         .container {
+            flex-grow: 1;
             padding: 20px;
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            border-radius: 8px;
-            max-width: 600px;
-            word-wrap: break-word;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .user-info {
+            font-size: 1.2em;
+            margin-top: 20px;
+            text-align: left;
         }
         .message {
             font-size: 1em;
             color: #333;
-            text-align: left;
+            margin: 10px 0;
         }
         .error {
             color: red;
         }
-        .user-info {
-            margin-top: 20px;
-            font-size: 1.2em;
+        .footer {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 10px;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 50px;
+        }
+        .footer div {
+            text-align: center;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        .footer .material-symbols-outlined {
+            font-size: 24px;
+            color: white;
+        }
+        .footer .icon-label {
+            color: white;
+            font-size: 12px;
+            margin-top: 2px;
         }
     </style>
 </head>
 <body>
 
+    <div class="header-container">
+        <div class="header">
+            Информация о пользователе Telegram
+        </div>
+    </div>
+
     <div class="container">
-        <h1>Информация о пользователе Telegram</h1>
         <pre class="message" id="message">Загрузка...</pre>
 
         <div class="user-info" id="user-info">
             <!-- Информация о пользователе будет отображаться здесь -->
+        </div>
+    </div>
+
+    <div class="footer">
+        <div id="home">
+            <span class="material-symbols-outlined">home</span>
+            <div class="icon-label">Главная</div>
+        </div>
+        <div id="wallet">
+            <span class="material-symbols-outlined">wallet</span>
+            <div class="icon-label">Кошелек</div>
+        </div>
+        <div id="tasks">
+            <span class="material-symbols-outlined">task</span>
+            <div class="icon-label">Задачи</div>
+        </div>
+        <div id="friends">
+            <span class="material-symbols-outlined">people</span>
+            <div class="icon-label">Друзья</div>
         </div>
     </div>
 
@@ -71,6 +153,31 @@
                 document.getElementById('message').classList.add('error');
             }
         };
+
+        // Обработчики для кнопок навигации
+        document.getElementById("home").addEventListener("touchstart", function(e) {
+            e.preventDefault(); // Предотвращаем стандартное поведение
+            Telegram.WebApp.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+            window.location.href = 'home.html'; // Переход на страницу главной
+        });
+
+        document.getElementById("friends").addEventListener("touchstart", function(e) {
+            e.preventDefault(); // Предотвращаем стандартное поведение
+            Telegram.WebApp.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+            window.location.href = 'friends.html'; // Переход на страницу друзей
+        });
+
+        document.getElementById("wallet").addEventListener("touchstart", function(e) {
+            e.preventDefault(); // Предотвращаем стандартное поведение
+            Telegram.WebApp.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+            window.location.href = 'wallet.html'; // Переход на страницу кошелька
+        });
+
+        document.getElementById("tasks").addEventListener("touchstart", function(e) {
+            e.preventDefault(); // Предотвращаем стандартное поведение
+            Telegram.WebApp.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+            window.location.href = 'tasks.html'; // Переход на страницу задач
+        });
     </script>
 
 </body>
