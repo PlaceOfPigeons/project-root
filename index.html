@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Page</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000; /* Черный фон */
+            color: #fff; /* Белый текст */
+            font-family: Arial, sans-serif;
+        }
+
+        .shadow-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .animated-shadow {
+            width: 200px;
+            height: auto;
+            filter: drop-shadow(0 0 8px rgba(0, 191, 255, 0.5));
+            animation: shadowPulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes shadowPulse {
+            0% {
+                filter: drop-shadow(0 0 8px rgba(0, 191, 255, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 16px rgba(0, 191, 255, 0.7));
+            }
+            100% {
+                filter: drop-shadow(0 0 8px rgba(0, 191, 255, 0.5));
+            }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .loading-text span {
+            display: inline-block;
+            animation: pulse 1.5s infinite, colorChange 3s infinite;
+        }
+
+        .loading-text span:nth-child(even) {
+            animation-delay: 0.75s;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes colorChange {
+            0% {
+                color: #00bfff; /* Голубой цвет */
+            }
+            33% {
+                color: #ff69b4; /* Розовый цвет */
+            }
+            66% {
+                color: #ffffff; /* Белый цвет */
+            }
+            100% {
+                color: #00bfff; /* Голубой цвет */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="shadow-container">
+        <img src="your-imageOne.png" alt="Your Image" class="animated-shadow">
+    </div>
+    <div class="loading-text">
+        <span>L</span>
+        <span>O</span>
+        <span>A</span>
+        <span>D</span>
+        <span>I</span>
+        <span>N</span>
+        <span>G</span>
+    </div>
+
+    <script>
+        // Инициализация Telegram Web App
+        window.Telegram.WebApp.ready();
+
+        // Установка черной темы
+        Telegram.WebApp.setBackgroundColor("#000000");
+        Telegram.WebApp.setHeaderColor("#000000");
+
+
+
+        // Разворачивание приложения на весь экран
+        Telegram.WebApp.expand();
+
+        // Задержка перед редиректом
+        setTimeout(function() {
+            window.location.href = 'main.html'; // Замените на URL вашей второй страницы
+        }, 3000);
+    </script>
+</body>
+</html>
