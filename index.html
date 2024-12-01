@@ -1,184 +1,71 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://web.telegram.org/js/telegram-web-app.js"></script>
-    <title>Информация о пользователе</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #000000;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            justify-content: space-between;
-            text-align: center;
-        }
-        .header-container {
-            background-color: black;
-            padding: 0;
-            position: fixed;
-            top: 5%;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-        .header {
-            background-color: white;
-            color: black;
-            text-align: center;
-            padding: 10px;
-            font-size: 24px;
-            border-radius: 20px;
-            margin: 0 5%;
-            cursor: pointer;
-            font-family: 'New Amsterdam', sans-serif;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-        .container {
-            flex-grow: 1;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-        .user-info {
-            font-size: 1.2em;
-            margin-top: 20px;
-            text-align: left;
-        }
-        .message {
-            font-size: 1em;
-            color: #333;
-            margin: 10px 0;
-        }
-        .error {
-            color: red;
-        }
-        .footer {
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 10px;
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            height: 50px;
-        }
-        .footer div {
-            text-align: center;
-            margin: 0 5px;
-            cursor: pointer;
-        }
-        .footer .material-symbols-outlined {
-            font-size: 24px;
-            color: white;
-        }
-        .footer .icon-label {
-            color: white;
-            font-size: 12px;
-            margin-top: 2px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram Mini App</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #000; /* черный фон */
+      color: #fff; /* белый текст */
+      font-family: Arial, sans-serif;
+    }
+
+    .username {
+      position: absolute;
+      top: 10%;
+      font-size: 20px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    img {
+      max-width: 80%;
+      height: auto;
+    }
+  </style>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
+  <p class="username" id="username">Загрузка...</p>
+  <div class="image-container">
+    <img src="cocos.png" alt="Cocos Logo">
+  </div>
 
-    <div class="header-container">
-        <div class="header">
-            Информация о пользователе Telegram
-        </div>
-    </div>
+  <script>
+    // Инициализация Telegram Web App
+    const tg = window.Telegram.WebApp;
 
-    <div class="container">
-        <pre class="message" id="message">Загрузка...</pre>
+    // Применяем режим полного экрана для мини-приложения
+        window.Telegram.WebApp.expand();
+        window.Telegram.WebApp.requestFullscreen();
+    
+    // Настройка темы
+    tg.expand(); // Открыть приложение на весь экран
 
-        <div class="user-info" id="user-info">
-            <!-- Информация о пользователе будет отображаться здесь -->
-        </div>
-    </div>
+    // Получение имени или ника
+    const user = tg.initDataUnsafe?.user || {};
+    const username = user.username  `${user.first_name} ${user.last_name  ''}`.trim();
 
-    <div class="footer">
-        <div id="home">
-            <span class="material-symbols-outlined">home</span>
-            <div class="icon-label">Главная</div>
-        </div>
-        <div id="wallet">
-            <span class="material-symbols-outlined">wallet</span>
-            <div class="icon-label">Кошелек</div>
-        </div>
-        <div id="tasks">
-            <span class="material-symbols-outlined">task</span>
-            <div class="icon-label">Задачи</div>
-        </div>
-        <div id="friends">
-            <span class="material-symbols-outlined">people</span>
-            <div class="icon-label">Друзья</div>
-        </div>
-    </div>
-
-    <script>
-        // Инициализация Telegram Web App
-        window.onload = function () {
-            if (window.Telegram && window.Telegram.WebApp) {
-                Telegram.WebApp.ready();  // Ожидаем, пока Telegram Web App будет готов
-
-                // Получаем информацию о пользователе
-                const telegramUserData = Telegram.WebApp.initDataUnsafe.user;
-                const telegramId = telegramUserData ? telegramUserData.id : null;
-                const telegramUsername = telegramUserData ? telegramUserData.username : 'Не указан';
-                const telegramFirstName = telegramUserData ? telegramUserData.first_name : 'Не указано';
-                const telegramLastName = telegramUserData ? telegramUserData.last_name : 'Не указано';
-
-                // Отображаем информацию о пользователе на странице
-                const userInfoElement = document.getElementById('user-info');
-                userInfoElement.innerHTML = `
-                    <p><strong>Имя:</strong> ${telegramFirstName} ${telegramLastName}</p>
-                    <p><strong>Никнейм:</strong> ${telegramUsername}</p>
-                    <p><strong>Telegram ID:</strong> ${telegramId}</p>
-                `;
-            } else {
-                document.getElementById('message').textContent = 'Ошибка: Telegram Web App не найден!';
-                document.getElementById('message').classList.add('error');
-            }
-        };
-
-        // Обработчики для кнопок навигации
-        document.getElementById("home").addEventListener("touchstart", function(e) {
-            e.preventDefault(); // Предотвращаем стандартное поведение
-            Telegram.WebApp.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
-            window.location.href = 'home.html'; // Переход на страницу главной
-        });
-
-        document.getElementById("friends").addEventListener("touchstart", function(e) {
-            e.preventDefault(); // Предотвращаем стандартное поведение
-            Telegram.WebApp.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
-            window.location.href = 'friends.html'; // Переход на страницу друзей
-        });
-
-        document.getElementById("wallet").addEventListener("touchstart", function(e) {
-            e.preventDefault(); // Предотвращаем стандартное поведение
-            Telegram.WebApp.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
-            window.location.href = 'wallet.html'; // Переход на страницу кошелька
-        });
-
-        document.getElementById("tasks").addEventListener("touchstart", function(e) {
-            e.preventDefault(); // Предотвращаем стандартное поведение
-            Telegram.WebApp.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
-            window.location.href = 'tasks.html'; // Переход на страницу задач
-        });
-    </script>
-
+    // Отображение имени
+    const usernameElement = document.getElementById('username');
+    if (username) {
+      usernameElement.textContent = Привет, ${username}!;
+    } else {
+      usernameElement.textContent = Не удалось получить имя пользователя;
+    }
+  </script>
 </body>
 </html>
