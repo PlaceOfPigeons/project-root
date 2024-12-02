@@ -340,7 +340,7 @@
         async function endGame() {
     const userId = Telegram.WebApp.initDataUnsafe?.user.id; // Получаем ID пользователя через Telegram API
     await saveScoreToServer(userId, score);  // Сохраняем очки на сервер
-    window.location.href = `newpage3.html?score=${score}`; // Переход на другую страницу с очками
+    window.location.href = `main.html?score=${score}`; // Переход на другую страницу с очками
 }
 
 
