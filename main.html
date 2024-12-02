@@ -39,6 +39,7 @@
     img {
       max-width: 90%;
       height: auto;
+      cursor: pointer; /* Показываем курсор, чтобы обозначить, что изображение кликабельно */
     }
 
     /* Убираем контейнер с текстом "Message from Flask Server" */
@@ -83,7 +84,7 @@
   <p class="score" id="score">Очки: Загрузка...</p> <!-- Здесь будут отображаться очки -->
   
   <div class="image-container">
-    <img src="image/mainPopImage.png" alt="POP Logo">
+    <img id="mainPopImage" src="image/mainPopImage.png" alt="POP Logo">
   </div>
 
   <script>
@@ -136,6 +137,18 @@
 
     // Загружаем данные при загрузке страницы
     window.onload = fetchMessage;
+
+    // Получаем изображение по ID
+    const mainPopImage = document.getElementById('mainPopImage');
+
+    // Функция для перехода на страницу game.html
+    function openGamePage() {
+      window.location.href = 'game.html'; // Переход на game.html
+    }
+
+    // Добавляем обработчики событий для кликов и касаний
+    mainPopImage.addEventListener('click', openGamePage);
+    mainPopImage.addEventListener('touchstart', openGamePage);
   </script>
 
 </body>
