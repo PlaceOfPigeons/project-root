@@ -89,6 +89,32 @@
                 color: #00bfff; /* Голубой цвет */
             }
         }
+
+        /* Контейнер для иконок */
+        .icons-container {
+            position: fixed;
+            bottom: 10%; /* Немного выше низа экрана */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: space-between;
+            width: 60%;
+            padding: 0 10px;
+        }
+
+        .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
@@ -103,6 +129,19 @@
         <span>I</span>
         <span>N</span>
         <span>G</span>
+    </div>
+
+    <!-- Контейнер для иконок -->
+    <div class="icons-container">
+        <div class="icon" onclick="window.location.href='https://google.com';">
+            <img src="image/telegramImage.png" alt="Telegram">
+        </div>
+        <div class="icon" onclick="window.location.href='https://google.com';">
+            <img src="image/youtubeImage.png" alt="YouTube">
+        </div>
+        <div class="icon" onclick="window.location.href='https://google.com';">
+            <img src="image/instagramImage.png" alt="Instagram">
+        </div>
     </div>
 
     <script>
