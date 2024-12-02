@@ -137,14 +137,14 @@
     const birdImage = document.getElementById("birdImage");
 
         birdImage.addEventListener("click", function() {
-            console.log("birdOne.png clicked!");
+            console.log("mainPopImage.png clicked!");
             Telegram.WebApp.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
             window.location.href = `game.html?score=${score}`; // Переход на страницу игры с передачей очков
         });
 
         birdImage.addEventListener("touchstart", function(e) {
             e.preventDefault(); // Предотвращаем стандартное поведение
-            console.log("birdOne.png touched!");
+            console.log("mainPopImage.png touched!");
             Telegram.WebApp.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
             window.location.href = `game.html?score=${score}`; // Переход на страницу игры с передачей очков
         });
