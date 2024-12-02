@@ -133,19 +133,13 @@
 
     <!-- Контейнер для иконок -->
     <div class="icons-container">
-        <div class="icon" 
-             onclick="openLink('https://google.com');" 
-             ontouchstart="openLink('https://google.com');">
+        <div id="telegram-icon" class="icon">
             <img src="image/telegramImage.png" alt="Telegram">
         </div>
-        <div class="icon" 
-             onclick="openLink('https://google.com');" 
-             ontouchstart="openLink('https://google.com');">
+        <div id="youtube-icon" class="icon">
             <img src="image/youtubeImage.png" alt="YouTube">
         </div>
-        <div class="icon" 
-             onclick="openLink('https://google.com');" 
-             ontouchstart="openLink('https://google.com');">
+        <div id="instagram-icon" class="icon">
             <img src="image/instagramImage.png" alt="Instagram">
         </div>
     </div>
@@ -174,6 +168,34 @@
         function openLink(url) {
             window.open(url, '_blank');
         }
+
+        // Добавляем обработчики для иконок
+        document.getElementById("telegram-icon").addEventListener("click", function() {
+            openLink('https://telegram.org');
+        });
+
+        document.getElementById("telegram-icon").addEventListener("touchstart", function(e) {
+            e.preventDefault(); // Предотвращаем стандартное поведение (например, зум)
+            openLink('https://telegram.org');
+        });
+
+        document.getElementById("youtube-icon").addEventListener("click", function() {
+            openLink('https://youtube.com');
+        });
+
+        document.getElementById("youtube-icon").addEventListener("touchstart", function(e) {
+            e.preventDefault();
+            openLink('https://youtube.com');
+        });
+
+        document.getElementById("instagram-icon").addEventListener("click", function() {
+            openLink('https://instagram.com');
+        });
+
+        document.getElementById("instagram-icon").addEventListener("touchstart", function(e) {
+            e.preventDefault();
+            openLink('https://instagram.com');
+        });
     </script>
 </body>
 </html>
