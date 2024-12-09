@@ -319,11 +319,11 @@
         }
 
         function checkSequence() {
-            let correctSequence = currentSequence.slice(0, userSequence.length);
-            if (userSequence.join(',') !== correctSequence.join(',')) {
-                userSequence = [];
-            }
-        }
+    let correctSequence = currentSequence.slice(0, userSequence.length);
+    if (userSequence.join(',') !== correctSequence.join(',')) {
+        userSequence = []; // Сбросить последовательность на пустую, если она неверная
+    }
+}
 
         function startTimer() {
             const timerInterval = setInterval(() => {
