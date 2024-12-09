@@ -15,7 +15,6 @@
             background-color: #000;
             font-family: Arial, sans-serif;
             overflow: hidden;
-            touch-action: manipulation;
         }
 
         #game {
@@ -61,7 +60,6 @@
             color: #fff;
             font-weight: bold;
             white-space: nowrap;
-            z-index: 1;
         }
 
         .wrapper {
@@ -71,7 +69,6 @@
             top: 15%;
             left: 0;
             animation: fall linear 4s forwards;
-            z-index: 2;
         }
 
         .cage, .bird {
@@ -87,23 +84,18 @@
             background-image: url('image/cage.png');
             background-size: cover;
             background-position: center;
-            z-index: 2;
             cursor: pointer;
         }
 
         .bird {
-            z-index: 1;
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
             user-select: none;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
         }
 
         .bird.clicked {
             transform: scale(1.5) rotate(10deg);
             opacity: 0;
-            outline: none;
         }
 
         .points {
@@ -113,7 +105,6 @@
             font-weight: bold;
             opacity: 1;
             transition: opacity 1s ease;
-            pointer-events: none;
         }
 
         .points.plus10 {
@@ -123,17 +114,11 @@
 
         @keyframes fall {
             0% {
-                transform: translateY(0) rotate(0deg);
+                transform: translateY(0);
             }
             100% {
-                transform: translateY(calc(100vh - 96px)) rotate(360deg);
+                transform: translateY(calc(100vh - 96px));
             }
-        }
-
-        * {
-            outline: none;
-            box-shadow: none;
-            border: none;
         }
     </style>
 </head>
@@ -156,8 +141,8 @@
         const tg = window.Telegram.WebApp;
 
         // Применяем режим полного экрана для мини-приложения
-        window.Telegram.WebApp.expand();
-        window.Telegram.WebApp.requestFullscreen();
+        tg.expand();
+        tg.requestFullscreen();
 
         // Убедитесь, что Web App готов
         tg.ready();
@@ -167,7 +152,6 @@
         const username = `${user.first_name} ${user.last_name || ''}`.trim();
         const userId = user.id;  // Получаем ID пользователя
 
-        
         const game = document.getElementById('game');
         const scoreDisplay = document.getElementById('score').querySelector('span');
         const sequenceDisplay = document.getElementById('sequence');
@@ -178,50 +162,46 @@
         let score = storedScore;
         let currentSequence = [];
         let userSequence = [];
-        let lastClickX = 0;
-        let lastClickY = 0;
         const birdWidth = 96;
         const screenWidth = window.innerWidth;
         const maxLeft = screenWidth - birdWidth;
         let timerValue = 60;
 
         // Функция для загрузки очков с сервера
-        function loadScoreFromServer(userId) {
-            return fetch(`https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/get_data?user_id=${userId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.score !== undefined) {
-                        storedScore = data.score;
-                        score = storedScore;
-                        updateScoreDisplay(score);
-                        return score;
-                    }
-                    return 0; // Если нет данных, возвращаем 0
-                })
-                .catch((error) => {
-                    console.error("Error loading score:", error);
-                    return 0; // Если произошла ошибка, начинаем с 0
+        async function loadScoreFromServer(userId) {
+            try {
+                const response = await fetch(`https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/get_data?user_id=${userId}`);
+                const data = await response.json();
+                if (data.score !== undefined) {
+                    storedScore = data.score;
+                    score = storedScore;
+                    updateScoreDisplay(score);
+                    return score;
+                }
+                return 0; // Если нет данных, возвращаем 0
+            } catch (error) {
+                console.error("Error loading score:", error);
+                return 0; // Если произошла ошибка, начинаем с 0
+            }
+        }
+
+        async function saveScoreToServer(userId, score) {
+            try {
+                const response = await fetch(`https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/save_data?user_id=${userId}&score=${score}`, {
+                    method: 'GET',
                 });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
+                }
+
+                const jsonData = await response.json();
+                console.log('Score saved:', jsonData);
+
+            } catch (error) {
+                console.error('Ошибка при сохранении очков:', error);
+            }
         }
-
-       async function saveScoreToServer(userId, score) {
-    try {
-        const response = await fetch(`https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/save_data?user_id=${userId}&score=${score}`, {
-            method: 'GET', // или 'POST', если сервер принимает данные таким методом
-        });
-
-        if (!response.ok) {
-            throw new Error(`Ошибка HTTP: ${response.status}`);
-        }
-
-        const jsonData = await response.json();
-        console.log('Score saved:', jsonData); // Логируем ответ сервера
-
-    } catch (error) {
-        console.error('Ошибка при сохранении очков:', error);
-    }
-}
-
 
         function createSequence() {
             currentSequence = [];
@@ -262,8 +242,8 @@
 
                 isBirdClicked = true;
 
-                lastClickX = event.clientX;
-                lastClickY = event.clientY;
+                const lastClickX = event.clientX;
+                const lastClickY = event.clientY;
 
                 userSequence.push(bird.src.split('image/').pop());
 
@@ -319,67 +299,32 @@
         }
 
         function checkSequence() {
-    let correctSequence = currentSequence.slice(0, userSequence.length);
-    if (userSequence.length === 3 && userSequence.join(',') === correctSequence.join(',')) {
-        score += 10;
+            if (userSequence.length === 3 && userSequence.join(',') !== currentSequence.join(',')) {
+                alert('Неверный порядок! Очки обнулены.');
+                userSequence = [];
+                score = 0;
+                updateScoreDisplay(score);
+            }
+        }
 
-        const pointAnim = document.createElement('div');
-        pointAnim.classList.add('points', 'plus10');
-        pointAnim.textContent = "+10";
-        pointAnim.style.left = `${lastClickX}px`;
-        pointAnim.style.top = `${lastClickY}px`;
-        game.appendChild(pointAnim);
+        function startGame() {
+            createSequence();
 
-        setTimeout(() => pointAnim.remove(), 1000);
+            setInterval(() => {
+                if (timerValue <= 0) {
+                    alert(`Время вышло! Ваши очки: ${score}`);
+                    saveScoreToServer(userId, score);
+                    location.reload();
+                }
 
-        updateScoreDisplay(score);
-        createSequence();
-    } else if (userSequence.length < 3 && userSequence.join(',') === correctSequence.join(',')) {
-        score++;
-        updateScoreDisplay(score);
-
-        const pointAnim = document.createElement('div');
-        pointAnim.classList.add('points');
-        pointAnim.textContent = "+1";
-        pointAnim.style.left = `${lastClickX}px`;
-        pointAnim.style.top = `${lastClickY}px`;
-        game.appendChild(pointAnim);
-
-        setTimeout(() => pointAnim.remove(), 1000);
-    } else {
-        userSequence = []; // Сбросить пользовательскую последовательность при ошибке
-    }
-}
-
-        function startTimer() {
-            const timerInterval = setInterval(() => {
+                createBird();
                 timerValue--;
                 timerDisplay.textContent = timerValue;
+            }, 2000);
 
-                if (timerValue <= 0) {
-                    clearInterval(timerInterval);
-                    endGame();
-                }
-            }, 1000);
+            loadScoreFromServer(userId);
         }
 
-        async function endGame() {
-    const userId = Telegram.WebApp.initDataUnsafe?.user.id; // Получаем ID пользователя через Telegram API
-    await saveScoreToServer(userId, score);  // Сохраняем очки на сервер
-    window.location.href = `main.html?score=${score}`; // Переход на другую страницу с очками
-}
-
-
-        async function startGame() {
-            const userId = Telegram.WebApp.initDataUnsafe?.user.id; // Получаем ID пользователя через Telegram API
-            const initialScore = await loadScoreFromServer(userId); // Загружаем очки с сервера
-            score = initialScore || 0; // Если на сервере нет очков, начинаем с 0
-            createSequence();
-            startTimer();
-            setInterval(createBird, 1000); // Запуск игры
-        }
-
-        updateScoreDisplay(score);
         startGame();
     </script>
 </body>
