@@ -320,8 +320,34 @@
 
         function checkSequence() {
     let correctSequence = currentSequence.slice(0, userSequence.length);
-    if (userSequence.join(',') !== correctSequence.join(',')) {
-        userSequence = []; // Сбросить последовательность на пустую, если она неверная
+    if (userSequence.length === 3 && userSequence.join(',') === correctSequence.join(',')) {
+        score += 10;
+
+        const pointAnim = document.createElement('div');
+        pointAnim.classList.add('points', 'plus10');
+        pointAnim.textContent = "+10";
+        pointAnim.style.left = `${lastClickX}px`;
+        pointAnim.style.top = `${lastClickY}px`;
+        game.appendChild(pointAnim);
+
+        setTimeout(() => pointAnim.remove(), 1000);
+
+        updateScoreDisplay(score);
+        createSequence();
+    } else if (userSequence.length < 3 && userSequence.join(',') === correctSequence.join(',')) {
+        score++;
+        updateScoreDisplay(score);
+
+        const pointAnim = document.createElement('div');
+        pointAnim.classList.add('points');
+        pointAnim.textContent = "+1";
+        pointAnim.style.left = `${lastClickX}px`;
+        pointAnim.style.top = `${lastClickY}px`;
+        game.appendChild(pointAnim);
+
+        setTimeout(() => pointAnim.remove(), 1000);
+    } else {
+        userSequence = []; // Сбросить пользовательскую последовательность при ошибке
     }
 }
 
