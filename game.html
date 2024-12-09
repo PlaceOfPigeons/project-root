@@ -265,7 +265,7 @@
                 lastClickX = event.clientX;
                 lastClickY = event.clientY;
 
-                userSequence.push(bird.src.split('/').pop());
+                userSequence.push(bird.src.split('image/').pop());
 
                 if (userSequence.length === 3 && userSequence.join(',') === currentSequence.join(',')) {
                     score += 10;
