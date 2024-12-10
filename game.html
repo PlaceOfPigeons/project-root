@@ -320,9 +320,10 @@
 
         function checkSequence() {
     let correctSequence = currentSequence.slice(0, userSequence.length);
-    if (userSequence.length === 3 && userSequence.join(',') === correctSequence.join(',')) {
-        score += 10;
-
+    if (userSequence.join(',') !== correctSequence.join(',')) {
+        userSequence = []; // Очистить последовательность при ошибке
+    }
+}
         const pointAnim = document.createElement('div');
         pointAnim.classList.add('points', 'plus10');
         pointAnim.textContent = "+10";
