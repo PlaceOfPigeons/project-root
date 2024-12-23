@@ -1,7 +1,7 @@
 // Функция для получения данных о рефералах с сервера
 async function getReferrals(userId) {
   try {
-    const response = await fetch(`https://your-server-url/get_referrals?user_id=${userId}`);
+    const response = await fetch(`https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/get_referrals?user_id=${userId}`);
     const data = await response.json();
 
     if (data.referrals) {
