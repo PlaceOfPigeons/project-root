@@ -11,6 +11,32 @@
   <div id="referrals"></div> <!-- Здесь будут отображаться рефералы -->
 
   <script>
+
+    // Инициализация Telegram Web App
+    const tg = window.Telegram.WebApp;
+
+    // Применяем режим полного экрана для мини-приложения
+    window.Telegram.WebApp.expand();
+    window.Telegram.WebApp.requestFullscreen();
+
+    // Убедитесь, что Web App готов
+    tg.ready();
+
+    // Получение данных о пользователе
+    const user = tg.initDataUnsafe?.user || {};
+    const username = `${user.first_name} ${user.last_name || ''}`.trim();
+    const userId = user.id;  // Получаем ID пользователя
+
+    // Отображение имени пользователя
+    const usernameElement = document.getElementById('username');
+    if (username) {
+      usernameElement.textContent = `Привет, ${username}!`;
+    } else {
+      usernameElement.textContent = 'Не удалось получить имя пользователя';
+    }
+
+    // Получение данных о рефералах
+    getReferrals(userId);
     // Функция для получения данных о рефералах с сервера
     async function getReferrals(userId) {
       try {
@@ -45,28 +71,7 @@
       }
     }
 
-    // Инициализация Telegram Web App
-    const tg = window.Telegram.WebApp;
-
-    // Применяем режим полного экрана для мини-приложения
-    window.Telegram.WebApp.expand();
-    window.Telegram.WebApp.requestFullscreen();
-
-    // Убедитесь, что Web App готов
-    tg.ready();
-
-    // Получение данных о пользователе
-    const user = tg.initDataUnsafe?.user || {};
-    const userId = user.id;  // Получаем ID пользователя
-
-    // Отображение имени пользователя
-    const usernameElement = document.getElementById('username');
-    if (usernameElement) {
-      usernameElement.textContent = `Привет, ${user.first_name}!`;
-    }
-
-    // Получение данных о рефералах
-    getReferrals(userId);
+    
   </script>
 </body>
 </html>
