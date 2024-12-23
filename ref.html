@@ -6,17 +6,80 @@
     <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
     <title>Referral System</title>
     <style>
+        /* Основной фон страницы */
         body {
-            color: white;  /* Устанавливаем цвет текста белым */
-            background-color: #2d2d2d; /* Для лучшего контраста добавим темный фон */
-            font-family: Arial, sans-serif; /* Устанавливаем шрифт для текста */
+            background-color: #121212; /* Темный фон */
+            color: white;  /* Белый текст */
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Контейнер для контента */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.7); /* Полупрозрачный фон */
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Заголовок */
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #f1f1f1;
+        }
+
+        /* Текст приветствия */
+        #username {
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Список рефералов */
+        #referral-list {
+            color: #ddd;
+        }
+
+        #referral-list ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        #referral-list li {
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Стиль для ссылок */
+        a {
+            color: #00bcd4;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <h1>Referral Information</h1>
-    <p id="username"></p>
-    <div id="referral-list"></div>
+    <div class="container">
+        <h1>Referral Information</h1>
+        <p id="username"></p>
+        <div id="referral-list"></div>
+    </div>
 
     <script>
         // Инициализация Telegram Web App
@@ -53,7 +116,7 @@
                 if (response.ok) {
                     referralListDiv.innerHTML = '<ul>';
                     for (const user of Object.values(data)) {
-                        referralListDiv.innerHTML += `<li>Username: ${user.username}, User ID: ${user.user_id}</li>`;
+                        referralListDiv.innerHTML += `<li>Username: <a href="https://t.me/${user.username}" target="_blank">${user.username}</a>, User ID: ${user.user_id}</li>`;
                     }
                     referralListDiv.innerHTML += '</ul>';
                 } else {
