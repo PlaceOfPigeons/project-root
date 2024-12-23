@@ -42,26 +42,40 @@
       cursor: pointer; /* Показываем курсор, чтобы обозначить, что изображение кликабельно */
     }
 
-    /* Кнопка для перехода */
-    .btn {
-      background-color: #4CAF50; /* Зеленый цвет */
+    /* Стили для нижней панели */
+    .footer {
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 10px;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      height: 50px;
+    }
+
+    .footer div {
+      text-align: center;
+      margin: 0 5px;
+      cursor: pointer; /* Указатель на кнопки */
+    }
+
+    .footer .material-symbols-outlined {
+      font-size: 24px;
       color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 18px;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-top: 20px;
-      transition: background-color 0.3s ease;
     }
 
-    .btn:hover {
-      background-color: #45a049; /* Темный зеленый при наведении */
-    }
-
-    /* Убираем контейнер с текстом "Message from Flask Server" */
-    .container {
-      display: none;
+    .footer .icon-label {
+      color: white;
+      font-size: 12px;
+      margin-top: 2px;
     }
 
     /* Адаптивные стили для мобильных устройств */
@@ -104,8 +118,25 @@
     <img id="mainPopImage" src="image/mainPopImage.png" alt="POP Logo">
   </div>
 
-  <!-- Добавлена кнопка -->
-  <button class="btn" id="playButton">Перейти в игру</button>
+  <!-- Нижняя панель с кнопками -->
+  <div class="footer">
+    <div id="home">
+      <span class="material-symbols-outlined">home</span>
+      <div class="icon-label">Home</div>
+    </div>
+    <div id="wallet">
+      <span class="material-symbols-outlined">wallet</span>
+      <div class="icon-label">Wallet</div>
+    </div>
+    <div id="tasks">
+      <span class="material-symbols-outlined">task</span>
+      <div class="icon-label">Tasks</div>
+    </div>
+    <div id="friends">
+      <span class="material-symbols-outlined">people</span>
+      <div class="icon-label">Friends</div>
+    </div>
+  </div>
 
   <script>
     // Инициализация Telegram Web App
@@ -158,25 +189,29 @@
     // Загружаем данные при загрузке страницы
     window.onload = fetchMessage;
 
-    // Получаем изображение по ID
-    const mainPopImage = document.getElementById('mainPopImage');
+    // Обработчики для кнопок навигации
+    document.getElementById("home").addEventListener("touchstart", function(e) {
+        e.preventDefault(); // Предотвращаем стандартное поведение
+        tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+        window.location.href = 'newpage3.html'; // Переход на newpage3.html
+    });
 
-    // Функция для перехода на страницу game.html
-    function openGamePage(e) {
-        if (e.type === 'touchstart') {
-            e.preventDefault(); // Предотвращаем стандартное поведение
-        }
-        window.location.href = 'game.html'; // Переход на game.html
-    }
+    document.getElementById("friends").addEventListener("touchstart", function(e) {
+        e.preventDefault(); // Предотвращаем стандартное поведение
+        tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+        window.location.href = 'ref.html'; // Переход на ref.html
+    });
 
-    // Добавляем обработчики событий для кликов и касаний
-    mainPopImage.addEventListener('click', openGamePage);
-    mainPopImage.addEventListener('touchstart', openGamePage);
+    document.getElementById("wallet").addEventListener("touchstart", function(e) {
+        e.preventDefault(); // Предотвращаем стандартное поведение
+        tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+        window.location.href = 'wallet.html'; // Переход на wallet.html
+    });
 
-    // Функция для перехода на страницу игры по нажатию на кнопку
-    const playButton = document.getElementById('playButton');
-    playButton.addEventListener('click', function() {
-      window.location.href = 'ref.html'; // Переход на game.html
+    document.getElementById("tasks").addEventListener("touchstart", function(e) {
+        e.preventDefault(); // Предотвращаем стандартное поведение
+        tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+        window.location.href = 'tasks.html'; // Переход на tasks.html
     });
   </script>
 
