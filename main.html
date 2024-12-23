@@ -4,7 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Place Of Pigeons</title>
+  
+  <!-- Подключаем Google Fonts (например, шрифт Roboto) -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Подключаем иконки Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
   <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+  
   <style>
     body {
       margin: 0;
@@ -15,7 +23,7 @@
       height: 100vh;
       background-color: #000; /* черный фон */
       color: #fff; /* белый текст */
-      font-family: Arial, sans-serif;
+      font-family: 'Roboto', sans-serif; /* Используем шрифт Roboto */
       text-align: center;
     }
 
@@ -67,7 +75,7 @@
       cursor: pointer; /* Указатель на кнопки */
     }
 
-    .footer .material-symbols-outlined {
+    .footer .material-icons {
       font-size: 24px;
       color: white;
     }
@@ -121,19 +129,19 @@
   <!-- Нижняя панель с кнопками -->
   <div class="footer">
     <div id="home">
-      <span class="material-symbols-outlined">home</span>
+      <span class="material-icons">home</span>
       <div class="icon-label">Home</div>
     </div>
     <div id="wallet">
-      <span class="material-symbols-outlined">wallet</span>
+      <span class="material-icons">wallet</span>
       <div class="icon-label">Wallet</div>
     </div>
     <div id="tasks">
-      <span class="material-symbols-outlined">task</span>
+      <span class="material-icons">task</span>
       <div class="icon-label">Tasks</div>
     </div>
     <div id="friends">
-      <span class="material-symbols-outlined">people</span>
+      <span class="material-icons">people</span>
       <div class="icon-label">Friends</div>
     </div>
   </div>
