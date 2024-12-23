@@ -73,22 +73,12 @@
             transform: scale(1.05); /* Эффект при наведении */
         }
 
-        /* Стиль для ссылок */
-        a {
-            color: #00bcd4;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        /* Кнопка выхода или другого действия */
-        .btn {
+        /* Кнопка BACK */
+        .btn-back {
             display: block;
             width: 100%;
-            background-color: #00bcd4;
-            color: #fff;
+            background-color: white;
+            color: black;
             padding: 15px;
             text-align: center;
             border-radius: 10px;
@@ -97,10 +87,11 @@
             margin-top: 30px;
             cursor: pointer;
             transition: background-color 0.3s;
+            border: 2px solid black; /* Черная рамка */
         }
 
-        .btn:hover {
-            background-color: #0097a7;
+        .btn-back:hover {
+            background-color: #f0f0f0;
         }
     </style>
 </head>
@@ -109,7 +100,7 @@
         <h1>Referral Information</h1>
         <p id="username"></p>
         <div id="referral-list"></div>
-        <button class="btn" onclick="logout()">Logout</button>
+        <button class="btn-back" onclick="goBack()">BACK</button>
     </div>
 
     <script>
@@ -168,9 +159,9 @@
         // Получаем рефералов для текущего пользователя
         getReferrals(userId);
 
-        // Функция для выхода (на примере кнопки logout)
-        function logout() {
-            tg.close();
+        // Функция для возвращения на предыдущую страницу
+        function goBack() {
+            window.history.back();
         }
     </script>
 </body>
