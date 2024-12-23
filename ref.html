@@ -4,39 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Telegram Web App</title>
-  <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <div id="username"></div>
+  <div id="username"></div> <!-- Здесь будет отображаться имя пользователя -->
   <div id="referrals"></div> <!-- Здесь будут отображаться рефералы -->
 
   <script>
-
     // Инициализация Telegram Web App
     const tg = window.Telegram.WebApp;
 
     // Применяем режим полного экрана для мини-приложения
-    window.Telegram.WebApp.expand();
-    window.Telegram.WebApp.requestFullscreen();
+    tg.expand();
+    tg.requestFullscreen();
 
     // Убедитесь, что Web App готов
     tg.ready();
 
     // Получение данных о пользователе
     const user = tg.initDataUnsafe?.user || {};
-    const username = `${user.first_name} ${user.last_name || ''}`.trim();
-    const userId = user.id;  // Получаем ID пользователя
+    const username = `${user.first_name} ${user.last_name || ''}`.trim();  // Имя пользователя
+    const userId = user.id;  // ID пользователя
 
     // Отображение имени пользователя
     const usernameElement = document.getElementById('username');
     if (username) {
-      usernameElement.textContent = `Привет, ${username}!`;
+      usernameElement.textContent = `Привет, ${username}!`;  // Выводим имя на экран
     } else {
-      usernameElement.textContent = 'Не удалось получить имя пользователя';
+      usernameElement.textContent = 'Не удалось получить имя пользователя';  // Если имя не удалось получить
     }
 
-    // Получение данных о рефералах
+    // Запрос данных о рефералах
     getReferrals(userId);
+
     // Функция для получения данных о рефералах с сервера
     async function getReferrals(userId) {
       try {
@@ -45,19 +45,19 @@
         if (!response.ok) {
           throw new Error(`Ошибка HTTP: ${response.status}`);
         }
-        
+
         const data = await response.json();
         console.log("Полученные данные о рефералах:", data);  // Логируем ответ
 
         if (data.referrals) {
-          displayReferrals(data.referrals);
+          displayReferrals(data.referrals);  // Если данные о рефералах получены
         } else {
           console.error("Ошибка получения данных о рефералах:", data.error);
-          document.getElementById('referrals').textContent = "Не удалось получить рефералов.";
+          document.getElementById('referrals').textContent = "Не удалось получить рефералов.";  // В случае ошибки
         }
       } catch (error) {
         console.error("Ошибка запроса к серверу:", error);
-        document.getElementById('referrals').textContent = "Ошибка запроса: " + error.message;
+        document.getElementById('referrals').textContent = "Ошибка запроса: " + error.message;  // Если ошибка запроса
       }
     }
 
@@ -65,13 +65,11 @@
     function displayReferrals(referrals) {
       const referralsElement = document.getElementById('referrals');
       if (referrals.length > 0) {
-        referralsElement.innerHTML = "Рефералы: " + referrals.join(', ');
+        referralsElement.innerHTML = "Рефералы: " + referrals.join(', ');  // Выводим список рефералов
       } else {
-        referralsElement.innerHTML = "Нет рефералов.";
+        referralsElement.innerHTML = "Нет рефералов.";  // Если рефералов нет
       }
     }
-
-    
   </script>
 </body>
 </html>
