@@ -7,6 +7,10 @@
     <title>Referral System</title>
     <style>
         /* Основной фон страницы */
+        html, body {
+            height: 100%; /* Убираем прокрутку на всей странице */
+        }
+
         body {
             background-color: #121212; /* Темный фон */
             color: white;  /* Белый текст */
@@ -16,7 +20,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            overflow: hidden; /* Запрещаем прокрутку */
         }
 
         /* Контейнер для контента */
