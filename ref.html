@@ -22,16 +22,17 @@
         /* Контейнер для контента */
         .container {
             width: 100%;
-            max-width: 600px;
-            background: rgba(0, 0, 0, 0.7); /* Полупрозрачный фон */
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            background: #1e1e1e; /* Темный фон для контейнера */
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
         }
 
         /* Заголовок */
         h1 {
-            font-size: 24px;
+            font-size: 28px;
             text-align: center;
             margin-bottom: 20px;
             font-weight: bold;
@@ -40,9 +41,10 @@
 
         /* Текст приветствия */
         #username {
-            font-size: 18px;
-            margin-bottom: 20px;
+            font-size: 20px;
+            margin-bottom: 30px;
             text-align: center;
+            color: #f1f1f1;
         }
 
         /* Список рефералов */
@@ -57,10 +59,18 @@
 
         #referral-list li {
             background-color: rgba(255, 255, 255, 0.1);
-            margin: 5px 0;
-            padding: 10px;
+            margin: 10px 0;
+            padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+        #referral-list li:hover {
+            transform: scale(1.05); /* Эффект при наведении */
         }
 
         /* Стиль для ссылок */
@@ -72,6 +82,26 @@
         a:hover {
             text-decoration: underline;
         }
+
+        /* Кнопка выхода или другого действия */
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: #00bcd4;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0097a7;
+        }
     </style>
 </head>
 <body>
@@ -79,6 +109,7 @@
         <h1>Referral Information</h1>
         <p id="username"></p>
         <div id="referral-list"></div>
+        <button class="btn" onclick="logout()">Logout</button>
     </div>
 
     <script>
@@ -116,7 +147,12 @@
                 if (response.ok) {
                     referralListDiv.innerHTML = '<ul>';
                     for (const user of Object.values(data)) {
-                        referralListDiv.innerHTML += `<li>Username: <a href="https://t.me/${user.username}" target="_blank">${user.username}</a>, User ID: ${user.user_id}</li>`;
+                        referralListDiv.innerHTML += `
+                            <li>
+                                <span>Username: <a href="https://t.me/${user.username}" target="_blank">${user.username}</a></span>
+                                <span>User ID: ${user.user_id}</span>
+                            </li>
+                        `;
                     }
                     referralListDiv.innerHTML += '</ul>';
                 } else {
@@ -131,6 +167,11 @@
 
         // Получаем рефералов для текущего пользователя
         getReferrals(userId);
+
+        // Функция для выхода (на примере кнопки logout)
+        function logout() {
+            tg.close();
+        }
     </script>
 </body>
 </html>
