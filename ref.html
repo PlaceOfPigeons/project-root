@@ -193,18 +193,40 @@
             });
         }
 
-        // Добавляем обработчики событий на кнопки
-        document.getElementById("copyRefLinkBtn").addEventListener("touchstart", function(e) {
-            e.preventDefault(); // Предотвращаем стандартное поведение
-            tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
-            copyReferralLink(); // Вызываем функцию для копирования ссылки
-        });
+        // Добавляем обработчики событий на кнопки (для клика и тачсета)
+        function addClickAndTouchListeners() {
+            const copyRefLinkBtn = document.getElementById("copyRefLinkBtn");
+            const backBtn = document.getElementById("backBtn");
 
-        document.getElementById("backBtn").addEventListener("touchstart", function(e) {
-            e.preventDefault(); // Предотвращаем стандартное поведение
-            tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
-            goBack(); // Возвращаемся на предыдущую страницу
-        });
+            // Для кнопки Copy Ref Link
+            copyRefLinkBtn.addEventListener("click", function(e) {
+                e.preventDefault(); // Предотвращаем стандартное поведение
+                tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+                copyReferralLink(); // Вызываем функцию для копирования ссылки
+            });
+
+            copyRefLinkBtn.addEventListener("touchstart", function(e) {
+                e.preventDefault(); // Предотвращаем стандартное поведение
+                tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+                copyReferralLink(); // Вызываем функцию для копирования ссылки
+            });
+
+            // Для кнопки BACK
+            backBtn.addEventListener("click", function(e) {
+                e.preventDefault(); // Предотвращаем стандартное поведение
+                tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+                goBack(); // Возвращаемся на предыдущую страницу
+            });
+
+            backBtn.addEventListener("touchstart", function(e) {
+                e.preventDefault(); // Предотвращаем стандартное поведение
+                tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+                goBack(); // Возвращаемся на предыдущую страницу
+            });
+        }
+
+        // Инициализируем обработчики
+        addClickAndTouchListeners();
     </script>
 </body>
 </html>
