@@ -237,6 +237,31 @@
         tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
         window.location.href = 'tasks.html'; // Переход на tasks.html
     });
+    
+    // Обработчики для кнопок навигации (добавим событие click)
+  document.getElementById("home").addEventListener("click", function(e) {
+    e.preventDefault(); // Предотвращаем стандартное поведение
+    tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+    window.location.href = 'main.html'; // Переход на main.html
+  });
+
+  document.getElementById("friends").addEventListener("click", function(e) {
+    e.preventDefault(); // Предотвращаем стандартное поведение
+    tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+    window.location.href = 'ref.html'; // Переход на ref.html
+  });
+
+  document.getElementById("wallet").addEventListener("click", function(e) {
+    e.preventDefault(); // Предотвращаем стандартное поведение
+    tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+    window.location.href = 'wallet.html'; // Переход на wallet.html
+  });
+
+  document.getElementById("tasks").addEventListener("click", function(e) {
+    e.preventDefault(); // Предотвращаем стандартное поведение
+    tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+    window.location.href = 'tasks.html'; // Переход на tasks.html
+  });
   </script>
 
 </body>
