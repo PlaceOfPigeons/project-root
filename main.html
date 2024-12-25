@@ -197,6 +197,22 @@
     // Загружаем данные при загрузке страницы
     window.onload = fetchMessage;
 
+    // Получаем изображение по ID
+    const mainPopImage = document.getElementById('mainPopImage');
+
+    // Функция для перехода на страницу game.html
+    function openGamePage(e) {
+        if (e.type === 'touchstart') {
+            e.preventDefault(); // Предотвращаем стандартное поведение
+        }
+        window.location.href = 'game.html'; // Переход на game.html
+    }
+
+    // Добавляем обработчики событий для кликов и касаний
+    mainPopImage.addEventListener('click', openGamePage);
+    mainPopImage.addEventListener('touchstart', openGamePage);
+
+    
     // Обработчики для кнопок навигации
     document.getElementById("home").addEventListener("touchstart", function(e) {
         e.preventDefault(); // Предотвращаем стандартное поведение
