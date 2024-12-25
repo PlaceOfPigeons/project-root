@@ -153,9 +153,10 @@
                 if (response.ok) {
                     referralListDiv.innerHTML = '<ul>';
                     for (const user of Object.values(data)) {
+                        // Здесь мы убираем ссылку и просто отображаем имя пользователя как текст
                         referralListDiv.innerHTML += `
                             <li>
-                                <span>Username: <a href="https://t.me/${user.username}" target="_blank">${user.username}</a></span>
+                                <span>Username: ${user.username}</span>
                                 <span>User ID: ${user.user_id}</span>
                             </li>
                         `;
