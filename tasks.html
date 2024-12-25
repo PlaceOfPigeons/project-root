@@ -103,9 +103,25 @@
     <button id="back-button" class="back-button">BACK</button>
 
     <script>
-        window.Telegram.WebApp.ready();
+        
         Telegram.WebApp.setBackgroundColor("#000000");
         Telegram.WebApp.setHeaderColor("#000000");
+
+        // Инициализация Telegram Web App
+        const tg = window.Telegram.WebApp;
+
+        // Применяем режим полного экрана для мини-приложения
+        window.Telegram.WebApp.expand();
+        window.Telegram.WebApp.requestFullscreen();
+
+        // Убедитесь, что Web App готов
+        tg.ready();
+
+        // Получение данных о пользователе
+        const user = tg.initDataUnsafe?.user || {};
+        const username = `${user.first_name} ${user.last_name || ''}`.trim();
+        const userId = user.id;  // Получаем ID пользователя
+
 
         let score = 0; // Очки начинаются с нуля, теперь не сохраняются в localStorage
 
