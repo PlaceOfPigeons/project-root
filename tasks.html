@@ -150,7 +150,7 @@
                 let userId = Telegram.WebApp.initDataUnsafe?.user?.id; // Получаем ID пользователя Telegram
                 if (userId) {
                     // Отправка данных на сервер
-                    fetch(`https://your-server-url.com/save_data?user_id=${userId}&score=${score}`, {
+                    fetch(`https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/save_data?user_id=${userId}&score=${score}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
