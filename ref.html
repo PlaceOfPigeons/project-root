@@ -191,19 +191,7 @@
                 console.error('Ошибка при копировании:', err);
             });
         }
-        // Для кнопки BACK
-    backBtn.addEventListener("click", function(e) {
-        e.preventDefault(); // Предотвращаем стандартное поведение
-        tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
-        goBack(); // Возвращаемся на предыдущую страницу
-    });
 
-    backBtn.addEventListener("touchstart", function(e) {
-        e.preventDefault(); // Предотвращаем стандартное поведение
-        tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
-        goBack(); // Возвращаемся на предыдущую страницу
-    });
-}
     </script>
 </body>
 </html>
