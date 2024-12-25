@@ -9,50 +9,52 @@
         /* Основной фон страницы */
         html, body {
             height: 100%; /* Убираем прокрутку на всей странице */
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
         }
 
         body {
-            background-color: #1e1e1e; /* Темный фон */
+            background-color: #121212; /* Темный фон */
             color: white;  /* Белый текст */
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* Сделаем страницу на весь экран */
+            overflow: hidden; /* Запрещаем прокрутку */
         }
 
         /* Контейнер для контента */
         .container {
             width: 100%;
-            max-width: 700px;
-            background: #121212; /* Черный фон для контейнера */
+            max-width: 800px;
+            background: #1e1e1e; /* Темный фон для контейнера */
             border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            text-align: center;
+            padding: 30px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
         }
 
         /* Заголовок */
         h1 {
-            font-size: 32px;
-            margin-bottom: 30px;
-            color: white;
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 20px;
             font-weight: bold;
+            color: #f1f1f1;
         }
 
         /* Текст приветствия */
         #username {
             font-size: 20px;
             margin-bottom: 30px;
-            color: #ccc;
+            text-align: center;
+            color: #f1f1f1;
             text-decoration: none; /* Убираем подчеркивание */
         }
 
         /* Список рефералов */
         #referral-list {
-            color: #bbb;
+            color: #ddd;
         }
 
         #referral-list ul {
@@ -62,52 +64,49 @@
 
         #referral-list li {
             background-color: rgba(255, 255, 255, 0.1);
-            margin: 12px 0;
-            padding: 20px;
-            border-radius: 15px;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
         }
 
         #referral-list li:hover {
-            transform: scale(1.03); /* Эффект при наведении */
-            background-color: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05); /* Эффект при наведении */
         }
 
         /* Кнопки */
         .btn {
-            display: inline-block;
+            display: block;
             width: 100%;
-            padding: 16px;
+            padding: 15px;
             text-align: center;
+            border-radius: 10px;
+            text-transform: uppercase;
             font-weight: bold;
-            border-radius: 12px;
-            border: 2px solid white;
             margin-top: 20px;
             cursor: pointer;
-            text-transform: uppercase;
             transition: background-color 0.3s;
+            border: 2px solid black; /* Черная рамка */
         }
 
         .btn:hover {
-            background-color: #333;
+            background-color: #f0f0f0;
         }
 
         .btn-back {
-            background-color: #2b2b2b;
-            color: white;
+            background-color: white;
+            color: black;
         }
 
         .btn-copy {
-            background-color: #1d1d1d;
+            background-color: #4CAF50;
             color: white;
         }
 
-        .btn:active {
-            background-color: #444;
-        }
     </style>
 </head>
 <body>
@@ -115,8 +114,8 @@
         <h1>Referral Information</h1>
         <p id="username"></p>
         <div id="referral-list"></div>
-        <button class="btn btn-copy" id="copyRefLinkBtn">Copy Ref Link</button>
-        <button class="btn btn-back" id="backBtn">BACK</button>
+        <button class="btn btn-copy" onclick="copyReferralLink()">Copy Ref Link</button>
+        <button class="btn btn-back" onclick="goBack()">BACK</button>
     </div>
 
     <script>
@@ -154,7 +153,7 @@
                 if (response.ok) {
                     referralListDiv.innerHTML = '<ul>';
                     for (const user of Object.values(data)) {
-                        // Отображаем имя пользователя без гиперссылки
+                        // Здесь мы убираем ссылку и просто отображаем имя пользователя как текст
                         referralListDiv.innerHTML += `
                             <li>
                                 <span>Username: ${user.username}</span>
@@ -182,64 +181,16 @@
         }
 
         // Функция для генерации и копирования реферальной ссылки
-        async function copyReferralLink() {
+        function copyReferralLink() {
             const referralLink = `https://t.me/PlaceOfPigeons_bot?start=${userId}`;
             
-            try {
-                // Попытка скопировать ссылку через стандартный способ
-                if (navigator.clipboard) {
-                    await navigator.clipboard.writeText(referralLink);  // Пытаемся записать ссылку в буфер обмена
-                    alert('Ссылка скопирована в буфер обмена!');
-                } else {
-                    // Если clipboard не поддерживается, пробуем через временный элемент
-                    const textArea = document.createElement('textarea');
-                    textArea.value = referralLink;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    document.execCommand('copy');  // Копирование через execCommand
-                    document.body.removeChild(textArea);
-                    alert('Ссылка скопирована в буфер обмена!');
-                }
-            } catch (err) {
+            // Копируем ссылку в буфер обмена
+            navigator.clipboard.writeText(referralLink).then(() => {
+                alert('Ссылка скопирована в буфер обмена!');
+            }).catch((err) => {
                 console.error('Ошибка при копировании:', err);
-                alert('Ошибка при копировании ссылки.');
-            }
-        }
-
-        // Добавляем обработчики событий на кнопки (для клика и тачсета)
-        function addClickAndTouchListeners() {
-            const copyRefLinkBtn = document.getElementById("copyRefLinkBtn");
-            const backBtn = document.getElementById("backBtn");
-
-            // Для кнопки Copy Ref Link
-            copyRefLinkBtn.addEventListener("click", function(e) {
-                e.preventDefault(); // Предотвращаем стандартное поведение
-                tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
-                copyReferralLink(); // Вызываем функцию для копирования ссылки
-            });
-
-            copyRefLinkBtn.addEventListener("touchstart", function(e) {
-                e.preventDefault(); // Предотвращаем стандартное поведение
-                tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
-                copyReferralLink(); // Вызываем функцию для копирования ссылки
-            });
-
-            // Для кнопки BACK
-            backBtn.addEventListener("click", function(e) {
-                e.preventDefault(); // Предотвращаем стандартное поведение
-                tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
-                goBack(); // Возвращаемся на предыдущую страницу
-            });
-
-            backBtn.addEventListener("touchstart", function(e) {
-                e.preventDefault(); // Предотвращаем стандартное поведение
-                tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
-                goBack(); // Возвращаемся на предыдущую страницу
             });
         }
-
-        // Инициализируем обработчики
-        addClickAndTouchListeners();
     </script>
 </body>
 </html>
