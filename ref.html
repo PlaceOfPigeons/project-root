@@ -33,6 +33,8 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8), 0 5px 10px rgba(0, 0, 0, 0.4); /* Добавляем тени для объема */
             overflow: hidden;
             text-align: center;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Заголовок */
@@ -57,11 +59,16 @@
         /* Список рефералов */
         #referral-list {
             color: white;
+            flex-grow: 1; /* Растягивает блок на доступное пространство */
+            max-height: 400px; /* Максимальная высота для блока с рефералами */
+            overflow-y: auto; /* Добавляем вертикальную прокрутку */
+            padding-right: 15px; /* Добавляем отступ для скроллбара */
         }
 
         #referral-list ul {
             list-style-type: none;
             padding-left: 0;
+            margin: 0;
         }
 
         #referral-list li {
