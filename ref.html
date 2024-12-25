@@ -182,15 +182,16 @@
         }
 
         // Функция для генерации и копирования реферальной ссылки
-        function copyReferralLink() {
+        async function copyReferralLink() {
             const referralLink = `https://t.me/PlaceOfPigeons_bot?start=${userId}`;
             
-            // Копируем ссылку в буфер обмена
-            navigator.clipboard.writeText(referralLink).then(() => {
+            try {
+                await navigator.clipboard.writeText(referralLink);  // Пытаемся записать ссылку в буфер обмена
                 alert('Ссылка скопирована в буфер обмена!');
-            }).catch((err) => {
+            } catch (err) {
                 console.error('Ошибка при копировании:', err);
-            });
+                alert('Ошибка при копировании ссылки.');
+            }
         }
 
         // Добавляем обработчики событий на кнопки (для клика и тачсета)
