@@ -23,6 +23,9 @@
             width: 25%;
             height: auto;
         }
+        .content {
+            padding-top: 20%; /* Сдвигаем все содержимое вниз на 20% */
+        }
         .task {
             display: flex;
             justify-content: space-between;
@@ -66,44 +69,45 @@
 </head>
 <body>
     <h1>TASKS</h1>
-    <img src="image/tasks.png" alt="Wallet Image">
+    <div class="content">
+        <img src="image/tasks.png" alt="Wallet Image">
+        
+        <div class="task">
+            <div class="icon-text">
+                <span class="material-symbols-outlined">done_all</span>
+                <div>Place of Pigeons</div>
+            </div>
+            <button id="action-button1" class="follow-button" style="display: none;" onclick="follow(1)">1000</button> <!-- Кнопка "1000" -->
+        </div>
+
+        <div class="task">
+            <div class="icon-text">
+                <span class="material-symbols-outlined">done_all</span>
+                <div>DaddyTap</div>
+            </div>
+            <button id="action-button2" class="follow-button" style="display: none;" onclick="follow(2)">1000</button> <!-- Кнопка "1000" -->
+        </div>
+
+        <div class="task">
+            <div class="icon-text">
+                <span class="material-symbols-outlined">done_all</span>
+                <div>Cryptan</div>
+            </div>
+            <button id="action-button3" class="follow-button" style="display: none;" onclick="follow(3)">1000</button> <!-- Кнопка "1000" -->
+        </div>
+
+        <div class="task">
+            <div class="icon-text">
+                <span class="material-symbols-outlined">done_all</span>
+                <div>Add stickers</div>
+            </div>
+            <button id="action-button4" class="follow-button" style="display: none;" onclick="follow(4)">1000</button> <!-- Кнопка "1000" -->
+        </div>
+    </div>
     
-    <div class="task">
-        <div class="icon-text">
-            <span class="material-symbols-outlined">done_all</span>
-            <div>Place of Pigeons</div>
-        </div>
-        <button id="action-button1" class="follow-button" style="display: none;" onclick="follow(1)">1000</button> <!-- Кнопка "1000" -->
-    </div>
-
-    <div class="task">
-        <div class="icon-text">
-            <span class="material-symbols-outlined">done_all</span>
-            <div>DaddyTap</div>
-        </div>
-        <button id="action-button2" class="follow-button" style="display: none;" onclick="follow(2)">1000</button> <!-- Кнопка "1000" -->
-    </div>
-
-    <div class="task">
-        <div class="icon-text">
-            <span class="material-symbols-outlined">done_all</span>
-            <div>Cryptan</div>
-        </div>
-        <button id="action-button3" class="follow-button" style="display: none;" onclick="follow(3)">1000</button> <!-- Кнопка "1000" -->
-    </div>
-
-    <div class="task">
-        <div class="icon-text">
-            <span class="material-symbols-outlined">done_all</span>
-            <div>Add stickers</div>
-        </div>
-        <button id="action-button4" class="follow-button" style="display: none;" onclick="follow(4)">1000</button> <!-- Кнопка "1000" -->
-    </div>
-
     <button id="back-button" class="back-button">BACK</button>
 
     <script>
-        
         Telegram.WebApp.setBackgroundColor("#000000");
         Telegram.WebApp.setHeaderColor("#000000");
 
