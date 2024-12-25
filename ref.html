@@ -186,8 +186,20 @@
             const referralLink = `https://t.me/PlaceOfPigeons_bot?start=${userId}`;
             
             try {
-                await navigator.clipboard.writeText(referralLink);  // Пытаемся записать ссылку в буфер обмена
-                alert('Ссылка скопирована в буфер обмена!');
+                // Попытка скопировать ссылку через стандартный способ
+                if (navigator.clipboard) {
+                    await navigator.clipboard.writeText(referralLink);  // Пытаемся записать ссылку в буфер обмена
+                    alert('Ссылка скопирована в буфер обмена!');
+                } else {
+                    // Если clipboard не поддерживается, пробуем через временный элемент
+                    const textArea = document.createElement('textarea');
+                    textArea.value = referralLink;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');  // Копирование через execCommand
+                    document.body.removeChild(textArea);
+                    alert('Ссылка скопирована в буфер обмена!');
+                }
             } catch (err) {
                 console.error('Ошибка при копировании:', err);
                 alert('Ошибка при копировании ссылки.');
