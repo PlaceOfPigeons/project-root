@@ -25,10 +25,10 @@
             position: relative;
         }
         .content {
-            margin-top: -20%; /* Сдвиг содержимого вверх на 20% */
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin-top: -20%; /* Сдвиг содержимого вверх на 20% */
         }
         #ton-connect-button {
             display: flex;
@@ -56,7 +56,7 @@
             height: auto;
         }
         .forget-text {
-            margin-top: -20%;
+            margin-top: 10%; /* Отступ сверху 10% */
             color: white;
             font-size: 18px;
             text-align: center;
@@ -66,9 +66,9 @@
 <body>
     <div class="content">
         <img src="image/money.png" alt="Money" class="money-image">
-        <div class="forget-text">Забыли что-то?</div>
-
         <div id="ton-connect-button"></div>
+
+        <div class="forget-text">Забыли что-то?</div>
     </div>
 
     <button id="back-button" class="back-button">Назад</button>
