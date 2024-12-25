@@ -24,6 +24,12 @@
             overflow: hidden;
             position: relative;
         }
+        .content {
+            padding-top: 20%; /* Сдвиг содержимого вниз на 20% */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         #ton-connect-button {
             display: flex;
             justify-content: center;
@@ -45,10 +51,6 @@
             font-size: 16px;
         }
         .money-image {
-            position: absolute;
-            top: 5%;
-            left: 50%;
-            transform: translateX(-50%);
             width: 90%;
             max-width: 500px;
             height: auto;
@@ -62,10 +64,12 @@
     </style>
 </head>
 <body>
-    <img src="image/money.png" alt="Money" class="money-image">
-    <div class="forget-text">Forget something?</div>
+    <div class="content">
+        <img src="money.png" alt="Money" class="money-image">
+        <div class="forget-text">Forget something?</div>
 
-    <div id="ton-connect-button"></div>
+        <div id="ton-connect-button"></div>
+    </div>
 
     <button id="back-button" class="back-button">BACK</button>
 
