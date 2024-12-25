@@ -189,20 +189,20 @@
         // Обработчик для кнопки BACK
         document.getElementById("back-button").addEventListener("click", function() {
             setTimeout(function() {
-                window.location.href = 'newpage3.html';
+                window.location.href = 'main.html';
             }, 500);
         });
 
         document.getElementById("back-button").addEventListener("touchstart", function(e) {
             e.preventDefault();
             setTimeout(function() {
-                window.location.href = 'newpage3.html';
+                window.location.href = 'main.html';
             }, 500);
         });
 
         // Функция для завершения игры
         function endGame() {
-            window.location.href = `newpage3.html?score=${score}`;
+            window.location.href = `main.html?score=${score}`;
         }
     </script>
 </body>
