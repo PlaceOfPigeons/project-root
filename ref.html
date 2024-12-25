@@ -9,52 +9,50 @@
         /* Основной фон страницы */
         html, body {
             height: 100%; /* Убираем прокрутку на всей странице */
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
         }
 
         body {
-            background-color: #121212; /* Темный фон */
+            background-color: #1e1e1e; /* Темный фон */
             color: white;  /* Белый текст */
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Запрещаем прокрутку */
+            height: 100vh; /* Сделаем страницу на весь экран */
         }
 
         /* Контейнер для контента */
         .container {
             width: 100%;
-            max-width: 800px;
-            background: #1e1e1e; /* Темный фон для контейнера */
+            max-width: 700px;
+            background: #121212; /* Черный фон для контейнера */
             border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
         }
 
         /* Заголовок */
         h1 {
-            font-size: 28px;
-            text-align: center;
-            margin-bottom: 20px;
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: white;
             font-weight: bold;
-            color: #f1f1f1;
         }
 
         /* Текст приветствия */
         #username {
             font-size: 20px;
             margin-bottom: 30px;
-            text-align: center;
-            color: #f1f1f1;
+            color: #ccc;
             text-decoration: none; /* Убираем подчеркивание */
         }
 
         /* Список рефералов */
         #referral-list {
-            color: #ddd;
+            color: #bbb;
         }
 
         #referral-list ul {
@@ -64,49 +62,52 @@
 
         #referral-list li {
             background-color: rgba(255, 255, 255, 0.1);
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 10px;
+            margin: 12px 0;
+            padding: 20px;
+            border-radius: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s ease;
+            transition: transform 0.3s ease, background-color 0.3s ease;
         }
 
         #referral-list li:hover {
-            transform: scale(1.05); /* Эффект при наведении */
+            transform: scale(1.03); /* Эффект при наведении */
+            background-color: rgba(255, 255, 255, 0.15);
         }
 
         /* Кнопки */
         .btn {
-            display: block;
+            display: inline-block;
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             text-align: center;
-            border-radius: 10px;
-            text-transform: uppercase;
             font-weight: bold;
+            border-radius: 12px;
+            border: 2px solid white;
             margin-top: 20px;
             cursor: pointer;
+            text-transform: uppercase;
             transition: background-color 0.3s;
-            border: 2px solid black; /* Черная рамка */
         }
 
         .btn:hover {
-            background-color: #f0f0f0;
+            background-color: #333;
         }
 
         .btn-back {
-            background-color: white;
-            color: black;
-        }
-
-        .btn-copy {
-            background-color: #4CAF50;
+            background-color: #2b2b2b;
             color: white;
         }
 
+        .btn-copy {
+            background-color: #1d1d1d;
+            color: white;
+        }
+
+        .btn:active {
+            background-color: #444;
+        }
     </style>
 </head>
 <body>
@@ -153,7 +154,7 @@
                 if (response.ok) {
                     referralListDiv.innerHTML = '<ul>';
                     for (const user of Object.values(data)) {
-                        // Здесь мы убираем ссылку и просто отображаем имя пользователя как текст
+                        // Отображаем имя пользователя без гиперссылки
                         referralListDiv.innerHTML += `
                             <li>
                                 <span>Username: ${user.username}</span>
