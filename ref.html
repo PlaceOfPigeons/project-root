@@ -115,7 +115,7 @@
         <p id="username"></p>
         <div id="referral-list"></div>
         <button class="btn btn-copy" onclick="copyReferralLink()">Copy Ref Link</button>
-        <button class="btn btn-back" onclick="goBack()">BACK</button>
+        <button class="btn btn-back" id="backBtn">BACK</button> <!-- Изменено, теперь у кнопки есть id -->
     </div>
 
     <script>
@@ -192,6 +192,20 @@
             });
         }
 
+        // Добавляем обработчики событий для кнопки BACK
+        const backBtn = document.getElementById('backBtn');
+        
+        backBtn.addEventListener("click", function(e) {
+            e.preventDefault(); // Предотвращаем стандартное поведение
+            tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+            goBack(); // Возвращаемся на предыдущую страницу
+        });
+
+        backBtn.addEventListener("touchstart", function(e) {
+            e.preventDefault(); // Предотвращаем стандартное поведение
+            tg.HapticFeedback.impactOccurred('light'); // Вибрация при нажатии
+            goBack(); // Возвращаемся на предыдущую страницу
+        });
     </script>
 </body>
 </html>
