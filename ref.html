@@ -30,7 +30,7 @@
             background: black; /* Черный фон для контейнера */
             border-radius: 15px;
             padding: 40px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8), 0 5px 10px rgba(0, 0, 0, 0.4); /* Добавляем тени для объема */
             overflow: hidden;
             text-align: center;
         }
@@ -42,6 +42,7 @@
             color: white;
             font-weight: 700;
             letter-spacing: 1px;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6); /* Легкая тень для заголовка */
         }
 
         /* Текст приветствия */
@@ -50,6 +51,7 @@
             margin-bottom: 35px;
             color: white;
             text-decoration: none;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3); /* Легкая тень для текста */
         }
 
         /* Список рефералов */
@@ -70,13 +72,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4); /* Тень для элементов списка */
             transition: transform 0.2s ease;
             color: white;
         }
 
         #referral-list li:hover {
             transform: scale(1.05); /* Эффект при наведении */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8), 0 3px 6px rgba(0, 0, 0, 0.5); /* Увеличенная тень при наведении */
         }
 
         /* Кнопки */
@@ -90,13 +93,15 @@
             font-weight: bold;
             margin-top: 25px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, box-shadow 0.3s;
             border: 2px solid white; /* Белая рамка */
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3); /* Тень для кнопок */
         }
 
         .btn:hover {
             background-color: white;
             color: black;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6); /* Увеличенная тень при наведении */
         }
 
         .btn-back {
