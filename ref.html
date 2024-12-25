@@ -9,47 +9,47 @@
         /* Основной фон страницы */
         html, body {
             height: 100%; /* Убираем прокрутку на всей странице */
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
         }
 
         body {
             background-color: #121212; /* Темный фон */
             color: white;  /* Белый текст */
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Запрещаем прокрутку */
+            height: 100vh; /* Чтобы контейнер был по центру */
         }
 
         /* Контейнер для контента */
         .container {
             width: 100%;
             max-width: 800px;
-            background: #1e1e1e; /* Темный фон для контейнера */
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+            background: #1a1a1a; /* Темный фон для контейнера */
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
             overflow: hidden;
+            text-align: center;
         }
 
         /* Заголовок */
         h1 {
-            font-size: 28px;
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: bold;
-            color: #f1f1f1;
+            font-size: 32px;
+            margin-bottom: 25px;
+            color: white;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         /* Текст приветствия */
         #username {
-            font-size: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-            color: #f1f1f1;
-            text-decoration: none; /* Убираем подчеркивание */
+            font-size: 22px;
+            margin-bottom: 35px;
+            color: #ccc;
+            text-decoration: none;
         }
 
         /* Список рефералов */
@@ -64,8 +64,8 @@
 
         #referral-list li {
             background-color: rgba(255, 255, 255, 0.1);
-            margin: 10px 0;
-            padding: 15px;
+            margin: 15px 0;
+            padding: 20px;
             border-radius: 10px;
             display: flex;
             justify-content: space-between;
@@ -87,14 +87,15 @@
             border-radius: 10px;
             text-transform: uppercase;
             font-weight: bold;
-            margin-top: 20px;
+            margin-top: 25px;
             cursor: pointer;
             transition: background-color 0.3s;
-            border: 2px solid black; /* Черная рамка */
+            border: 2px solid #333;
         }
 
         .btn:hover {
-            background-color: #f0f0f0;
+            background-color: #333;
+            color: white;
         }
 
         .btn-back {
@@ -103,7 +104,7 @@
         }
 
         .btn-copy {
-            background-color: #4CAF50;
+            background-color: #333;
             color: white;
         }
 
@@ -115,7 +116,7 @@
         <p id="username"></p>
         <div id="referral-list"></div>
         <button class="btn btn-copy" onclick="copyReferralLink()">Copy Ref Link</button>
-        <button class="btn btn-back" id="backBtn">BACK</button> <!-- Изменено, теперь у кнопки есть id -->
+        <button class="btn btn-back" id="backBtn">BACK</button>
     </div>
 
     <script>
