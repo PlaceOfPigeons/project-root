@@ -7,9 +7,12 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         window.onload = function() {
-            // Проверка данных от Telegram
-            let initDataURLSP = new URLSearchParams(WebApp.initData);  // Получаем данные и хэш из initData
+            // Получаем данные из WebApp.initData
+            let initDataURLSP = new URLSearchParams(WebApp.initData);  
             var hash = initDataURLSP.get('hash');
+
+            // Логирование для отладки
+            console.log("Received hash: ", hash);
 
             // Удаляем параметр 'hash' и сортируем оставшиеся параметры
             initDataURLSP.delete('hash');
@@ -18,8 +21,11 @@
             // Формируем строку данных
             var checkDataString = initDataURLSP.toString().replaceAll('&', '\n');
 
+            // Логирование строки данных
+            console.log("checkDataString: ", checkDataString);
+
             // Отправка запроса на сервер для проверки
-            let xhrURL = new URL('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate');  // Замените <your_domain> на ваш реальный домен
+            let xhrURL = new URL('https://<your_domain>/validate');  // Замените <your_domain> на ваш реальный домен
             xhrURL.searchParams.set('hash', hash);
             xhrURL.searchParams.set('checkDataString', checkDataString);
 
@@ -28,34 +34,20 @@
             xhr.send();
 
             xhr.onload = function() {
-                // Проверяем ответ от сервера
-                if (JSON.parse(xhr.response).result == true) {
-                    WebApp.showAlert(`Добро пожаловать, @${WebApp.WebAppUser.username}.`);
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.response);
+                    if (response.result === true) {
+                        WebApp.showAlert(`Добро пожаловать, @${WebApp.WebAppUser.username}.`);
+                    } else {
+                        WebApp.showAlert("Ты что, хакер?");
+                        WebApp.close();
+                    }
                 } else {
-                    WebApp.showAlert("Ты что, хакер?");
-                    WebApp.close();
+                    WebApp.showAlert("Ошибка связи с сервером.");
                 }
             }
         }
     </script>
-    <style>
-        body {
-            background-color: black;
-            color: white;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2em;
-        }
-
-        p {
-            font-size: 1.2em;
-        }
-    </style>
 </head>
 <body>
     <h1>Добро пожаловать в Telegram WebApp</h1>
