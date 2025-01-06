@@ -175,7 +175,7 @@
       try {
         const response = await fetch(`https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/get_data?user_id=${userId}`); // Передаем ID пользователя
         if (!response.ok) {
-          throw new Error(`Ошибка HTTP: ${response.status}`);
+          throw new Error(`ERROR HTTP: ${response.status}`);
         }
         
         const jsonData = await response.json(); // Получаем JSON ответ
@@ -185,11 +185,11 @@
           scoreElement.textContent = jsonData.error;
           scoreElement.classList.add('error');
         } else {
-          scoreElement.textContent = `Очки: ${jsonData.score}`;
+          scoreElement.textContent = `$POP: ${jsonData.score}`;
         }
       } catch (error) {
         const scoreElement = document.getElementById('score');
-        scoreElement.textContent = 'Ошибка: ' + error.message;
+        scoreElement.textContent = 'Error: ' + error.message;
         scoreElement.classList.add('error');
       }
     }
