@@ -1,72 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Web App Validation</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            color: white; /* Set text color to white */
-            background-color: black; /* Set background color to black */
-        }
-
-        h1 {
-            color: white; /* Ensure h1 text is white */
-        }
-
-        #result {
-            color: white; /* Ensure result text is white */
-        }
-    </style>
+    <title>Mini App Validation</title>
+    <!-- Подключаем скрипт Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Telegram Web App Validation</h1>
-    <div id="result"></div>
+    <h1>Валидация данных от Mini App</h1>
+    <div id="status"></div>
     <script>
         // Инициализация Telegram Web App
-        const tg = window.Telegram.WebApp;
+        Telegram.WebApp.ready();
 
-        // Получение initData
-        const initData = tg.initData;
-        console.log("initData:", initData);  // Логируем initData
+        // Получаем данные от Telegram WebApp (initData)
+        const initData = Telegram.WebApp.initData;
 
-        // URL сервера
-        const serverUrl = "https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate";
-
-        // Функция для отправки initData на сервер
-        async function validateInitData() {
-            try {
-                // Логируем запрос перед отправкой
-                console.log("Request Body:", JSON.stringify({ initData }));
-
-                const response = await fetch(serverUrl, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ initData })
-                });
-
-                const result = await response.json();
-
-                // Логируем результат
-                console.log("Response from server:", result);
-
-                // Отображаем результат
-                const resultDiv = document.getElementById("result");
-                if (response.ok) {
-                    resultDiv.innerHTML = `<p>Данные прошли валидацию:</p><pre>${JSON.stringify(result, null, 2)}</pre>`;
-                } else {
-                    resultDiv.innerHTML = `<p>Ошибка валидации:</p><pre>${JSON.stringify(result, null, 2)}</pre>`;
-                }
-            } catch (error) {
-                console.error("Ошибка при запросе:", error);
-            }
+        // Преобразуем данные в объект
+        const data = new URLSearchParams(initData).entries();
+        let dataObject = {};
+        for (const [key, value] of data) {
+            dataObject[key] = value;
         }
 
-        // Выполняем валидацию при загрузке страницы
-        validateInitData();
+        // Формируем запрос на сервер
+        $.ajax({
+            url: '/validate',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(dataObject),
+            success: function(response) {
+                $('#status').html('Данные валидны!');
+            },
+            error: function(error) {
+                $('#status').html('Ошибка: ' + error.responseJSON.error);
+            }
+        });
     </script>
 </body>
 </html>
