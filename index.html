@@ -1,86 +1,72 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram WebApp Валидация</title>
-    <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+    <title>Telegram Web App Validation</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
+            color: white; /* Set text color to white */
+            background-color: black; /* Set background color to black */
         }
-        .message {
-            font-size: 18px;
-            margin-top: 20px;
+
+        h1 {
+            color: white; /* Ensure h1 text is white */
         }
-        button {
-            margin-top: 30px;
-            padding: 10px 20px;
-            background-color: #0088cc;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #006fa3;
+
+        #result {
+            color: white; /* Ensure result text is white */
         }
     </style>
 </head>
 <body>
-
-    <h1>Добро пожаловать в Telegram WebApp</h1>
-    <div class="message" id="message">Пожалуйста, подождите...</div>
-    <button id="validateButton">Проверить Подлинность</button>
-
+    <h1>Telegram Web App Validation</h1>
+    <div id="result"></div>
     <script>
-        // Инициализация Telegram WebApp
-        Telegram.WebApp.ready();
+        // Инициализация Telegram Web App
+        const tg = window.Telegram.WebApp;
 
-        // Получение данных из initData
-        let initDataURLSP = new URLSearchParams(WebApp.initData);
-        let hash = initDataURLSP.get('hash');
+        // Получение initData
+        const initData = tg.initData;
+        console.log("initData:", initData);  // Логируем initData
 
-        // Удаление hash и сортировка параметров
-        initDataURLSP.delete('hash');
-        initDataURLSP.sort();
+        // URL сервера
+        const serverUrl = "https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate";
 
-        // Формируем строку для проверки
-        let checkDataString = initDataURLSP.toString().replaceAll('&', '\n');
+        // Функция для отправки initData на сервер
+        async function validateInitData() {
+            try {
+                // Логируем запрос перед отправкой
+                console.log("Request Body:", JSON.stringify({ initData }));
 
-        // URL для валидации на сервере
-        let xhrURL = new URL('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/userIsValid');
-        xhrURL.searchParams.set('hash', hash);
-        xhrURL.searchParams.set('checkDataString', checkDataString);
+                const response = await fetch(serverUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ initData })
+                });
 
-        // Отправляем запрос на сервер при нажатии на кнопку
-        document.getElementById('validateButton').addEventListener('click', function () {
-            let xhr = new XMLHttpRequest();
-            xhr.open('GET', xhrURL);
-            xhr.send();
+                const result = await response.json();
 
-            // Обработка ответа от сервера
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    let response = JSON.parse(xhr.response);
-                    if (response.result === true) {
-                        document.getElementById('message').textContent = `Добро пожаловать, @${WebApp.WebAppUser.username}!`;
-                        WebApp.showAlert(`Добро пожаловать, @${WebApp.WebAppUser.username}.`);
-                    } else {
-                        document.getElementById('message').textContent = "Что-то пошло не так. Ты что, хакер?";
-                        WebApp.showAlert("Ты что, хакер?");
-                        WebApp.close();
-                    }
+                // Логируем результат
+                console.log("Response from server:", result);
+
+                // Отображаем результат
+                const resultDiv = document.getElementById("result");
+                if (response.ok) {
+                    resultDiv.innerHTML = `<p>Данные прошли валидацию:</p><pre>${JSON.stringify(result, null, 2)}</pre>`;
                 } else {
-                    document.getElementById('message').textContent = "Ошибка соединения с сервером.";
-                    WebApp.showAlert("Ошибка соединения.");
-                    WebApp.close();
+                    resultDiv.innerHTML = `<p>Ошибка валидации:</p><pre>${JSON.stringify(result, null, 2)}</pre>`;
                 }
+            } catch (error) {
+                console.error("Ошибка при запросе:", error);
             }
-        });
-    </script>
+        }
 
+        // Выполняем валидацию при загрузке страницы
+        validateInitData();
+    </script>
 </body>
 </html>
