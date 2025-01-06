@@ -29,6 +29,7 @@
 
         // Получение initData
         const initData = tg.initData;
+        console.log("initData:", initData);  // Логируем initData
 
         // URL сервера
         const serverUrl = "https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate";
@@ -36,6 +37,9 @@
         // Функция для отправки initData на сервер
         async function validateInitData() {
             try {
+                // Логируем запрос перед отправкой
+                console.log("Request Body:", JSON.stringify({ initData }));
+
                 const response = await fetch(serverUrl, {
                     method: "POST",
                     headers: {
@@ -45,6 +49,9 @@
                 });
 
                 const result = await response.json();
+
+                // Логируем результат
+                console.log("Response from server:", result);
 
                 // Отображаем результат
                 const resultDiv = document.getElementById("result");
