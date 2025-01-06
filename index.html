@@ -20,7 +20,7 @@
             var checkDataString = initDataURLSP.toString().replaceAll('&', '\n');
 
             // Отправка запроса на сервер для проверки
-            let xhrURL = new URL('https://<your_domain>/validate');  // Замените <your_domain> на ваш реальный домен
+            let xhrURL = new URL('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate');  // Замените <your_domain> на ваш реальный домен
             xhrURL.searchParams.set('hash', hash);
             xhrURL.searchParams.set('checkDataString', checkDataString);
 
