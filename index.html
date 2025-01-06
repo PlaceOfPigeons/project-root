@@ -1,72 +1,47 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Web App Validation</title>
+    <title>Telegram WebApp Validation</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            color: white; /* Set text color to white */
-            background-color: black; /* Set background color to black */
-        }
-
-        h1 {
-            color: white; /* Ensure h1 text is white */
-        }
-
-        #result {
-            color: white; /* Ensure result text is white */
-        }
-    </style>
-</head>
-<body>
-    <h1>Telegram Web App Validation</h1>
-    <div id="result"></div>
     <script>
-        // Инициализация Telegram Web App
-        const tg = window.Telegram.WebApp;
+        window.onload = function() {
+            // Проверка данных от Telegram
+            let initDataURLSP = new URLSearchParams(WebApp.initData);  // Получаем данные и хэш из initData
+            var hash = initDataURLSP.get('hash');
 
-        // Получение initData
-        const initData = tg.initData;
-        console.log("initData:", initData);  // Логируем initData
+            // Удаляем параметр 'hash' и сортируем оставшиеся параметры
+            initDataURLSP.delete('hash');
+            initDataURLSP.sort();
 
-        // URL сервера
-        const serverUrl = "https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate";
+            // Формируем строку данных
+            var checkDataString = initDataURLSP.toString().replaceAll('&', '\n');
 
-        // Функция для отправки initData на сервер
-        async function validateInitData() {
-            try {
-                // Логируем запрос перед отправкой
-                console.log("Request Body:", JSON.stringify({ initData }));
+            // Отправка запроса на сервер для проверки
+            let xhrURL = new URL('https://<your_domain>/validate');  // Замените <your_domain> на ваш реальный домен
+            xhrURL.searchParams.set('hash', hash);
+            xhrURL.searchParams.set('checkDataString', checkDataString);
 
-                const response = await fetch(serverUrl, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ initData })
-                });
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', xhrURL);
+            xhr.send();
 
-                const result = await response.json();
-
-                // Логируем результат
-                console.log("Response from server:", result);
-
-                // Отображаем результат
-                const resultDiv = document.getElementById("result");
-                if (response.ok) {
-                    resultDiv.innerHTML = `<p>Данные прошли валидацию:</p><pre>${JSON.stringify(result, null, 2)}</pre>`;
+            xhr.onload = function() {
+                // Проверяем ответ от сервера
+                if (JSON.parse(xhr.response).result == true) {
+                    WebApp.showAlert(`Добро пожаловать, @${WebApp.WebAppUser.username}.`);
                 } else {
-                    resultDiv.innerHTML = `<p>Ошибка валидации:</p><pre>${JSON.stringify(result, null, 2)}</pre>`;
+                    WebApp.showAlert("Ты что, хакер?");
+                    WebApp.close();
                 }
-            } catch (error) {
-                console.error("Ошибка при запросе:", error);
             }
         }
-
-        // Выполняем валидацию при загрузке страницы
-        validateInitData();
     </script>
+</head>
+<body>
+    <h1>Добро пожаловать в Telegram WebApp</h1>
+    <p>Пожалуйста, подождите, пока мы проверим вашу подлинность...</p>
 </body>
 </html>
