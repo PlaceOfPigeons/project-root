@@ -3,70 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Web App Validation</title>
+    <title>Loading Page</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            color: white; /* Set text color to white */
-            background-color: black; /* Set background color to black */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000; /* Черный фон */
+            color: #fff; /* Белый текст */
+            font-family: Arial, sans-serif;
         }
 
-        h1 {
-            color: white; /* Ensure h1 text is white */
+        .shadow-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
-        #result {
-            color: white; /* Ensure result text is white */
+        .animated-shadow {
+            width: 200px;
+            height: auto;
+            filter: drop-shadow(0 0 8px rgba(0, 191, 255, 0.5));
+            animation: shadowPulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes shadowPulse {
+            0% {
+                filter: drop-shadow(0 0 8px rgba(0, 191, 255, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 16px rgba(0, 191, 255, 0.7));
+            }
+            100% {
+                filter: drop-shadow(0 0 8px rgba(0, 191, 255, 0.5));
+            }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .loading-text span {
+            display: inline-block;
+            animation: pulse 1.5s infinite, colorChange 3s infinite;
+        }
+
+        .loading-text span:nth-child(even) {
+            animation-delay: 0.75s;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes colorChange {
+            0% {
+                color: #00bfff; /* Голубой цвет */
+            }
+            33% {
+                color: #ff69b4; /* Розовый цвет */
+            }
+            66% {
+                color: #ffffff; /* Белый цвет */
+            }
+            100% {
+                color: #00bfff; /* Голубой цвет */
+            }
+        }
+
+        /* Контейнер для иконок */
+        .icons-container {
+            position: fixed;
+            bottom: 10%; /* Немного выше низа экрана */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: space-between;
+            width: 60%;
+            padding: 0 10px;
+        }
+
+        .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     </style>
 </head>
 <body>
-    <h1>Telegram Web App Validation</h1>
-    <div id="result"></div>
+    <div class="shadow-container">
+        <img src="image/loading.png" alt="POP Image" class="animated-shadow">
+    </div>
+    <div class="loading-text">
+        <span>L</span>
+        <span>O</span>
+        <span>A</span>
+        <span>D</span>
+        <span>I</span>
+        <span>N</span>
+        <span>G</span>
+    </div>
+
+    <!-- Контейнер для иконок -->
+    <div class="icons-container">
+        <div id="telegram-icon" class="icon">
+            <img src="image/telegramImage.png" alt="Telegram">
+        </div>
+        <div id="youtube-icon" class="icon">
+            <img src="image/youtubeImage.png" alt="YouTube">
+        </div>
+        <div id="instagram-icon" class="icon">
+            <img src="image/instagramImage.png" alt="Instagram">
+        </div>
+    </div>
+
     <script>
         // Инициализация Telegram Web App
-        const tg = window.Telegram.WebApp;
+        window.Telegram.WebApp.ready();
 
-        // Получение initData
-        const initData = tg.initData;
-        console.log("initData:", initData);  // Логируем initData
+        // Установка черной темы
+        Telegram.WebApp.setBackgroundColor("#000000");
+        Telegram.WebApp.setHeaderColor("#000000");
 
-        // URL сервера
-        const serverUrl = "https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate";
+        // Применяем режим полного экрана для мини-приложения
+        window.Telegram.WebApp.expand();
+        window.Telegram.WebApp.requestFullscreen();
 
-        // Функция для отправки initData на сервер
-        async function validateInitData() {
-            try {
-                // Логируем запрос перед отправкой
-                console.log("Request Body:", JSON.stringify({ initData }));
+        // Разворачивание приложения на весь экран
+        Telegram.WebApp.expand();
 
-                const response = await fetch(serverUrl, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ initData })
-                });
+        // Задержка перед редиректом
+        setTimeout(function() {
+            window.location.href = 'main.html'; // Замените на URL вашей второй страницы
+        }, 3000);
 
-                const result = await response.json();
-
-                // Логируем результат
-                console.log("Response from server:", result);
-
-                // Отображаем результат
-                const resultDiv = document.getElementById("result");
-                if (response.ok) {
-                    resultDiv.innerHTML = `<p>Данные прошли валидацию:</p><pre>${JSON.stringify(result, null, 2)}</pre>`;
-                } else {
-                    resultDiv.innerHTML = `<p>Ошибка валидации:</p><pre>${JSON.stringify(result, null, 2)}</pre>`;
-                }
-            } catch (error) {
-                console.error("Ошибка при запросе:", error);
-            }
+        // Функция для открытия ссылки в новом окне
+        function openLink(url) {
+            window.open(url, '_blank');
         }
 
-        // Выполняем валидацию при загрузке страницы
-        validateInitData();
+        // Добавляем обработчики для иконок
+        document.getElementById("telegram-icon").addEventListener("click", function() {
+            openLink('https://telegram.org');
+        });
+
+        document.getElementById("telegram-icon").addEventListener("touchstart", function(e) {
+            e.preventDefault(); // Предотвращаем стандартное поведение (например, зум)
+            openLink('https://telegram.org');
+        });
+
+        document.getElementById("youtube-icon").addEventListener("click", function() {
+            openLink('https://youtube.com');
+        });
+
+        document.getElementById("youtube-icon").addEventListener("touchstart", function(e) {
+            e.preventDefault();
+            openLink('https://youtube.com');
+        });
+
+        document.getElementById("instagram-icon").addEventListener("click", function() {
+            openLink('https://instagram.com');
+        });
+
+        document.getElementById("instagram-icon").addEventListener("touchstart", function(e) {
+            e.preventDefault();
+            openLink('https://instagram.com');
+        });
     </script>
 </body>
 </html>
