@@ -132,46 +132,6 @@
                     });
                 });
 
-                // Добавление кнопки Telegram Web App
-                tg.MainButton.setText("Get 100 points");
-                tg.MainButton.setTextColor("#FFFFFF"); // Цвет текста
-                tg.MainButton.setParams({ color: "#0088CC" }); // Цвет кнопки
-                tg.MainButton.show(); // Показать кнопку Telegram Web App
-
-                // Обработчик для кнопки Telegram Web App
-                tg.MainButton.onClick(() => {
-                    // Скрыть кнопку сразу после клика, прежде чем отправлять запрос
-                    tg.MainButton.hide();
-
-                    // Делаем запрос на сервер для добавления очков
-                    fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ userId: data.user_id })
-                    })
-                    .then(response => response.json())
-                    .then(responseData => {
-                        if (responseData.success) {
-                            // Обновляем количество очков и время последнего клика
-                            resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
-
-                            // Перезапускаем таймер
-                            timeLeft = responseData.time_left;
-                            updateTimer();
-                        } else {
-                            alert(responseData.message);
-                            // Если не удалось получить очки, показываем кнопку снова
-                            tg.MainButton.show();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        tg.MainButton.show(); // Показываем кнопку, если произошла ошибка
-                    });
-                });
-
             } else {
                 resultElement.innerText = "Validation Failed.";
             }
