@@ -79,14 +79,14 @@
                         setTimeout(updateTimer, 1000);
                     } else {
                         timerElement.innerText = ''; // Убираем таймер, когда время заканчивается
-                        timerBtn.style.display = 'inline-block'; // Показываем кнопку обратно
+                        timerBtn.style.visibility = 'visible'; // Показываем кнопку обратно
                         timerBtn.disabled = false; // Включаем кнопку для нажатия
                     }
                 }
 
                 // Если таймер не истек, показываем время до следующего клика
                 if (timeLeft > 0) {
-                    timerBtn.style.display = 'none'; // Прячем кнопку, пока не пройдет время
+                    timerBtn.style.visibility = 'hidden'; // Прячем кнопку, пока не пройдет время
                     updateTimer();
                 } else {
                     timerBtn.disabled = false; // Разблокируем кнопку сразу, если нет времени на ожидание
@@ -94,8 +94,8 @@
 
                 // Обработчик для кнопки получения очков
                 timerBtn.addEventListener('click', function() {
-                    // Скрыть кнопку сразу после клика
-                    timerBtn.style.display = 'none'; 
+                    // Скрыть кнопку сразу после клика, прежде чем отправлять запрос
+                    timerBtn.style.visibility = 'hidden'; 
 
                     fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
                         method: 'POST',
@@ -116,8 +116,12 @@
                         } else {
                             alert(responseData.message);
                             // Если не удалось получить очки, показываем кнопку снова
-                            timerBtn.style.display = 'inline-block';
+                            timerBtn.style.visibility = 'visible';
                         }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        timerBtn.style.visibility = 'visible'; // Показываем кнопку, если произошла ошибка
                     });
                 });
 
@@ -132,3 +136,4 @@
     </script>
 </body>
 </html>
+
