@@ -119,10 +119,16 @@
                             // Если не удалось получить очки, показываем кнопку снова
                             timerBtn.style.visibility = 'visible';
                         }
+
+                        // Перезагружаем страницу после выполнения запроса
+                        window.location.reload();
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         timerBtn.style.visibility = 'visible'; // Показываем кнопку, если произошла ошибка
+
+                        // Перезагружаем страницу после ошибки
+                        window.location.reload();
                     });
                 });
 
