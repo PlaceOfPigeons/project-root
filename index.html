@@ -97,6 +97,7 @@
                     // Скрыть кнопку сразу после клика, прежде чем отправлять запрос
                     timerBtn.style.visibility = 'hidden'; 
 
+                    // Делаем запрос на сервер
                     fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
                         method: 'POST',
                         headers: {
@@ -136,4 +137,3 @@
     </script>
 </body>
 </html>
-
