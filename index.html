@@ -20,24 +20,47 @@
             text-align: center;
             margin-top: 20px;
         }
+
+        #timer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        #clickButton {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #clickButton:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
     <h1>Telegram Web App Validation</h1>
     <div id="result">Loading...</div>
+    <button id="clickButton" onclick="addPoints()">Add 100 Points</button>
+    <div id="timer"></div>
 
     <script>
-        // Получаем объект Telegram Web App
         const tg = window.Telegram.WebApp;
         const initData = tg.initData;
 
-        // Отображаем исходные данные
-        console.log("Init Data:", initData);
-
-        // URL вашего сервера для проверки
         const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate'; // Укажите свой URL
+        const addPointsUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points'; // URL для добавления очков
 
-        // Отправка данных на сервер
+        let userData = null;
+
+        // Отправка данных на сервер для валидации пользователя
         fetch(serverUrl, {
             method: 'POST',
             headers: {
@@ -48,10 +71,10 @@
         .then(response => response.json())
         .then(data => {
             const resultElement = document.getElementById('result');
-
             if (data.success) {
-                // Показать имя пользователя и количество очков, если валидация прошла успешно
+                userData = data; // Сохраняем данные пользователя
                 resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+                updateTimer(data.last_click_time); // Обновляем таймер
             } else {
                 resultElement.innerText = "Validation Failed.";
             }
@@ -60,6 +83,54 @@
             console.error('Error:', error);
             document.getElementById('result').innerText = "An error occurred.";
         });
+
+        // Функция для добавления 100 очков
+        function addPoints() {
+            const currentTime = Math.floor(Date.now() / 1000); // Текущее время в секундах
+            fetch(addPointsUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: userData.user_id,
+                    currentTime: currentTime
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    userData.points = data.points; // Обновляем очки
+                    updateTimer(currentTime); // Обновляем таймер
+                    document.getElementById('result').innerText = `You have earned 100 points! Total Points: ${userData.points}`;
+                } else {
+                    document.getElementById('result').innerText = `Please wait ${data.message}`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = "An error occurred.";
+            });
+        }
+
+        // Функция для обновления таймера
+        function updateTimer(lastClickTime) {
+            const currentTime = Math.floor(Date.now() / 1000); // Текущее время
+            const timeDifference = currentTime - lastClickTime;
+
+            if (timeDifference < 60) {
+                const timeLeft = 60 - timeDifference;
+                document.getElementById('timer').innerText = `Please wait ${timeLeft} seconds before clicking again.`;
+                document.getElementById('clickButton').disabled = true;
+
+                setTimeout(() => {
+                    updateTimer(lastClickTime); // Обновляем каждый раз, чтобы таймер не остановился
+                }, 1000); // Обновляем каждую секунду
+            } else {
+                document.getElementById('timer').innerText = "You can now click again!";
+                document.getElementById('clickButton').disabled = false;
+            }
+        }
     </script>
 </body>
 </html>
