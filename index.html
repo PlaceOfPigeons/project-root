@@ -78,6 +78,8 @@
                 if (timeLeft > 0) {
                     timerBtn.disabled = true; // Отключаем кнопку, пока не пройдет время
                     updateTimer();
+                } else {
+                    timerBtn.disabled = false; // Разблокируем кнопку сразу, если нет времени на ожидание
                 }
 
                 // Обработчик для кнопки получения очков
@@ -94,6 +96,9 @@
                         if (responseData.success) {
                             // Обновляем количество очков
                             resultElement.innerText = `You got 100 points! Total: ${responseData.points}`;
+                            // Перезапускаем таймер после получения очков
+                            timeLeft = responseData.time_left;
+                            updateTimer();
                         } else {
                             alert(responseData.message);
                         }
