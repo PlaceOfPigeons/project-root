@@ -3,104 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page with Google Material Icons</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Telegram Web App Validation</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .material-icons {
-            font-size: 30px; /* Увеличиваем размер иконки */
-            vertical-align: middle; /* Выравнивание по тексту */
-            margin-bottom: 1%; /* Отступ снизу для иконки */
-        }
         body {
-            background-color: #222; /* Тёмный фон */
-            color: white; /* Белый текст */
+            background-color: black;
+            color: white;
             font-family: Arial, sans-serif;
-            padding-bottom: 60px; /* Добавляем отступ, чтобы контент не перекрывал панель */
+            padding-bottom: 60px; /* Добавление отступа для видимости меню */
+            user-select: none; /* Отключение выделения текста */
+            -webkit-user-select: none; /* Для Safari */
+            -moz-user-select: none; /* Для Firefox */
+            -ms-user-select: none; /* Для старых версий IE */
+            overflow: hidden; /* Отключение прокрутки */
+            position: fixed; /* Фиксация позиции */
+            width: 100%; /* Растягиваем на весь экран */
+            height: 100%; /* Растягиваем на весь экран */
         }
+
         h1 {
+            text-align: center;
+        }
+
+        #result {
             text-align: center;
             margin-top: 20px;
         }
-        p {
+
+        #timer {
+            font-size: 24px;
+            color: white;
             text-align: center;
+            margin-top: 20px;
         }
-        nav.navbar {
-            position: fixed; /* Фиксированное положение */
-            bottom: 0; /* Навигационная панель будет внизу */
+
+        /* Стили для меню */
+        .navbar {
+            position: fixed;
+            bottom: 0;
             left: 0;
-            width: 100%; /* Панель займет всю ширину */
-            border-radius: 30px; /* Увеличиваем радиус скругления для более округлой формы */
-            backdrop-filter: blur(10px); /* Эффект размытия для матового стекла */
-            background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
-            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5); /* Легкая тень для панели */
-        }
-        .navbar button {
-            display: flex;
-            flex-direction: column; /* Иконка будет сверху, текст снизу */
-            align-items: center; /* Центрируем элементы */
-            justify-content: center;
-            background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон для кнопок */
-            border: none; /* Убираем границы */
-            border-radius: 15px; /* Скругляем углы кнопок */
-            padding: 10px;
-            transition: background-color 0.3s; /* Плавный переход фона при наведении */
-        }
-        .navbar button:hover {
-            background-color: rgba(0, 0, 0, 0.7); /* Немного темнее при наведении */
-        }
-        .navbar button.active {
-            background-color: rgba(0, 0, 0, 0.9); /* Темный цвет для активной кнопки */
-            color: #fff; /* Белый текст для активной кнопки */
+            right: 0;
+            z-index: 999;
         }
     </style>
 </head>
 <body>
+    <h1>Telegram Web App Validation</h1>
+    <div id="result">Loading...</div>
 
-    <!-- Контент страницы -->
-    <div class="container">
-        <h1>Welcome to the Page</h1>
-        <p>This is a demo page with Google Material Icons integrated into a dark-themed navigation bar. Click on the buttons above to navigate.</p>
-    </div>
+    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px;">
+        Get 100 points
+    </button>
+    <div id="timer"></div>
 
-    <!-- Навигационная панель -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <script>
+        const tg = window.Telegram.WebApp;
+        const initData = tg.initData;
+        
+        Telegram.WebApp.setBackgroundColor("#000000");
+        Telegram.WebApp.setHeaderColor("#000000");
+
+        const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate'; // Укажите свой URL
+
+        // Запрос данных у сервера при загрузке
+        fetch(serverUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ initData })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const resultElement = document.getElementById('result');
+            const timerBtn = document.getElementById('timer-btn');
+            const timerElement = document.getElementById('timer');
+
+            if (data.success) {
+                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+                
+                let timeLeft = data.time_left; // Получаем оставшееся время от сервера
+
+                // Функция для обновления таймера
+                function updateTimer() {
+                    if (timeLeft > 0) {
+                        timerElement.innerText = `Wait ${timeLeft}s`; // Обновляем текст на таймере
+                        timeLeft--;
+                        setTimeout(updateTimer, 1000);
+                    } else {
+                        timerElement.innerText = ''; // Убираем таймер, когда время заканчивается
+                        timerBtn.style.visibility = 'visible'; // Показываем кнопку обратно
+                        timerBtn.disabled = false; // Включаем кнопку для нажатия
+                    }
+                }
+
+                // Если таймер не истек, показываем время до следующего клика
+                if (timeLeft > 0) {
+                    timerBtn.style.visibility = 'hidden'; // Прячем кнопку, пока не пройдет время
+                    updateTimer();
+                } else {
+                    timerBtn.disabled = false; // Разблокируем кнопку сразу, если нет времени на ожидание
+                }
+
+                // Обработчик для кнопки получения очков
+                timerBtn.addEventListener('click', function() {
+                    // Скрыть кнопку сразу после клика, прежде чем отправлять запрос
+                    timerBtn.style.visibility = 'hidden'; 
+
+                    // Делаем запрос на сервер
+                    fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ userId: data.user_id })
+                    })
+                    .then(response => response.json())
+                    .then(responseData => {
+                        if (responseData.success) {
+                            // Обновляем количество очков и время последнего клика
+                            resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+
+                            // Перезапускаем таймер
+                            timeLeft = responseData.time_left;
+                            updateTimer();
+                        } else {
+                            alert(responseData.message);
+                            // Если не удалось получить очки, показываем кнопку снова
+                            timerBtn.style.visibility = 'visible';
+                        }
+
+                        // Перезагружаем страницу после выполнения запроса
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        timerBtn.style.visibility = 'visible'; // Показываем кнопку, если произошла ошибка
+
+                        // Перезагружаем страницу после ошибки
+                        window.location.reload();
+                    });
+                });
+
+            } else {
+                resultElement.innerText = "Validation Failed.";
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('result').innerText = "An error occurred.";
+        });
+    </script>
+
+    <!-- Меню внизу -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <button class="btn" id="mainBtn" onclick="setActive('mainBtn')">
-                <span class="material-icons">home</span> Main
-            </button>
-            <button class="btn" id="leadBtn" onclick="setActive('leadBtn')">
-                <span class="material-icons">leaderboard</span> Lead
-            </button>
-            <button class="btn" id="friendsBtn" onclick="setActive('friendsBtn')">
-                <span class="material-icons">group</span> Friends
-            </button>
-            <button class="btn" id="taskBtn" onclick="setActive('taskBtn')">
-                <span class="material-icons">task</span> Task
-            </button>
-            <button class="btn" id="faqBtn" onclick="setActive('faqBtn')">
-                <span class="material-icons">help_outline</span> FAQ
-            </button>
+            <button class="btn btn-dark" onclick="location.href='#main'">Main</button>
+            <button class="btn btn-dark" onclick="location.href='#lead'">Lead</button>
+            <button class="btn btn-dark" onclick="location.href='#friends'">Friends</button>
+            <button class="btn btn-dark" onclick="location.href='#task'">Task</button>
+            <button class="btn btn-dark" onclick="location.href='#faq'">FAQ</button>
         </div>
     </nav>
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        function setActive(buttonId) {
-            // Убираем класс 'active' у всех кнопок
-            const buttons = document.querySelectorAll('.navbar button');
-            buttons.forEach(button => {
-                button.classList.remove('active');
-            });
-
-            // Добавляем класс 'active' выбранной кнопке
-            const activeButton = document.getElementById(buttonId);
-            activeButton.classList.add('active');
-        }
-    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>
