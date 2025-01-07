@@ -12,6 +12,14 @@
             color: white;
             font-family: Arial, sans-serif;
             padding-bottom: 60px; /* Добавление отступа для видимости меню */
+            user-select: none; /* Отключение выделения текста */
+            -webkit-user-select: none; /* Для Safari */
+            -moz-user-select: none; /* Для Firefox */
+            -ms-user-select: none; /* Для старых версий IE */
+            overflow: hidden; /* Отключение прокрутки */
+            position: fixed; /* Фиксация позиции */
+            width: 100%; /* Растягиваем на весь экран */
+            height: 100%; /* Растягиваем на весь экран */
         }
 
         h1 {
