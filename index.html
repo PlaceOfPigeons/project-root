@@ -109,7 +109,7 @@
                     .then(responseData => {
                         if (responseData.success) {
                             // Обновляем количество очков и время последнего клика
-                            resultElement.innerText = `You got 100 points! Total: ${responseData.points}`;
+                            resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
 
                             // Перезапускаем таймер
                             timeLeft = responseData.time_left;
