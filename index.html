@@ -79,8 +79,8 @@
                         setTimeout(updateTimer, 1000);
                     } else {
                         timerElement.innerText = ''; // Убираем таймер, когда время заканчивается
-                        timerBtn.disabled = false; // Включаем кнопку для нажатия
                         timerBtn.style.display = 'inline-block'; // Показываем кнопку обратно
+                        timerBtn.disabled = false; // Включаем кнопку для нажатия
                     }
                 }
 
@@ -94,7 +94,8 @@
 
                 // Обработчик для кнопки получения очков
                 timerBtn.addEventListener('click', function() {
-                    timerBtn.style.display = 'none'; // Скрыть кнопку после клика
+                    // Скрыть кнопку сразу после клика
+                    timerBtn.style.display = 'none'; 
 
                     fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
                         method: 'POST',
