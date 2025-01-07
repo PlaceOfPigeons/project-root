@@ -65,11 +65,11 @@
                 // Функция для обновления кнопки с таймером
                 function updateTimer() {
                     if (timeLeft > 0) {
-                        timerBtn.innerText = `Wait ${timeLeft}s`;
+                        timerBtn.innerText = `Wait ${timeLeft}s`; // Обновляем текст на кнопке
                         timeLeft--;
                         setTimeout(updateTimer, 1000);
                     } else {
-                        timerBtn.innerText = 'Get 100 points';
+                        timerBtn.innerText = 'Get 100 points'; // Восстанавливаем оригинальный текст
                         timerBtn.disabled = false; // Включаем кнопку для нажатия
                     }
                 }
