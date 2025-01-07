@@ -30,6 +30,13 @@
             font-size: 18px;
             cursor: pointer;
         }
+
+        #timer {
+            font-size: 24px;
+            color: red;
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -37,6 +44,7 @@
     <div id="result">Loading...</div>
 
     <button id="timer-btn">Get 100 points</button>
+    <div id="timer"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -56,27 +64,29 @@
         .then(data => {
             const resultElement = document.getElementById('result');
             const timerBtn = document.getElementById('timer-btn');
+            const timerElement = document.getElementById('timer');
 
             if (data.success) {
                 resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
                 
                 let timeLeft = data.time_left; // Получаем оставшееся время от сервера
 
-                // Функция для обновления кнопки с таймером
+                // Функция для обновления таймера
                 function updateTimer() {
                     if (timeLeft > 0) {
-                        timerBtn.innerText = `Wait ${timeLeft}s`; // Обновляем текст на кнопке
+                        timerElement.innerText = `Wait ${timeLeft}s`; // Обновляем текст на таймере
                         timeLeft--;
                         setTimeout(updateTimer, 1000);
                     } else {
-                        timerBtn.innerText = 'Get 100 points'; // Восстанавливаем оригинальный текст
+                        timerElement.innerText = ''; // Убираем таймер, когда время заканчивается
                         timerBtn.disabled = false; // Включаем кнопку для нажатия
+                        timerBtn.style.display = 'inline-block'; // Показываем кнопку обратно
                     }
                 }
 
                 // Если таймер не истек, показываем время до следующего клика
                 if (timeLeft > 0) {
-                    timerBtn.disabled = true; // Отключаем кнопку, пока не пройдет время
+                    timerBtn.style.display = 'none'; // Прячем кнопку, пока не пройдет время
                     updateTimer();
                 } else {
                     timerBtn.disabled = false; // Разблокируем кнопку сразу, если нет времени на ожидание
@@ -84,6 +94,8 @@
 
                 // Обработчик для кнопки получения очков
                 timerBtn.addEventListener('click', function() {
+                    timerBtn.style.display = 'none'; // Скрыть кнопку после клика
+
                     fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
                         method: 'POST',
                         headers: {
@@ -94,13 +106,16 @@
                     .then(response => response.json())
                     .then(responseData => {
                         if (responseData.success) {
-                            // Обновляем количество очков
+                            // Обновляем количество очков и время последнего клика
                             resultElement.innerText = `You got 100 points! Total: ${responseData.points}`;
-                            // Перезапускаем таймер после получения очков
+
+                            // Перезапускаем таймер
                             timeLeft = responseData.time_left;
                             updateTimer();
                         } else {
                             alert(responseData.message);
+                            // Если не удалось получить очки, показываем кнопку снова
+                            timerBtn.style.display = 'inline-block';
                         }
                     });
                 });
