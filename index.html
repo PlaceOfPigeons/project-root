@@ -91,6 +91,12 @@
 
                 // Обработчик для кнопки получения очков
                 timerBtn.addEventListener('click', function() {
+                    // Сразу обновляем кнопку, чтобы показать состояние таймера
+                    timerBtn.disabled = true;
+                    timerBtn.classList.add('disabled');
+                    timerBtn.innerText = `Wait ${timeLeft}s`; // Показываем таймер на кнопке
+
+                    // Запрос на сервер для получения очков
                     fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
                         method: 'POST',
                         headers: {
@@ -108,6 +114,10 @@
                             updateTimer();
                         } else {
                             alert(responseData.message);
+                            // В случае ошибки восстанавливаем состояние кнопки
+                            timerBtn.disabled = false;
+                            timerBtn.classList.remove('disabled');
+                            timerBtn.innerText = 'Get 100 points';
                         }
                     });
                 });
@@ -123,4 +133,3 @@
     </script>
 </body>
 </html>
-
