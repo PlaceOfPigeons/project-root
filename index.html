@@ -11,7 +11,7 @@
             background-color: black;
             color: white;
             font-family: Arial, sans-serif;
-            padding-bottom: 60px;
+            padding-bottom: 60px; /* Добавление отступа для видимости меню */
         }
 
         h1 {
@@ -25,23 +25,12 @@
 
         #timer-btn {
             display: inline-block;
-            padding: 15px 30px;
+            padding: 10px;
             background-color: green;
             color: white;
             border-radius: 5px;
             font-size: 18px;
             cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #timer-btn:disabled {
-            background-color: gray;
-            cursor: not-allowed;
-        }
-
-        #timer-btn.loading {
-            background-color: orange;
-            cursor: progress;
         }
 
         #timer {
@@ -51,6 +40,7 @@
             margin-top: 20px;
         }
 
+        /* Стили для меню */
         .navbar {
             position: fixed;
             bottom: 0;
@@ -116,9 +106,7 @@
                 // Обработчик для кнопки получения очков
                 timerBtn.addEventListener('click', function() {
                     // Скрыть кнопку сразу после клика, прежде чем отправлять запрос
-                    timerBtn.style.visibility = 'hidden';
-                    timerBtn.classList.add('loading'); // Добавляем класс для отображения состояния загрузки
-                    timerBtn.innerText = 'Getting Points...'; // Обновляем текст кнопки
+                    timerBtn.style.visibility = 'hidden'; 
 
                     // Делаем запрос на сервер
                     fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
@@ -152,11 +140,6 @@
 
                         // Перезагружаем страницу после ошибки
                         window.location.reload();
-                    })
-                    .finally(() => {
-                        // Восстанавливаем текст и стиль кнопки после завершения
-                        timerBtn.classList.remove('loading');
-                        timerBtn.innerText = 'Get 100 points';
                     });
                 });
 
