@@ -50,8 +50,8 @@
             const resultElement = document.getElementById('result');
 
             if (data.success) {
-                // Показать имя пользователя, если валидация прошла успешно
-                resultElement.innerText = `Validation Successful! Welcome, ${data.username}!`;
+                // Показать имя пользователя и количество очков, если валидация прошла успешно
+                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
             } else {
                 resultElement.innerText = "Validation Failed.";
             }
