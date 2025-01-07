@@ -21,6 +21,16 @@
             margin-top: 20px;
         }
 
+        #timer-btn {
+            display: inline-block;
+            padding: 10px;
+            background-color: green;
+            color: white;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
         #timer {
             font-size: 24px;
             color: red;
@@ -32,6 +42,8 @@
 <body>
     <h1>Telegram Web App Validation</h1>
     <div id="result">Loading...</div>
+
+    <button id="timer-btn">Get 100 points</button>
     <div id="timer"></div>
 
     <script>
@@ -51,6 +63,7 @@
         .then(response => response.json())
         .then(data => {
             const resultElement = document.getElementById('result');
+            const timerBtn = document.getElementById('timer-btn');
             const timerElement = document.getElementById('timer');
 
             if (data.success) {
@@ -66,28 +79,69 @@
                         setTimeout(updateTimer, 1000);
                     } else {
                         timerElement.innerText = ''; // Убираем таймер, когда время заканчивается
-                        // Показываем кнопку Telegram Web App
-                        tg.MainButton.show();
-                        tg.MainButton.setText("Get 100 points");
-                        tg.MainButton.setParams({ color: "#0088CC" }); // Цвет кнопки
-                        tg.MainButton.setTextColor("#FFFFFF"); // Цвет текста кнопки
+                        timerBtn.style.visibility = 'visible'; // Показываем кнопку обратно
+                        timerBtn.disabled = false; // Включаем кнопку для нажатия
                     }
                 }
 
                 // Если таймер не истек, показываем время до следующего клика
                 if (timeLeft > 0) {
+                    timerBtn.style.visibility = 'hidden'; // Прячем кнопку, пока не пройдет время
                     updateTimer();
                 } else {
-                    tg.MainButton.show(); // Показываем кнопку сразу, если нет времени на ожидание
-                    tg.MainButton.setText("Get 100 points");
-                    tg.MainButton.setParams({ color: "#0088CC" }); // Цвет кнопки
-                    tg.MainButton.setTextColor("#FFFFFF"); // Цвет текста кнопки
+                    timerBtn.disabled = false; // Разблокируем кнопку сразу, если нет времени на ожидание
                 }
+
+                // Обработчик для кнопки получения очков
+                timerBtn.addEventListener('click', function() {
+                    // Скрыть кнопку сразу после клика, прежде чем отправлять запрос
+                    timerBtn.style.visibility = 'hidden'; 
+
+                    // Делаем запрос на сервер
+                    fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ userId: data.user_id })
+                    })
+                    .then(response => response.json())
+                    .then(responseData => {
+                        if (responseData.success) {
+                            // Обновляем количество очков и время последнего клика
+                            resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+
+                            // Перезапускаем таймер
+                            timeLeft = responseData.time_left;
+                            updateTimer();
+                        } else {
+                            alert(responseData.message);
+                            // Если не удалось получить очки, показываем кнопку снова
+                            timerBtn.style.visibility = 'visible';
+                        }
+
+                        // Перезагружаем страницу после выполнения запроса
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        timerBtn.style.visibility = 'visible'; // Показываем кнопку, если произошла ошибка
+
+                        // Перезагружаем страницу после ошибки
+                        window.location.reload();
+                    });
+                });
+
+                // Добавление кнопки Telegram Web App
+                tg.MainButton.setText("Get 100 points");
+                tg.MainButton.setTextColor("#FFFFFF"); // Цвет текста
+                tg.MainButton.setParams({ color: "#0088CC" }); // Цвет кнопки
+                tg.MainButton.show(); // Показать кнопку Telegram Web App
 
                 // Обработчик для кнопки Telegram Web App
                 tg.MainButton.onClick(() => {
                     // Скрыть кнопку сразу после клика, прежде чем отправлять запрос
-                    tg.MainButton.hide(); 
+                    tg.MainButton.hide();
 
                     // Делаем запрос на сервер для добавления очков
                     fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
@@ -108,7 +162,8 @@
                             updateTimer();
                         } else {
                             alert(responseData.message);
-                            tg.MainButton.show(); // Показываем кнопку снова
+                            // Если не удалось получить очки, показываем кнопку снова
+                            tg.MainButton.show();
                         }
                     })
                     .catch(error => {
