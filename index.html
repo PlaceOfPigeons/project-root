@@ -58,15 +58,6 @@
     <div id="timer"></div>
 
     <script>
-        // Проверка, если приложение запущено через Telegram Web App
-        const isTelegramWebApp = window.Telegram && window.Telegram.WebApp;
-
-        // Если приложение запущено через Telegram Web App, активируем полноэкранный режим
-        if (isTelegramWebApp) {
-            window.Telegram.WebApp.expand();
-            window.Telegram.WebApp.requestFullscreen();
-        }
-
         const tg = window.Telegram.WebApp;
         const initData = tg.initData;
         
