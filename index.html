@@ -20,11 +20,19 @@
             text-align: center;
             margin-top: 20px;
         }
+
+        #user-info {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.5em;
+        }
     </style>
 </head>
 <body>
     <h1>Telegram Web App Validation</h1>
-    <div id="result">Loading...</div>
+    <div id="result">Initializing...</div>
+
+    <div id="user-info" style="display: none;"></div>
 
     <script>
         // Получаем объект Telegram Web App
@@ -37,7 +45,7 @@
         // URL вашего сервера для проверки
         const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate'; // Укажите свой URL
 
-        // Отправка данных на сервер
+        // Отправка данных на сервер для валидации
         fetch(serverUrl, {
             method: 'POST',
             headers: {
@@ -48,7 +56,23 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                document.getElementById('result').innerText = "Validation Successful!";
+                // Ожидаем 2 секунды, прежде чем обновить информацию
+                setTimeout(() => {
+                    // После успешной валидации получаем информацию об очках
+                    fetch(`https://your-new-server.com/get_data?user_id=${data.user_id}`)
+                    .then(response => response.json())
+                    .then(userData => {
+                        // Прячем сообщение и показываем данные пользователя
+                        document.getElementById('result').style.display = 'none';
+                        const userInfoDiv = document.getElementById('user-info');
+                        userInfoDiv.style.display = 'block';
+                        userInfoDiv.innerHTML = `User: ${userData.name}<br>Score: ${userData.score}`;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        document.getElementById('result').innerText = "Failed to load user data.";
+                    });
+                }, 2000); // Задержка в 2 секунды
             } else {
                 document.getElementById('result').innerText = "Validation Failed.";
             }
