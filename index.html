@@ -84,50 +84,25 @@
 
                 // Обработчик для кнопки получения очков
                 timerBtn.addEventListener('click', function() {
-                    // Сразу начинаем обновлять таймер, когда кнопка нажата
-                    timerBtn.disabled = true; // Отключаем кнопку
-                    let remainingTime = 60; // Время ожидания (60 секунд, если сервер не передал)
-                    timerBtn.innerText = `Wait ${remainingTime}s`;
-
-                    // Обновляем таймер
-                    function startTimer() {
-                        if (remainingTime > 0) {
-                            timerBtn.innerText = `Wait ${remainingTime}s`;
-                            remainingTime--;
-                            setTimeout(startTimer, 1000);
+                    fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ userId: data.user_id })
+                    })
+                    .then(response => response.json())
+                    .then(responseData => {
+                        if (responseData.success) {
+                            // Обновляем количество очков
+                            resultElement.innerText = `You got 100 points! Total: ${responseData.points}`;
+                            // Перезапускаем таймер после получения очков
+                            timeLeft = responseData.time_left;
+                            updateTimer();
                         } else {
-                            timerBtn.innerText = 'Get 100 points';
-                            // Ожидаем ответ от сервера
-                            fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ userId: data.user_id })
-                            })
-                            .then(response => response.json())
-                            .then(responseData => {
-                                if (responseData.success) {
-                                    // Обновляем количество очков
-                                    resultElement.innerText = `You got 100 points! Total: ${responseData.points}`;
-                                    // Перезапускаем таймер после получения очков
-                                    timeLeft = responseData.time_left;
-                                    updateTimer();
-                                } else {
-                                    alert(responseData.message);
-                                    timerBtn.disabled = false;
-                                    timerBtn.innerText = 'Get 100 points';
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('An error occurred.');
-                                timerBtn.disabled = false;
-                                timerBtn.innerText = 'Get 100 points';
-                            });
+                            alert(responseData.message);
                         }
-                    }
-                    startTimer();
+                    });
                 });
 
             } else {
