@@ -150,7 +150,7 @@
 
     <div id="result" style="display: none;">Loading...</div>
 
-    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
+    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; visibility: hidden;">
         Get 100 points
     </button>
     <div id="timer" style="display: none;"></div>
@@ -200,7 +200,7 @@
                             setTimeout(updateTimer, 1000);
                         } else {
                             timerElement.innerText = '';
-                            timerBtn.style.visibility = 'visible';
+                            timerBtn.style.visibility = 'visible'; // Показываем кнопку после загрузки
                             timerBtn.disabled = false;
                         }
                     }
