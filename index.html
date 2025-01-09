@@ -52,14 +52,18 @@
             justify-content: center; /* Центрируем элементы по вертикали */
             transition: all 0.2s;
             padding: 10px;
+            border-radius: 30px; /* Овальная форма кнопки */
+            border: 2px solid transparent; /* Начальный прозрачный бордер */
         }
 
         .navbar button:hover {
             transform: scale(1.05);
+            border-color: #ffffff; /* Бордер становится белым при наведении */
         }
 
         .navbar button:active {
             transform: scale(0.95);
+            border-color: #ffffff; /* Бордер становится белым при нажатии */
         }
 
         .navbar .material-icons {
@@ -70,6 +74,8 @@
         .active-button {
             background-color: #ffffff !important;
             color: #000000 !important;
+            border-radius: 30px; /* Овальная форма активной кнопки */
+            border-color: #000000; /* Белый бордер при активации */
         }
 
         .active-button .material-icons {
