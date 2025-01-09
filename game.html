@@ -153,8 +153,8 @@
     <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
         Get 100 points
     </button>
-
-    <!-- Новая кнопка для забирания 100 очков -->
+    
+    <!-- Добавлена кнопка для вычитания 100 очков -->
     <button id="subtract-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
         Subtract 100 points
     </button>
@@ -219,7 +219,6 @@
                         timerBtn.disabled = false;
                     }
 
-                    // Обработчик кнопки для получения 100 очков
                     timerBtn.addEventListener('click', function() {
                         timerBtn.style.visibility = 'hidden';
 
@@ -233,7 +232,7 @@
                         .then(response => response.json())
                         .then(responseData => {
                             if (responseData.success) {
-                                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${responseData.points}`;
+                                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
                                 timeLeft = responseData.time_left;
                                 updateTimer();
                             } else {
@@ -250,7 +249,7 @@
                         });
                     });
 
-                    // Обработчик для кнопки, которая забирает 100 очков
+                    // Обработчик для кнопки вычитания 100 очков
                     subtractBtn.addEventListener('click', function() {
                         subtractBtn.style.visibility = 'hidden';
 
@@ -259,14 +258,14 @@
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ userId: data.user_id, productId: '911' })  // Передаем ID товара
+                            body: JSON.stringify({ userId: data.user_id })
                         })
                         .then(response => response.json())
                         .then(responseData => {
                             if (responseData.success) {
-                                resultElement.innerText = `Product processed successfully! Your new points balance: ${responseData.points}`;
+                                resultElement.innerText = `Points subtracted successfully! Your new points balance: ${responseData.points}`;
                             } else {
-                                alert(responseData.message);  // Показываем сообщение, если не хватает очков
+                                alert(responseData.message);
                             }
 
                             window.location.reload();
@@ -289,6 +288,50 @@
             document.getElementById('result').innerText = "An error occurred.";
             document.getElementById('result').style.display = 'block'; // Показываем результат
             document.getElementById('loading').style.display = 'none'; // Скрыть Loading
+        });
+    </script>
+
+    <!-- Навигационное меню с Tailwind CSS -->
+    <nav class="navbar">
+        <button id="btn-main" class="nav-button">
+            <span class="material-icons text-3xl mb-2">home</span>
+            Main
+        </button>
+        <button id="btn-lead" class="nav-button">
+            <span class="material-icons text-3xl mb-2">leaderboard</span>
+            Lead
+        </button>
+        <button id="btn-friends" class="nav-button">
+            <span class="material-icons text-3xl mb-2">group</span>
+            Friends
+        </button>
+        <button id="btn-task" class="nav-button">
+            <span class="material-icons text-3xl mb-2">task</span>
+            Task
+        </button>
+        <button id="btn-faq" class="nav-button">
+            <span class="material-icons text-3xl mb-2">help</span>
+            FAQ
+        </button>
+        <button id="btn-shop" class="nav-button">
+            <span class="material-icons text-3xl mb-2">shopping_cart</span>
+            Shop
+        </button>
+    </nav>
+
+    <script>
+        // Получаем все кнопки меню
+        const navButtons = document.querySelectorAll('.nav-button');
+
+        // Добавляем обработчики событий для каждой кнопки
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Убираем активное состояние с всех кнопок
+                navButtons.forEach(btn => btn.classList.remove('active-button'));
+
+                // Добавляем активное состояние на текущую кнопку
+                button.classList.add('active-button');
+            });
         });
     </script>
 </body>
