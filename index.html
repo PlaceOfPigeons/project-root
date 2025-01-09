@@ -136,10 +136,15 @@
             font-size: 24px;
             color: white;
         }
+
+        /* Скрыть заголовок на время загрузки */
+        #heading {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <h1>Telegram Web App Validation</h1>
+    <h1 id="heading">Telegram Web App Validation</h1>
     <!-- Предзагрузка -->
     <div id="loading">Loading...</div>
 
@@ -174,10 +179,12 @@
                 const timerBtn = document.getElementById('timer-btn');
                 const timerElement = document.getElementById('timer');
                 const loadingElement = document.getElementById('loading');
+                const headingElement = document.getElementById('heading');
                 const navbar = document.querySelector('.navbar');
 
                 // Скрываем предзагрузку
                 loadingElement.style.display = 'none';
+                headingElement.style.display = 'block'; // Показываем заголовок
                 navbar.style.display = 'flex'; // Показываем меню
 
                 if (data.success) {
