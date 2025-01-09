@@ -47,6 +47,8 @@
 
         .navbar button {
             transition: all 0.2s;
+            padding: 10px 20px;
+            text-align: center;
         }
 
         .navbar button:hover {
@@ -57,7 +59,6 @@
             transform: scale(0.95);
         }
 
-        /* Стили для активной кнопки */
         .active-button {
             background-color: #ffffff !important;
             color: #000000 !important;
@@ -65,6 +66,25 @@
 
         .active-button .material-icons {
             fill: #000000 !important;
+        }
+
+        .icon {
+            background-color: #333;
+            color: white;
+            border-radius: 50%;
+            padding: 15px;
+            margin-bottom: 5px;
+            font-size: 32px;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 600px) {
+            .navbar {
+                bottom: 0;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -163,26 +183,26 @@
         });
     </script>
 
-    <!-- Навигационное меню с Tailwind CSS -->
-    <nav class="navbar flex justify-between p-4">
-        <button id="btn-main" class="nav-button">
-            <span class="material-icons text-3xl mb-2">home</span>
+    <!-- Навигационное меню с адаптивностью -->
+    <nav class="navbar flex justify-between p-4 space-x-4">
+        <button id="btn-main" class="nav-button flex flex-col items-center w-full sm:w-auto">
+            <span class="material-icons icon">home</span>
             Main
         </button>
-        <button id="btn-lead" class="nav-button">
-            <span class="material-icons text-3xl mb-2">leaderboard</span>
+        <button id="btn-lead" class="nav-button flex flex-col items-center w-full sm:w-auto">
+            <span class="material-icons icon">leaderboard</span>
             Lead
         </button>
-        <button id="btn-friends" class="nav-button">
-            <span class="material-icons text-3xl mb-2">group</span>
+        <button id="btn-friends" class="nav-button flex flex-col items-center w-full sm:w-auto">
+            <span class="material-icons icon">group</span>
             Friends
         </button>
-        <button id="btn-task" class="nav-button">
-            <span class="material-icons text-3xl mb-2">task</span>
+        <button id="btn-task" class="nav-button flex flex-col items-center w-full sm:w-auto">
+            <span class="material-icons icon">task</span>
             Task
         </button>
-        <button id="btn-faq" class="nav-button">
-            <span class="material-icons text-3xl mb-2">help</span>
+        <button id="btn-faq" class="nav-button flex flex-col items-center w-full sm:w-auto">
+            <span class="material-icons icon">help</span>
             FAQ
         </button>
     </nav>
