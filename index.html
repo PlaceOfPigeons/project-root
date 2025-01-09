@@ -48,6 +48,7 @@
             align-items: center;
             padding: 5px 0;
             box-sizing: border-box;
+            display: none; /* Скрыть меню на время загрузки */
         }
 
         .navbar button {
@@ -75,11 +76,6 @@
             border-color: #ffffff;
         }
 
-        .navbar .material-icons {
-            margin-bottom: 2px;
-            font-size: 20px;
-        }
-
         .active-button {
             background-color: #ffffff !important;
             color: #000000 !important;
@@ -89,6 +85,40 @@
 
         .active-button .material-icons {
             fill: #000000 !important;
+        }
+
+        /* Медиа-запросы для адаптации на меньших экранах */
+        @media (max-width: 1200px) {
+            .navbar button {
+                flex: 1 1 16.666%;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar button {
+                flex: 1 1 16%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar button {
+                flex: 1 1 20%;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar button {
+                flex: 1 1 25%;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .navbar button {
+                flex: 1 1 33%;
+                font-size: 10px;
+            }
         }
 
         #loading {
@@ -104,37 +134,19 @@
             display: none;
         }
 
-        /* Новый стиль для магазина */
-        #shop-section {
+        #shop-container {
             display: none;
             text-align: center;
+            margin-top: 50px;
         }
 
-        .inventory-cell {
-            display: inline-block;
-            width: 60px;
-            height: 60px;
-            border: 2px solid white;
-            margin: 5px;
-            text-align: center;
-            line-height: 60px;
-            color: white;
-            background-color: #333;
+        #main-content {
+            display: block;
         }
 
-        .item {
-            display: inline-block;
-            width: 100px;
-            margin: 10px;
-            background-color: #444;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .item:hover {
-            background-color: #666;
+        /* Скрыть весь контент кроме кнопок навигации */
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -144,29 +156,39 @@
 
     <div id="result" style="display: none;">Loading...</div>
 
-    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
-        Get 100 points
-    </button>
-    <div id="timer"></div>
+    <div id="main-content">
+        <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
+            Get 100 points
+        </button>
+        <div id="timer"></div>
+    </div>
 
-    <!-- Новый раздел для магазина -->
-    <div id="shop-section">
-        <h2>Shop</h2>
-        <div id="inventory">
-            <div class="inventory-cell" id="cell1">Empty</div>
-            <div class="inventory-cell" id="cell2">Empty</div>
-            <div class="inventory-cell" id="cell3">Empty</div>
+    <!-- Shop Container -->
+    <div id="shop-container" class="hidden">
+        <h2>Welcome to the Shop</h2>
+        <div class="shop-item">
+            <p>Item 1 - 100 points</p>
+            <button class="btn">Buy Item 1</button>
         </div>
-        <div id="items">
-            <div class="item" id="item1" data-cost="1" data-bonus="1">
-                <span>1 Point</span>
-            </div>
-            <div class="item" id="item2" data-cost="20" data-bonus="2">
-                <span>20 Points</span>
-            </div>
-            <div class="item" id="item3" data-cost="100" data-bonus="3">
-                <span>100 Points</span>
-            </div>
+        <div class="shop-item">
+            <p>Item 2 - 200 points</p>
+            <button class="btn">Buy Item 2</button>
+        </div>
+        <div class="shop-item">
+            <p>Item 3 - 300 points</p>
+            <button class="btn">Buy Item 3</button>
+        </div>
+        <div class="shop-item">
+            <p>Item 4 - 400 points</p>
+            <button class="btn">Buy Item 4</button>
+        </div>
+        <div class="shop-item">
+            <p>Item 5 - 500 points</p>
+            <button class="btn">Buy Item 5</button>
+        </div>
+        <div class="shop-item">
+            <p>Item 6 - 600 points</p>
+            <button class="btn">Buy Item 6</button>
         </div>
     </div>
 
@@ -195,7 +217,8 @@
                 const loadingElement = document.getElementById('loading');
                 const headingElement = document.getElementById('heading');
                 const navbar = document.querySelector('.navbar');
-                const shopSection = document.getElementById('shop-section');
+                const mainContent = document.getElementById('main-content');
+                const shopContainer = document.getElementById('shop-container');
 
                 loadingElement.style.display = 'none'; // Убираем предзагрузку
                 headingElement.style.display = 'block'; // Показываем заголовок
@@ -240,7 +263,7 @@
                         .then(response => response.json())
                         .then(responseData => {
                             if (responseData.success) {
-                                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${responseData.points}`;
+                                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
                                 timeLeft = responseData.time_left;
                                 updateTimer();
                             } else {
@@ -256,42 +279,6 @@
                             window.location.reload();
                         });
                     });
-
-                    // Отображение магазина
-                    shopSection.style.display = 'block';
-
-                    // Обработка покупки товара
-                    document.querySelectorAll('.item').forEach(item => {
-                        item.addEventListener('click', () => {
-                            const cost = parseInt(item.getAttribute('data-cost'));
-                            const bonus = parseInt(item.getAttribute('data-bonus'));
-
-                            if (data.points >= cost) {
-                                // Проверка, есть ли место для добавления товара
-                                for (let i = 1; i <= 3; i++) {
-                                    const cell = document.getElementById(`cell${i}`);
-                                    if (cell.innerText === 'Empty') {
-                                        cell.innerText = `Bonus: +${bonus}`;
-                                        // Снижаем очки пользователя
-                                        data.points -= cost;
-                                        // Обновление данных в Firebase (или сервере)
-                                        fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/update_user', {
-                                            method: 'POST',
-                                            headers: { 'Content-Type': 'application/json' },
-                                            body: JSON.stringify({
-                                                userId: data.user_id,
-                                                points: data.points,
-                                                inventory: data.inventory // Обновить инвентарь
-                                            })
-                                        });
-                                        break;
-                                    }
-                                }
-                            } else {
-                                alert('Not enough points!');
-                            }
-                        });
-                    });
                 } else {
                     resultElement.innerText = "Validation Failed.";
                     resultElement.style.display = 'block';
@@ -303,6 +290,12 @@
             document.getElementById('result').innerText = "An error occurred.";
             document.getElementById('result').style.display = 'block';
             document.getElementById('loading').style.display = 'none'; // Скрыть Loading
+        });
+
+        // Button for switching to shop
+        document.getElementById('btn-shop').addEventListener('click', function() {
+            mainContent.classList.add('hidden');
+            shopContainer.classList.remove('hidden');
         });
     </script>
 
@@ -327,7 +320,7 @@
             <span class="material-icons text-3xl mb-2">help</span>
             FAQ
         </button>
-        <button id="btn-shop" class="nav-button active-button">
+        <button id="btn-shop" class="nav-button">
             <span class="material-icons text-3xl mb-2">shopping_cart</span>
             Shop
         </button>
