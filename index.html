@@ -38,21 +38,35 @@
             margin-top: 20px;
         }
         
-        button:focus {
-            outline: 2px solid transparent;  /* Задаем прозрачную обводку */
-            box-shadow: none; /* Убираем тень, если она есть */
+        button {
+            -webkit-appearance: none;
+            appearance: none;
         }
 
-
-
-
-        /* Стили для меню */
-        .navbar {
+        /* Кнопки */
+        .nav-buttons {
             position: fixed;
-            bottom: 0;
+            bottom: 10px;
             left: 0;
             right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
             z-index: 999;
+        }
+
+        .nav-buttons button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 18px;
+            width: 20%;
+            cursor: pointer;
+        }
+
+        .nav-buttons button:hover {
+            background-color: #555;
         }
     </style>
 </head>
@@ -164,20 +178,17 @@
         });
     </script>
 
-   <!-- Меню внизу -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #000000;">
-        <div class="container-fluid">
-            <button class="btn btn-dark" onclick="location.href='#main'">Main</button>
-            <button class="btn btn-dark" onclick="location.href='#lead'">Lead</button>
-            <button class="btn btn-dark" onclick="location.href='#friends'">Friends</button>
-            <button class="btn btn-dark" onclick="location.href='#task'">Task</button>
-            <button class="btn btn-dark" onclick="location.href='#faq'">FAQ</button>
-        </div>
-    </nav>
-    
+    <!-- Новая панель с кнопками -->
+    <div class="nav-buttons">
+        <button onclick="location.href='#main'">Main</button>
+        <button onclick="location.href='#lead'">Lead</button>
+        <button onclick="location.href='#friends'">Friends</button>
+        <button onclick="location.href='#task'">Task</button>
+        <button onclick="location.href='#faq'">FAQ</button>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 </body>
 </html>
