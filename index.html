@@ -43,6 +43,10 @@
             right: 0;
             z-index: 999;
             background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            overflow-x: auto; /* Горизонтальная прокрутка */
+            padding: 10px 0;
+            justify-content: flex-start;
         }
 
         .navbar button {
@@ -54,6 +58,7 @@
             padding: 10px;
             border-radius: 30px; /* Овальная форма кнопки */
             border: 2px solid transparent; /* Начальный прозрачный бордер */
+            margin-right: 15px; /* Расстояние между кнопками */
         }
 
         .navbar button:hover {
@@ -179,7 +184,7 @@
     </script>
 
     <!-- Навигационное меню с Tailwind CSS -->
-    <nav class="navbar flex flex-wrap justify-between p-4">
+    <nav class="navbar">
         <button id="btn-main" class="nav-button">
             <span class="material-icons text-3xl mb-2">home</span>
             Main
