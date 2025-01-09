@@ -146,7 +146,7 @@
 
     <div id="result" style="display: none;">Loading...</div>
 
-    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px;">
+    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
         Get 100 points
     </button>
     <div id="timer"></div>
@@ -194,20 +194,21 @@
                             setTimeout(updateTimer, 1000);
                         } else {
                             timerElement.innerText = '';
-                            timerBtn.style.visibility = 'visible';
+                            timerBtn.style.display = 'block'; // Показываем кнопку
                             timerBtn.disabled = false;
                         }
                     }
 
                     if (timeLeft > 0) {
-                        timerBtn.style.visibility = 'hidden';
+                        timerBtn.style.display = 'none'; // Скрываем кнопку во время таймера
                         updateTimer();
                     } else {
                         timerBtn.disabled = false;
+                        timerBtn.style.display = 'block'; // Показываем кнопку
                     }
 
                     timerBtn.addEventListener('click', function() {
-                        timerBtn.style.visibility = 'hidden';
+                        timerBtn.style.display = 'none'; // Скрываем кнопку на время обработки
 
                         fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
                             method: 'POST',
@@ -224,14 +225,14 @@
                                 updateTimer();
                             } else {
                                 alert(responseData.message);
-                                timerBtn.style.visibility = 'visible';
+                                timerBtn.style.display = 'block'; // Показываем кнопку в случае ошибки
                             }
 
                             window.location.reload();
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            timerBtn.style.visibility = 'visible';
+                            timerBtn.style.display = 'block'; // Показываем кнопку в случае ошибки
                             window.location.reload();
                         });
                     });
@@ -277,3 +278,4 @@
     </nav>
 </body>
 </html>
+
