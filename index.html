@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width: device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <title>Telegram Web App Validation</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -116,6 +116,13 @@
             .navbar button {
                 flex: 1 1 33.333%; /* При разрешении 480px каждая кнопка занимает 33.33% */
                 font-size: 14px; /* Уменьшаем размер шрифта для мобильных устройств */
+            }
+        }
+
+        @media (max-width: 360px) {
+            .navbar button {
+                flex: 1 1 50%; /* При очень маленьких экранах кнопки будут занимать 50% ширины */
+                font-size: 12px; /* Уменьшаем размер шрифта */
             }
         }
     </style>
