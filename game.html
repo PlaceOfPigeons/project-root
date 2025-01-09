@@ -44,11 +44,11 @@
             z-index: 999;
             background-color: rgba(0, 0, 0, 0.8);
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Выравнивание кнопок по ширине */
             align-items: center;
-            padding: 5px 0;
+            padding: 5px 0; /* Уменьшено расстояние сверху и снизу */
             box-sizing: border-box;
-            display: none;
+            display: none; /* Скрыть меню на время загрузки */
         }
 
         .navbar button {
@@ -57,13 +57,13 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
-            padding: 4px;
+            padding: 4px; /* Уменьшены отступы для экономии места */
             border-radius: 30px;
             border: 2px solid transparent;
-            margin: 0 1px;
-            flex: 1 1 16.666%;
+            margin: 0 1px; /* Еще меньшее расстояние между кнопками */
+            flex: 1 1 16.666%; /* Каждая кнопка будет занимать 1/6 ширины экрана */
             box-sizing: border-box;
-            min-width: 50px;
+            min-width: 50px; /* Минимальная ширина кнопок */
         }
 
         .navbar button:hover {
@@ -77,10 +77,11 @@
         }
 
         .navbar .material-icons {
-            margin-bottom: 2px;
-            font-size: 20px;
+            margin-bottom: 2px; /* Уменьшен отступ между иконкой и текстом */
+            font-size: 20px; /* Размер иконок уменьшен */
         }
 
+        /* Стили для активной кнопки */
         .active-button {
             background-color: #ffffff !important;
             color: #000000 !important;
@@ -92,39 +93,41 @@
             fill: #000000 !important;
         }
 
+        /* Медиа-запросы для адаптации на меньших экранах */
         @media (max-width: 1200px) {
             .navbar button {
-                flex: 1 1 16.666%;
+                flex: 1 1 16.666%; /* Оставляем 1/6 ширины кнопок для больших экранов */
             }
         }
 
         @media (max-width: 992px) {
             .navbar button {
-                flex: 1 1 16%;
+                flex: 1 1 16%; /* Немного уменьшаем ширину кнопок при разрешении экрана 992px */
             }
         }
 
         @media (max-width: 768px) {
             .navbar button {
-                flex: 1 1 20%;
-                font-size: 14px;
+                flex: 1 1 20%; /* При разрешении 768px каждая кнопка занимает 20% */
+                font-size: 14px; /* Уменьшаем размер шрифта на средних экранах */
             }
         }
 
         @media (max-width: 480px) {
             .navbar button {
-                flex: 1 1 25%;
-                font-size: 12px;
+                flex: 1 1 25%; /* При разрешении 480px каждая кнопка занимает 25% */
+                font-size: 12px; /* Уменьшаем размер шрифта для мобильных устройств */
             }
         }
 
         @media (max-width: 360px) {
             .navbar button {
-                flex: 1 1 33%;
-                font-size: 10px;
+                flex: 1 1 33%; /* При очень маленьких экранах кнопки будут занимать 33% ширины */
+                font-size: 10px; /* Еще меньше размер шрифта */
             }
         }
 
+        /* Стиль для предзагрузки */
         #loading {
             position: absolute;
             top: 50%;
@@ -134,28 +137,15 @@
             color: white;
         }
 
+        /* Скрыть заголовок на время загрузки */
         #heading {
             display: none;
-        }
-
-        #buy-btn {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            width: 100%;
-            font-size: 18px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        #buy-btn:hover {
-            background-color: #45a049;
         }
     </style>
 </head>
 <body>
     <h1 id="heading">Telegram Web App Validation</h1>
+    <!-- Предзагрузка -->
     <div id="loading">Loading...</div>
 
     <div id="result" style="display: none;">Loading...</div>
@@ -163,11 +153,6 @@
     <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
         Get 100 points
     </button>
-
-    <button id="buy-btn" style="display: none;">
-        Buy
-    </button>
-
     <div id="timer" style="display: none;"></div>
 
     <script>
@@ -188,28 +173,44 @@
         })
         .then(response => response.json())
         .then(data => {
+            // Задержка на 2 секунды перед скрытием предзагрузки
             setTimeout(() => {
                 const resultElement = document.getElementById('result');
                 const timerBtn = document.getElementById('timer-btn');
-                const buyBtn = document.getElementById('buy-btn');
+                const timerElement = document.getElementById('timer');
                 const loadingElement = document.getElementById('loading');
                 const headingElement = document.getElementById('heading');
                 const navbar = document.querySelector('.navbar');
 
+                // Скрываем предзагрузку
                 loadingElement.style.display = 'none';
-                headingElement.style.display = 'block';
-                navbar.style.display = 'flex';
+                headingElement.style.display = 'block'; // Показываем заголовок
+                navbar.style.display = 'flex'; // Показываем меню
 
                 if (data.success) {
                     resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
-                    resultElement.style.display = 'block';
+                    resultElement.style.display = 'block'; // Показываем результат
 
-                    // Показываем кнопку "Buy" сразу после загрузки
-                    buyBtn.style.display = 'block';
+                    let timeLeft = data.time_left;
 
-                    // Логика для кнопки "Get 100 points"
-                    timerBtn.style.visibility = 'visible';
-                    timerBtn.disabled = false;
+                    function updateTimer() {
+                        if (timeLeft > 0) {
+                            timerElement.innerText = `Wait ${timeLeft}s`;
+                            timeLeft--;
+                            setTimeout(updateTimer, 1000);
+                        } else {
+                            timerElement.innerText = '';
+                            timerBtn.style.visibility = 'visible';
+                            timerBtn.disabled = false;
+                        }
+                    }
+
+                    if (timeLeft > 0) {
+                        timerBtn.style.visibility = 'hidden';
+                        updateTimer();
+                    } else {
+                        timerBtn.disabled = false;
+                    }
 
                     timerBtn.addEventListener('click', function() {
                         timerBtn.style.visibility = 'hidden';
@@ -225,30 +226,37 @@
                         .then(responseData => {
                             if (responseData.success) {
                                 resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+                                timeLeft = responseData.time_left;
+                                updateTimer();
                             } else {
                                 alert(responseData.message);
                                 timerBtn.style.visibility = 'visible';
                             }
+
+                            window.location.reload();
                         })
                         .catch(error => {
                             console.error('Error:', error);
                             timerBtn.style.visibility = 'visible';
+                            window.location.reload();
                         });
                     });
+
                 } else {
                     resultElement.innerText = "Validation Failed.";
-                    resultElement.style.display = 'block';
+                    resultElement.style.display = 'block'; // Показываем результат
                 }
-            }, 2000);
+            }, 2000); // Делаем задержку 2 секунды
         })
         .catch(error => {
             console.error('Error:', error);
             document.getElementById('result').innerText = "An error occurred.";
-            document.getElementById('result').style.display = 'block';
-            document.getElementById('loading').style.display = 'none';
+            document.getElementById('result').style.display = 'block'; // Показываем результат
+            document.getElementById('loading').style.display = 'none'; // Скрыть Loading
         });
     </script>
 
+    <!-- Навигационное меню с Tailwind CSS -->
     <nav class="navbar">
         <button id="btn-main" class="nav-button">
             <span class="material-icons text-3xl mb-2">home</span>
@@ -277,10 +285,16 @@
     </nav>
 
     <script>
+        // Получаем все кнопки меню
         const navButtons = document.querySelectorAll('.nav-button');
+
+        // Добавляем обработчики событий для каждой кнопки
         navButtons.forEach(button => {
             button.addEventListener('click', () => {
+                // Убираем активное состояние с всех кнопок
                 navButtons.forEach(btn => btn.classList.remove('active-button'));
+
+                // Добавляем активное состояние на текущую кнопку
                 button.classList.add('active-button');
             });
         });
