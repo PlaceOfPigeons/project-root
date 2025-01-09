@@ -38,10 +38,11 @@
             margin-top: 20px;
         }
         
-        button {
-            -webkit-appearance: none;
-            appearance: none;
+        button:focus {
+            outline: 2px solid transparent;  /* Задаем прозрачную обводку */
+            box-shadow: none; /* Убираем тень, если она есть */
         }
+
 
 
 
