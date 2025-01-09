@@ -44,9 +44,9 @@
             z-index: 999;
             background-color: rgba(0, 0, 0, 0.8);
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Выравнивание кнопок по ширине */
             align-items: center;
-            padding: 5px 0;
+            padding: 5px 0; /* Уменьшено расстояние сверху и снизу */
             box-sizing: border-box;
             display: none; /* Скрыть меню на время загрузки */
         }
@@ -57,13 +57,13 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
-            padding: 4px;
+            padding: 4px; /* Уменьшены отступы для экономии места */
             border-radius: 30px;
             border: 2px solid transparent;
-            margin: 0 1px;
-            flex: 1 1 16.666%;
+            margin: 0 1px; /* Еще меньшее расстояние между кнопками */
+            flex: 1 1 16.666%; /* Каждая кнопка будет занимать 1/6 ширины экрана */
             box-sizing: border-box;
-            min-width: 50px;
+            min-width: 50px; /* Минимальная ширина кнопок */
         }
 
         .navbar button:hover {
@@ -76,6 +76,12 @@
             border-color: #ffffff;
         }
 
+        .navbar .material-icons {
+            margin-bottom: 2px; /* Уменьшен отступ между иконкой и текстом */
+            font-size: 20px; /* Размер иконок уменьшен */
+        }
+
+        /* Стили для активной кнопки */
         .active-button {
             background-color: #ffffff !important;
             color: #000000 !important;
@@ -90,37 +96,38 @@
         /* Медиа-запросы для адаптации на меньших экранах */
         @media (max-width: 1200px) {
             .navbar button {
-                flex: 1 1 16.666%;
+                flex: 1 1 16.666%; /* Оставляем 1/6 ширины кнопок для больших экранов */
             }
         }
 
         @media (max-width: 992px) {
             .navbar button {
-                flex: 1 1 16%;
+                flex: 1 1 16%; /* Немного уменьшаем ширину кнопок при разрешении экрана 992px */
             }
         }
 
         @media (max-width: 768px) {
             .navbar button {
-                flex: 1 1 20%;
-                font-size: 14px;
+                flex: 1 1 20%; /* При разрешении 768px каждая кнопка занимает 20% */
+                font-size: 14px; /* Уменьшаем размер шрифта на средних экранах */
             }
         }
 
         @media (max-width: 480px) {
             .navbar button {
-                flex: 1 1 25%;
-                font-size: 12px;
+                flex: 1 1 25%; /* При разрешении 480px каждая кнопка занимает 25% */
+                font-size: 12px; /* Уменьшаем размер шрифта для мобильных устройств */
             }
         }
 
         @media (max-width: 360px) {
             .navbar button {
-                flex: 1 1 33%;
-                font-size: 10px;
+                flex: 1 1 33%; /* При очень маленьких экранах кнопки будут занимать 33% ширины */
+                font-size: 10px; /* Еще меньше размер шрифта */
             }
         }
 
+        /* Стиль для предзагрузки */
         #loading {
             position: absolute;
             top: 50%;
@@ -130,67 +137,23 @@
             color: white;
         }
 
+        /* Скрыть заголовок на время загрузки */
         #heading {
-            display: none;
-        }
-
-        #shop-container {
-            display: none;
-            text-align: center;
-            margin-top: 50px;
-        }
-
-        #main-content {
-            display: block;
-        }
-
-        /* Скрыть весь контент кроме кнопок навигации */
-        .hidden {
             display: none;
         }
     </style>
 </head>
 <body>
     <h1 id="heading">Telegram Web App Validation</h1>
+    <!-- Предзагрузка -->
     <div id="loading">Loading...</div>
 
     <div id="result" style="display: none;">Loading...</div>
 
-    <div id="main-content">
-        <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
-            Get 100 points
-        </button>
-        <div id="timer"></div>
-    </div>
-
-    <!-- Shop Container -->
-    <div id="shop-container" class="hidden">
-        <h2>Welcome to the Shop</h2>
-        <div class="shop-item">
-            <p>Item 1 - 100 points</p>
-            <button class="btn">Buy Item 1</button>
-        </div>
-        <div class="shop-item">
-            <p>Item 2 - 200 points</p>
-            <button class="btn">Buy Item 2</button>
-        </div>
-        <div class="shop-item">
-            <p>Item 3 - 300 points</p>
-            <button class="btn">Buy Item 3</button>
-        </div>
-        <div class="shop-item">
-            <p>Item 4 - 400 points</p>
-            <button class="btn">Buy Item 4</button>
-        </div>
-        <div class="shop-item">
-            <p>Item 5 - 500 points</p>
-            <button class="btn">Buy Item 5</button>
-        </div>
-        <div class="shop-item">
-            <p>Item 6 - 600 points</p>
-            <button class="btn">Buy Item 6</button>
-        </div>
-    </div>
+    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
+        Get 100 points
+    </button>
+    <div id="timer" style="display: none;"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -210,6 +173,7 @@
         })
         .then(response => response.json())
         .then(data => {
+            // Задержка на 2 секунды перед скрытием предзагрузки
             setTimeout(() => {
                 const resultElement = document.getElementById('result');
                 const timerBtn = document.getElementById('timer-btn');
@@ -217,10 +181,9 @@
                 const loadingElement = document.getElementById('loading');
                 const headingElement = document.getElementById('heading');
                 const navbar = document.querySelector('.navbar');
-                const mainContent = document.getElementById('main-content');
-                const shopContainer = document.getElementById('shop-container');
 
-                loadingElement.style.display = 'none'; // Убираем предзагрузку
+                // Скрываем предзагрузку
+                loadingElement.style.display = 'none';
                 headingElement.style.display = 'block'; // Показываем заголовок
                 navbar.style.display = 'flex'; // Показываем меню
 
@@ -237,21 +200,20 @@
                             setTimeout(updateTimer, 1000);
                         } else {
                             timerElement.innerText = '';
-                            timerBtn.style.display = 'block'; // Показываем кнопку
+                            timerBtn.style.visibility = 'visible';
                             timerBtn.disabled = false;
                         }
                     }
 
                     if (timeLeft > 0) {
-                        timerBtn.style.display = 'none'; // Скрываем кнопку во время таймера
+                        timerBtn.style.visibility = 'hidden';
                         updateTimer();
                     } else {
                         timerBtn.disabled = false;
-                        timerBtn.style.display = 'block'; // Показываем кнопку
                     }
 
                     timerBtn.addEventListener('click', function() {
-                        timerBtn.style.display = 'none'; // Скрываем кнопку на время обработки
+                        timerBtn.style.visibility = 'hidden';
 
                         fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
                             method: 'POST',
@@ -268,37 +230,33 @@
                                 updateTimer();
                             } else {
                                 alert(responseData.message);
-                                timerBtn.style.display = 'block'; // Показываем кнопку в случае ошибки
+                                timerBtn.style.visibility = 'visible';
                             }
 
                             window.location.reload();
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            timerBtn.style.display = 'block'; // Показываем кнопку в случае ошибки
+                            timerBtn.style.visibility = 'visible';
                             window.location.reload();
                         });
                     });
+
                 } else {
                     resultElement.innerText = "Validation Failed.";
-                    resultElement.style.display = 'block';
+                    resultElement.style.display = 'block'; // Показываем результат
                 }
-            }, 2000); // Задержка 2 секунды
+            }, 2000); // Делаем задержку 2 секунды
         })
         .catch(error => {
             console.error('Error:', error);
             document.getElementById('result').innerText = "An error occurred.";
-            document.getElementById('result').style.display = 'block';
+            document.getElementById('result').style.display = 'block'; // Показываем результат
             document.getElementById('loading').style.display = 'none'; // Скрыть Loading
-        });
-
-        // Button for switching to shop
-        document.getElementById('btn-shop').addEventListener('click', function() {
-            mainContent.classList.add('hidden');
-            shopContainer.classList.remove('hidden');
         });
     </script>
 
+    <!-- Навигационное меню с Tailwind CSS -->
     <nav class="navbar">
         <button id="btn-main" class="nav-button">
             <span class="material-icons text-3xl mb-2">home</span>
@@ -325,5 +283,21 @@
             Shop
         </button>
     </nav>
+
+    <script>
+        // Получаем все кнопки меню
+        const navButtons = document.querySelectorAll('.nav-button');
+
+        // Добавляем обработчики событий для каждой кнопки
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Убираем активное состояние с всех кнопок
+                navButtons.forEach(btn => btn.classList.remove('active-button'));
+
+                // Добавляем активное состояние на текущую кнопку
+                button.classList.add('active-button');
+            });
+        });
+    </script>
 </body>
 </html>
