@@ -141,6 +141,22 @@
         #heading {
             display: none;
         }
+
+        /* Стиль для кнопки "Buy" */
+        #buy-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            width: 100%;
+            font-size: 18px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #buy-btn:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -153,10 +169,10 @@
     <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
         Get 100 points
     </button>
-    
-    <!-- Добавлена кнопка для вычитания 100 очков -->
-    <button id="subtract-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: block;">
-        Subtract 100 points
+
+    <!-- Кнопка Buy -->
+    <button id="buy-btn" style="display: none;">
+        Buy
     </button>
 
     <div id="timer" style="display: none;"></div>
@@ -183,7 +199,7 @@
             setTimeout(() => {
                 const resultElement = document.getElementById('result');
                 const timerBtn = document.getElementById('timer-btn');
-                const subtractBtn = document.getElementById('subtract-btn'); // Получаем новую кнопку
+                const buyBtn = document.getElementById('buy-btn');  // Получаем кнопку "Buy"
                 const timerElement = document.getElementById('timer');
                 const loadingElement = document.getElementById('loading');
                 const headingElement = document.getElementById('heading');
@@ -209,6 +225,7 @@
                             timerElement.innerText = '';
                             timerBtn.style.visibility = 'visible';
                             timerBtn.disabled = false;
+                            buyBtn.style.display = 'block';  // Показываем кнопку "Buy"
                         }
                     }
 
@@ -217,6 +234,7 @@
                         updateTimer();
                     } else {
                         timerBtn.disabled = false;
+                        buyBtn.style.display = 'block';  // Показываем кнопку "Buy"
                     }
 
                     timerBtn.addEventListener('click', function() {
@@ -245,34 +263,6 @@
                         .catch(error => {
                             console.error('Error:', error);
                             timerBtn.style.visibility = 'visible';
-                            window.location.reload();
-                        });
-                    });
-
-                    // Обработчик для кнопки вычитания 100 очков
-                    subtractBtn.addEventListener('click', function() {
-                        subtractBtn.style.visibility = 'hidden';
-
-                        fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/subtract_points', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ userId: data.user_id })
-                        })
-                        .then(response => response.json())
-                        .then(responseData => {
-                            if (responseData.success) {
-                                resultElement.innerText = `Points subtracted successfully! Your new points balance: ${responseData.points}`;
-                            } else {
-                                alert(responseData.message);
-                            }
-
-                            window.location.reload();
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            subtractBtn.style.visibility = 'visible';
                             window.location.reload();
                         });
                     });
