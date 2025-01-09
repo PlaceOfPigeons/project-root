@@ -48,6 +48,7 @@
             align-items: center;
             padding: 5px 0; /* Уменьшено расстояние сверху и снизу */
             box-sizing: border-box;
+            display: none; /* Скрыть меню на время загрузки */
         }
 
         .navbar button {
@@ -167,73 +168,78 @@
         })
         .then(response => response.json())
         .then(data => {
-            const resultElement = document.getElementById('result');
-            const timerBtn = document.getElementById('timer-btn');
-            const timerElement = document.getElementById('timer');
-            const loadingElement = document.getElementById('loading');
+            // Задержка на 2 секунды перед скрытием предзагрузки
+            setTimeout(() => {
+                const resultElement = document.getElementById('result');
+                const timerBtn = document.getElementById('timer-btn');
+                const timerElement = document.getElementById('timer');
+                const loadingElement = document.getElementById('loading');
+                const navbar = document.querySelector('.navbar');
 
-            // Скрываем предзагрузку
-            loadingElement.style.display = 'none';
+                // Скрываем предзагрузку
+                loadingElement.style.display = 'none';
+                navbar.style.display = 'flex'; // Показываем меню
 
-            if (data.success) {
-                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
-                resultElement.style.display = 'block'; // Показываем результат
+                if (data.success) {
+                    resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+                    resultElement.style.display = 'block'; // Показываем результат
 
-                let timeLeft = data.time_left;
+                    let timeLeft = data.time_left;
 
-                function updateTimer() {
+                    function updateTimer() {
+                        if (timeLeft > 0) {
+                            timerElement.innerText = `Wait ${timeLeft}s`;
+                            timeLeft--;
+                            setTimeout(updateTimer, 1000);
+                        } else {
+                            timerElement.innerText = '';
+                            timerBtn.style.visibility = 'visible';
+                            timerBtn.disabled = false;
+                        }
+                    }
+
                     if (timeLeft > 0) {
-                        timerElement.innerText = `Wait ${timeLeft}s`;
-                        timeLeft--;
-                        setTimeout(updateTimer, 1000);
+                        timerBtn.style.visibility = 'hidden';
+                        updateTimer();
                     } else {
-                        timerElement.innerText = '';
-                        timerBtn.style.visibility = 'visible';
                         timerBtn.disabled = false;
                     }
-                }
 
-                if (timeLeft > 0) {
-                    timerBtn.style.visibility = 'hidden';
-                    updateTimer();
-                } else {
-                    timerBtn.disabled = false;
-                }
+                    timerBtn.addEventListener('click', function() {
+                        timerBtn.style.visibility = 'hidden';
 
-                timerBtn.addEventListener('click', function() {
-                    timerBtn.style.visibility = 'hidden';
+                        fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ userId: data.user_id })
+                        })
+                        .then(response => response.json())
+                        .then(responseData => {
+                            if (responseData.success) {
+                                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+                                timeLeft = responseData.time_left;
+                                updateTimer();
+                            } else {
+                                alert(responseData.message);
+                                timerBtn.style.visibility = 'visible';
+                            }
 
-                    fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ userId: data.user_id })
-                    })
-                    .then(response => response.json())
-                    .then(responseData => {
-                        if (responseData.success) {
-                            resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
-                            timeLeft = responseData.time_left;
-                            updateTimer();
-                        } else {
-                            alert(responseData.message);
+                            window.location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
                             timerBtn.style.visibility = 'visible';
-                        }
-
-                        window.location.reload();
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        timerBtn.style.visibility = 'visible';
-                        window.location.reload();
+                            window.location.reload();
+                        });
                     });
-                });
 
-            } else {
-                resultElement.innerText = "Validation Failed.";
-                resultElement.style.display = 'block'; // Показываем результат
-            }
+                } else {
+                    resultElement.innerText = "Validation Failed.";
+                    resultElement.style.display = 'block'; // Показываем результат
+                }
+            }, 2000); // Делаем задержку 2 секунды
         })
         .catch(error => {
             console.error('Error:', error);
