@@ -125,16 +125,29 @@
                 font-size: 10px; /* Еще меньше размер шрифта */
             }
         }
+
+        /* Стиль для предзагрузки */
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: white;
+        }
     </style>
 </head>
 <body>
     <h1>Telegram Web App Validation</h1>
-    <div id="result">Loading...</div>
+    <!-- Предзагрузка -->
+    <div id="loading">Loading...</div>
 
-    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px;">
+    <div id="result" style="display: none;">Loading...</div>
+
+    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
         Get 100 points
     </button>
-    <div id="timer"></div>
+    <div id="timer" style="display: none;"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -157,9 +170,14 @@
             const resultElement = document.getElementById('result');
             const timerBtn = document.getElementById('timer-btn');
             const timerElement = document.getElementById('timer');
+            const loadingElement = document.getElementById('loading');
+
+            // Скрываем предзагрузку
+            loadingElement.style.display = 'none';
 
             if (data.success) {
                 resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+                resultElement.style.display = 'block'; // Показываем результат
 
                 let timeLeft = data.time_left;
 
@@ -214,11 +232,14 @@
 
             } else {
                 resultElement.innerText = "Validation Failed.";
+                resultElement.style.display = 'block'; // Показываем результат
             }
         })
         .catch(error => {
             console.error('Error:', error);
             document.getElementById('result').innerText = "An error occurred.";
+            document.getElementById('result').style.display = 'block'; // Показываем результат
+            document.getElementById('loading').style.display = 'none'; // Скрыть Loading
         });
     </script>
 
