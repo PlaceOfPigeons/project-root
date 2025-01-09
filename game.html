@@ -2,360 +2,302 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GAME</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Telegram Web App Validation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #000;
+            background-color: black;
+            color: white;
             font-family: Arial, sans-serif;
+            padding-bottom: 60px;
+            user-select: none;
             overflow: hidden;
-            touch-action: manipulation;
-        }
-
-        #game {
-            position: relative;
+            position: fixed;
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            background-color: #000;
         }
 
-        #score {
-            position: absolute;
-            top: 12%; /* Опускаем на 15% от высоты экрана */
-            left: 10px;
-            font-size: 28px;
-            color: #fff;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
+        h1 {
+            text-align: center;
         }
 
-        #score img {
-            width: 36.4px;
-            height: 36.4px;
-            margin-right: 5px;
+        #result {
+            text-align: center;
+            margin-top: 20px;
         }
 
         #timer {
-            position: absolute;
-            top: 12%; /* Опускаем на 15% от высоты экрана */
-            right: 10px;
-            font-size: 28px;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        #sequence {
-            position: absolute;
-            top: 20%; /* Опускаем на 10% от высоты экрана */
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 36px;
-            color: #fff;
-            font-weight: bold;
-            white-space: nowrap;
-            z-index: 1;
-        }
-
-        .wrapper {
-            position: absolute;
-            width: 96px;
-            height: 96px;
-            top: 15%;
-            left: 0;
-            animation: fall linear 4s forwards;
-            z-index: 2;
-        }
-
-        .cage, .bird {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .cage {
-            background-image: url('image/cage.png');
-            background-size: cover;
-            background-position: center;
-            z-index: 2;
-            cursor: pointer;
-        }
-
-        .bird {
-            z-index: 1;
-            cursor: pointer;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            user-select: none;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .bird.clicked {
-            transform: scale(1.5) rotate(10deg);
-            opacity: 0;
-            outline: none;
-        }
-
-        .points {
-            position: absolute;
             font-size: 24px;
-            color: #00ff00;
-            font-weight: bold;
-            opacity: 1;
-            transition: opacity 1s ease;
-            pointer-events: none;
+            color: white;
+            text-align: center;
+            margin-top: 20px;
         }
 
-        .points.plus10 {
-            color: #ff0000;
-            font-size: 36px;
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: space-between; /* Выравнивание кнопок по ширине */
+            align-items: center;
+            padding: 5px 0; /* Уменьшено расстояние сверху и снизу */
+            box-sizing: border-box;
+            display: none; /* Скрыть меню на время загрузки */
         }
 
-        @keyframes fall {
-            0% {
-                transform: translateY(0) rotate(0deg);
+        .navbar button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            padding: 4px; /* Уменьшены отступы для экономии места */
+            border-radius: 30px;
+            border: 2px solid transparent;
+            margin: 0 1px; /* Еще меньшее расстояние между кнопками */
+            flex: 1 1 16.666%; /* Каждая кнопка будет занимать 1/6 ширины экрана */
+            box-sizing: border-box;
+            min-width: 50px; /* Минимальная ширина кнопок */
+        }
+
+        .navbar button:hover {
+            transform: scale(1.05);
+            border-color: #ffffff;
+        }
+
+        .navbar button:active {
+            transform: scale(0.95);
+            border-color: #ffffff;
+        }
+
+        .navbar .material-icons {
+            margin-bottom: 2px; /* Уменьшен отступ между иконкой и текстом */
+            font-size: 20px; /* Размер иконок уменьшен */
+        }
+
+        /* Стили для активной кнопки */
+        .active-button {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-radius: 30px;
+            border-color: #000000;
+        }
+
+        .active-button .material-icons {
+            fill: #000000 !important;
+        }
+
+        /* Медиа-запросы для адаптации на меньших экранах */
+        @media (max-width: 1200px) {
+            .navbar button {
+                flex: 1 1 16.666%; /* Оставляем 1/6 ширины кнопок для больших экранов */
             }
-            100% {
-                transform: translateY(calc(100vh - 96px)) rotate(360deg);
+        }
+
+        @media (max-width: 992px) {
+            .navbar button {
+                flex: 1 1 16%; /* Немного уменьшаем ширину кнопок при разрешении экрана 992px */
             }
         }
 
-        * {
-            outline: none;
-            box-shadow: none;
-            border: none;
+        @media (max-width: 768px) {
+            .navbar button {
+                flex: 1 1 20%; /* При разрешении 768px каждая кнопка занимает 20% */
+                font-size: 14px; /* Уменьшаем размер шрифта на средних экранах */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar button {
+                flex: 1 1 25%; /* При разрешении 480px каждая кнопка занимает 25% */
+                font-size: 12px; /* Уменьшаем размер шрифта для мобильных устройств */
+            }
+        }
+
+        @media (max-width: 360px) {
+            .navbar button {
+                flex: 1 1 33%; /* При очень маленьких экранах кнопки будут занимать 33% ширины */
+                font-size: 10px; /* Еще меньше размер шрифта */
+            }
+        }
+
+        /* Стиль для предзагрузки */
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Скрыть заголовок на время загрузки */
+        #heading {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div id="game">
-        <div id="score">
-            <img src="image/pop.png" alt="Очки">
-            <span>0</span>
-        </div>
-        <div id="timer">60</div>
-        <div id="sequence"></div>
-    </div>
+    <h1 id="heading">Telegram Web App Validation</h1>
+    <!-- Предзагрузка -->
+    <div id="loading">Loading...</div>
+
+    <div id="result" style="display: none;">Loading...</div>
+
+    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
+        Get 100 points
+    </button>
+    <div id="timer" style="display: none;"></div>
 
     <script>
-        // Установка черной темы
+        const tg = window.Telegram.WebApp;
+        const initData = tg.initData;
+
         Telegram.WebApp.setBackgroundColor("#000000");
         Telegram.WebApp.setHeaderColor("#000000");
 
-        // Инициализация Telegram Web App
-        const tg = window.Telegram.WebApp;
+        const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate';
 
-        // Применяем режим полного экрана для мини-приложения
-        window.Telegram.WebApp.expand();
-        window.Telegram.WebApp.requestFullscreen();
+        fetch(serverUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ initData })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Задержка на 2 секунды перед скрытием предзагрузки
+            setTimeout(() => {
+                const resultElement = document.getElementById('result');
+                const timerBtn = document.getElementById('timer-btn');
+                const timerElement = document.getElementById('timer');
+                const loadingElement = document.getElementById('loading');
+                const headingElement = document.getElementById('heading');
+                const navbar = document.querySelector('.navbar');
 
-        // Убедитесь, что Web App готов
-        tg.ready();
+                // Скрываем предзагрузку
+                loadingElement.style.display = 'none';
+                headingElement.style.display = 'block'; // Показываем заголовок
+                navbar.style.display = 'flex'; // Показываем меню
 
-        // Получение данных о пользователе
-        const user = tg.initDataUnsafe?.user || {};
-        const username = `${user.first_name} ${user.last_name || ''}`.trim();
-        const userId = user.id;  // Получаем ID пользователя
+                if (data.success) {
+                    resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+                    resultElement.style.display = 'block'; // Показываем результат
 
-        
-        const game = document.getElementById('game');
-        const scoreDisplay = document.getElementById('score').querySelector('span');
-        const sequenceDisplay = document.getElementById('sequence');
-        const timerDisplay = document.getElementById('timer');
-        const birds = ['birdOne.png', 'birdTwo.png', 'birdThree.png'];
+                    let timeLeft = data.time_left;
 
-        let storedScore = 0;
-        let score = storedScore;
-        let currentSequence = [];
-        let userSequence = [];
-        let lastClickX = 0;
-        let lastClickY = 0;
-        const birdWidth = 96;
-        const screenWidth = window.innerWidth;
-        const maxLeft = screenWidth - birdWidth;
-        let timerValue = 60;
-
-        // Функция для загрузки очков с сервера
-        function loadScoreFromServer(userId) {
-            return fetch(`https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/get_data?user_id=${userId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.score !== undefined) {
-                        storedScore = data.score;
-                        score = storedScore;
-                        updateScoreDisplay(score);
-                        return score;
+                    function updateTimer() {
+                        if (timeLeft > 0) {
+                            timerElement.innerText = `Wait ${timeLeft}s`;
+                            timeLeft--;
+                            setTimeout(updateTimer, 1000);
+                        } else {
+                            timerElement.innerText = '';
+                            timerBtn.style.visibility = 'visible';
+                            timerBtn.disabled = false;
+                        }
                     }
-                    return 0; // Если нет данных, возвращаем 0
-                })
-                .catch((error) => {
-                    console.error("Error loading score:", error);
-                    return 0; // Если произошла ошибка, начинаем с 0
-                });
-        }
 
-       async function saveScoreToServer(userId, score) {
-    try {
-        const response = await fetch(`https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/save_data?user_id=${userId}&score=${score}`, {
-            method: 'GET', // или 'POST', если сервер принимает данные таким методом
+                    if (timeLeft > 0) {
+                        timerBtn.style.visibility = 'hidden';
+                        updateTimer();
+                    } else {
+                        timerBtn.disabled = false;
+                    }
+
+                    timerBtn.addEventListener('click', function() {
+                        timerBtn.style.visibility = 'hidden';
+
+                        fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ userId: data.user_id })
+                        })
+                        .then(response => response.json())
+                        .then(responseData => {
+                            if (responseData.success) {
+                                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+                                timeLeft = responseData.time_left;
+                                updateTimer();
+                            } else {
+                                alert(responseData.message);
+                                timerBtn.style.visibility = 'visible';
+                            }
+
+                            window.location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            timerBtn.style.visibility = 'visible';
+                            window.location.reload();
+                        });
+                    });
+
+                } else {
+                    resultElement.innerText = "Validation Failed.";
+                    resultElement.style.display = 'block'; // Показываем результат
+                }
+            }, 2000); // Делаем задержку 2 секунды
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('result').innerText = "An error occurred.";
+            document.getElementById('result').style.display = 'block'; // Показываем результат
+            document.getElementById('loading').style.display = 'none'; // Скрыть Loading
         });
+    </script>
 
-        if (!response.ok) {
-            throw new Error(`Ошибка HTTP: ${response.status}`);
-        }
+    <!-- Навигационное меню с Tailwind CSS -->
+    <nav class="navbar">
+        <button id="btn-main" class="nav-button">
+            <span class="material-icons text-3xl mb-2">home</span>
+            Main
+        </button>
+        <button id="btn-lead" class="nav-button">
+            <span class="material-icons text-3xl mb-2">leaderboard</span>
+            Lead
+        </button>
+        <button id="btn-friends" class="nav-button">
+            <span class="material-icons text-3xl mb-2">group</span>
+            Friends
+        </button>
+        <button id="btn-task" class="nav-button">
+            <span class="material-icons text-3xl mb-2">task</span>
+            Task
+        </button>
+        <button id="btn-faq" class="nav-button">
+            <span class="material-icons text-3xl mb-2">help</span>
+            FAQ
+        </button>
+        <button id="btn-shop" class="nav-button">
+            <span class="material-icons text-3xl mb-2">shopping_cart</span>
+            Shop
+        </button>
+    </nav>
 
-        const jsonData = await response.json();
-        console.log('Score saved:', jsonData); // Логируем ответ сервера
+    <script>
+        // Получаем все кнопки меню
+        const navButtons = document.querySelectorAll('.nav-button');
 
-    } catch (error) {
-        console.error('Ошибка при сохранении очков:', error);
-    }
-}
+        // Добавляем обработчики событий для каждой кнопки
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Убираем активное состояние с всех кнопок
+                navButtons.forEach(btn => btn.classList.remove('active-button'));
 
-
-        function createSequence() {
-            currentSequence = [];
-            for (let i = 0; i < 3; i++) {
-                currentSequence.push(birds[Math.floor(Math.random() * birds.length)]);
-            }
-            sequenceDisplay.innerHTML = currentSequence.map(img => `<img src="${img}" style="width: 72px; height: 72px; object-fit: contain;">`).join(' ');
-            userSequence = [];
-        }
-
-        function createBird() {
-            const bird = document.createElement('img');
-            bird.classList.add('bird');
-            bird.src = birds[Math.floor(Math.random() * birds.length)];
-
-            const cage = document.createElement('div');
-            cage.classList.add('cage');
-
-            const wrapper = document.createElement('div');
-            wrapper.classList.add('wrapper');
-            wrapper.style.left = `${Math.random() * maxLeft}px`;
-
-            wrapper.appendChild(cage);
-            wrapper.appendChild(bird);
-            game.appendChild(wrapper);
-
-            let isCageClicked = false;
-            let isBirdClicked = false;
-
-            cage.addEventListener('click', () => {
-                if (isCageClicked) return;
-                isCageClicked = true;
-                cage.style.display = 'none';
+                // Добавляем активное состояние на текущую кнопку
+                button.classList.add('active-button');
             });
-
-            bird.addEventListener('click', (event) => {
-                if (!isCageClicked || isBirdClicked) return;
-
-                isBirdClicked = true;
-
-                lastClickX = event.clientX;
-                lastClickY = event.clientY;
-
-                userSequence.push(bird.src.split('/').pop());
-
-                if (userSequence.length === 3 && userSequence.join(',') === currentSequence.join(',')) {
-                    score += 10;
-
-                    const pointAnim = document.createElement('div');
-                    pointAnim.classList.add('points', 'plus10');
-                    pointAnim.textContent = "+10";
-                    pointAnim.style.left = `${lastClickX}px`;
-                    pointAnim.style.top = `${lastClickY}px`;
-                    game.appendChild(pointAnim);
-
-                    setTimeout(() => pointAnim.remove(), 1000);
-
-                    updateScoreDisplay(score);
-                    createSequence();
-
-                } else if (userSequence.length < 3) {
-                    score++;
-                    updateScoreDisplay(score);
-
-                    const pointAnim = document.createElement('div');
-                    pointAnim.classList.add('points');
-                    pointAnim.textContent = "+1";
-                    pointAnim.style.left = `${lastClickX}px`;
-                    pointAnim.style.top = `${lastClickY}px`;
-                    game.appendChild(pointAnim);
-
-                    setTimeout(() => pointAnim.remove(), 1000);
-                }
-
-                bird.classList.add('clicked');
-                setTimeout(() => {
-                    wrapper.remove();
-                }, 300);
-
-                checkSequence();
-
-                bird.blur();
-                bird.setAttribute('tabindex', '-1');
-            });
-
-            wrapper.addEventListener('animationend', () => {
-                if (!isCageClicked) {
-                    wrapper.remove();
-                }
-            });
-        }
-
-        function updateScoreDisplay(newScore) {
-            scoreDisplay.textContent = `${newScore}`;
-        }
-
-        function checkSequence() {
-    let correctSequence = currentSequence.slice(0, userSequence.length);
-    if (userSequence.join(',') !== correctSequence.join(',')) {
-        userSequence = []; // сбрасываем userSequence, если последовательность неверна
-        createSequence(); // создаём новую последовательность
-    }
-}
-
-        function startTimer() {
-            const timerInterval = setInterval(() => {
-                timerValue--;
-                timerDisplay.textContent = timerValue;
-
-                if (timerValue <= 0) {
-                    clearInterval(timerInterval);
-                    endGame();
-                }
-            }, 1000);
-        }
-
-        async function endGame() {
-    const userId = Telegram.WebApp.initDataUnsafe?.user.id; // Получаем ID пользователя через Telegram API
-    await saveScoreToServer(userId, score);  // Сохраняем очки на сервер
-    window.location.href = `main.html?score=${score}`; // Переход на другую страницу с очками
-}
-
-
-        async function startGame() {
-            const userId = Telegram.WebApp.initDataUnsafe?.user.id; // Получаем ID пользователя через Telegram API
-            const initialScore = await loadScoreFromServer(userId); // Загружаем очки с сервера
-            score = initialScore || 0; // Если на сервере нет очков, начинаем с 0
-            createSequence();
-            startTimer();
-            setInterval(createBird, 1000); // Запуск игры
-        }
-
-        updateScoreDisplay(score);
-        startGame();
+        });
     </script>
 </body>
 </html>
