@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width: device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <title>Telegram Web App Validation</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -44,10 +44,9 @@
             z-index: 999;
             background-color: rgba(0, 0, 0, 0.8);
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Выравнивание кнопок по ширине */
             align-items: center;
             padding: 5px 0; /* Уменьшено расстояние сверху и снизу */
-            flex-wrap: wrap; /* Кнопки могут переноситься */
             box-sizing: border-box;
         }
 
@@ -57,13 +56,13 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
-            padding: 4px; /* Уменьшены отступы для экономии места */
+            padding: 6px; /* Уменьшены отступы для экономии места */
             border-radius: 30px;
             border: 2px solid transparent;
             margin: 0 2px; /* Уменьшены расстояния между кнопками */
-            flex: 0 0 16.666%; /* Каждая кнопка занимает 1/6 ширины экрана */
+            flex: 1 1 16.666%; /* Каждая кнопка будет занимать 1/6 ширины экрана */
             box-sizing: border-box;
-            min-width: 50px; /* Установлена минимальная ширина кнопок */
+            min-width: 60px; /* Минимальная ширина кнопок */
         }
 
         .navbar button:hover {
@@ -96,26 +95,26 @@
         /* Медиа-запросы для адаптации на меньших экранах */
         @media (max-width: 1200px) {
             .navbar button {
-                flex: 0 0 16.666%; /* Оставляем 1/6 ширины кнопок для больших экранов */
+                flex: 1 1 16.666%; /* Оставляем 1/6 ширины кнопок для больших экранов */
             }
         }
 
         @media (max-width: 992px) {
             .navbar button {
-                flex: 0 0 20%; /* Увеличиваем ширину кнопок при разрешении экрана 992px */
+                flex: 1 1 20%; /* Увеличиваем ширину кнопок при разрешении экрана 992px */
             }
         }
 
         @media (max-width: 768px) {
             .navbar button {
-                flex: 0 0 33.333%; /* При разрешении 768px каждая кнопка занимает 33.33% */
+                flex: 1 1 25%; /* При разрешении 768px каждая кнопка занимает 25% */
                 font-size: 16px; /* Уменьшаем размер шрифта на средних экранах */
             }
         }
 
         @media (max-width: 480px) {
             .navbar button {
-                flex: 0 0 50%; /* При разрешении 480px каждая кнопка занимает 50% */
+                flex: 1 1 33.333%; /* При разрешении 480px каждая кнопка занимает 33.33% */
                 font-size: 14px; /* Уменьшаем размер шрифта для мобильных устройств */
             }
         }
