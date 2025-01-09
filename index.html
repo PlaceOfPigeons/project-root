@@ -1,32 +1,166 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Меню в стиле Hamster Kombat</title>
-  <!-- Подключаем Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-screen flex justify-center items-center">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Telegram Web App Validation</title>
+    <!-- Подключаем Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding-bottom: 60px;
+            user-select: none;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
 
-  <!-- Главное меню -->
-  <div class="space-y-6 text-center">
-    <h1 class="text-4xl font-extrabold text-white">Hamster Kombat</h1>
-    <div class="space-y-4">
-      <button class="px-8 py-3 bg-yellow-400 text-white rounded-full shadow-lg hover:bg-yellow-500 active:bg-yellow-600 transition-all duration-200 transform hover:scale-105">
-        Играть
-      </button>
-      <button class="px-8 py-3 bg-blue-400 text-white rounded-full shadow-lg hover:bg-blue-500 active:bg-blue-600 transition-all duration-200 transform hover:scale-105">
-        Настройки
-      </button>
-      <button class="px-8 py-3 bg-green-400 text-white rounded-full shadow-lg hover:bg-green-500 active:bg-green-600 transition-all duration-200 transform hover:scale-105">
-        О игре
-      </button>
-      <button class="px-8 py-3 bg-red-400 text-white rounded-full shadow-lg hover:bg-red-500 active:bg-red-600 transition-all duration-200 transform hover:scale-105">
-        Выйти
-      </button>
-    </div>
-  </div>
+        h1 {
+            text-align: center;
+        }
+
+        #result {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #timer {
+            font-size: 24px;
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            background-color: rgba(0, 0, 0, 0.8); /* полупрозрачный фон для navbar */
+        }
+    </style>
+</head>
+<body>
+    <h1>Telegram Web App Validation</h1>
+    <div id="result">Loading...</div>
+
+    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px;">
+        Get 100 points
+    </button>
+    <div id="timer"></div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        const initData = tg.initData;
+
+        Telegram.WebApp.setBackgroundColor("#000000");
+        Telegram.WebApp.setHeaderColor("#000000");
+
+        const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate';
+
+        // Запрос данных с сервера
+        fetch(serverUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ initData })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const resultElement = document.getElementById('result');
+            const timerBtn = document.getElementById('timer-btn');
+            const timerElement = document.getElementById('timer');
+
+            if (data.success) {
+                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+
+                let timeLeft = data.time_left;
+
+                // Функция для обновления таймера
+                function updateTimer() {
+                    if (timeLeft > 0) {
+                        timerElement.innerText = `Wait ${timeLeft}s`;
+                        timeLeft--;
+                        setTimeout(updateTimer, 1000);
+                    } else {
+                        timerElement.innerText = '';
+                        timerBtn.style.visibility = 'visible';
+                        timerBtn.disabled = false;
+                    }
+                }
+
+                if (timeLeft > 0) {
+                    timerBtn.style.visibility = 'hidden';
+                    updateTimer();
+                } else {
+                    timerBtn.disabled = false;
+                }
+
+                timerBtn.addEventListener('click', function() {
+                    timerBtn.style.visibility = 'hidden';
+
+                    fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ userId: data.user_id })
+                    })
+                    .then(response => response.json())
+                    .then(responseData => {
+                        if (responseData.success) {
+                            resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+                            timeLeft = responseData.time_left;
+                            updateTimer();
+                        } else {
+                            alert(responseData.message);
+                            timerBtn.style.visibility = 'visible';
+                        }
+
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        timerBtn.style.visibility = 'visible';
+                        window.location.reload();
+                    });
+                });
+
+            } else {
+                resultElement.innerText = "Validation Failed.";
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('result').innerText = "An error occurred.";
+        });
+    </script>
+
+    <!-- Навигационное меню с Tailwind CSS -->
+    <nav class="navbar flex justify-between p-4">
+        <button class="px-6 py-3 bg-yellow-400 text-white rounded-full shadow-md hover:bg-yellow-500 active:bg-yellow-600 transition-all duration-200 transform hover:scale-105">
+            Main
+        </button>
+        <button class="px-6 py-3 bg-blue-400 text-white rounded-full shadow-md hover:bg-blue-500 active:bg-blue-600 transition-all duration-200 transform hover:scale-105">
+            Lead
+        </button>
+        <button class="px-6 py-3 bg-green-400 text-white rounded-full shadow-md hover:bg-green-500 active:bg-green-600 transition-all duration-200 transform hover:scale-105">
+            Friends
+        </button>
+        <button class="px-6 py-3 bg-red-400 text-white rounded-full shadow-md hover:bg-red-500 active:bg-red-600 transition-all duration-200 transform hover:scale-105">
+            Task
+        </button>
+        <button class="px-6 py-3 bg-purple-400 text-white rounded-full shadow-md hover:bg-purple-500 active:bg-purple-600 transition-all duration-200 transform hover:scale-105">
+            FAQ
+        </button>
+    </nav>
 
 </body>
 </html>
