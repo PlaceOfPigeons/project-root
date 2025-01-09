@@ -44,46 +44,45 @@
             z-index: 999;
             background-color: rgba(0, 0, 0, 0.8);
             display: flex;
-            justify-content: space-between; /* Равномерное распределение кнопок */
-            align-items: center; /* Выравнивание по вертикали */
+            justify-content: space-between;
+            align-items: center;
             padding: 10px 0;
-            flex-wrap: nowrap; /* Кнопки не будут переноситься на новый ряд */
-            overflow: hidden; /* Избегаем горизонтальной прокрутки */
+            flex-wrap: nowrap; /* Кнопки не будут переноситься */
         }
 
         .navbar button {
             display: flex;
             flex-direction: column; /* Иконки сверху, текст снизу */
-            align-items: center; /* Центрируем элементы по горизонтали */
-            justify-content: center; /* Центрируем элементы по вертикали */
+            align-items: center;
+            justify-content: center;
             transition: all 0.2s;
             padding: 10px;
-            border-radius: 30px; /* Овальная форма кнопки */
-            border: 2px solid transparent; /* Начальный прозрачный бордер */
-            margin-right: 15px; /* Расстояние между кнопками */
-            flex: 1 1 16%; /* Каждая кнопка будет занимать минимум 16% ширины, но будет сжиматься при необходимости */
+            border-radius: 30px;
+            border: 2px solid transparent;
+            margin-right: 10px; /* Расстояние между кнопками */
+            flex: 0 0 16.666%; /* Каждая кнопка будет занимать ровно 1/6 ширины */
         }
 
         .navbar button:hover {
             transform: scale(1.05);
-            border-color: #ffffff; /* Бордер становится белым при наведении */
+            border-color: #ffffff;
         }
 
         .navbar button:active {
             transform: scale(0.95);
-            border-color: #ffffff; /* Бордер становится белым при нажатии */
+            border-color: #ffffff;
         }
 
         .navbar .material-icons {
-            margin-bottom: 8px; /* Расстояние между иконкой и текстом */
+            margin-bottom: 8px;
         }
 
         /* Стили для активной кнопки */
         .active-button {
             background-color: #ffffff !important;
             color: #000000 !important;
-            border-radius: 30px; /* Овальная форма активной кнопки */
-            border-color: #000000; /* Белый бордер при активации */
+            border-radius: 30px;
+            border-color: #000000;
         }
 
         .active-button .material-icons {
@@ -208,7 +207,6 @@
             <span class="material-icons text-3xl mb-2">help</span>
             FAQ
         </button>
-        <!-- Новая кнопка SHOP -->
         <button id="btn-shop" class="nav-button">
             <span class="material-icons text-3xl mb-2">shopping_cart</span>
             Shop
