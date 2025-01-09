@@ -44,11 +44,11 @@
             z-index: 999;
             background-color: rgba(0, 0, 0, 0.8);
             display: flex;
-            justify-content: space-between; /* Выравнивание кнопок по ширине */
+            justify-content: space-between;
             align-items: center;
-            padding: 5px 0; /* Уменьшено расстояние сверху и снизу */
+            padding: 5px 0;
             box-sizing: border-box;
-            display: none; /* Скрыть меню на время загрузки */
+            display: none;
         }
 
         .navbar button {
@@ -57,13 +57,13 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
-            padding: 4px; /* Уменьшены отступы для экономии места */
+            padding: 4px;
             border-radius: 30px;
             border: 2px solid transparent;
-            margin: 0 1px; /* Еще меньшее расстояние между кнопками */
-            flex: 1 1 16.666%; /* Каждая кнопка будет занимать 1/6 ширины экрана */
+            margin: 0 1px;
+            flex: 1 1 16.666%;
             box-sizing: border-box;
-            min-width: 50px; /* Минимальная ширина кнопок */
+            min-width: 50px;
         }
 
         .navbar button:hover {
@@ -77,11 +77,10 @@
         }
 
         .navbar .material-icons {
-            margin-bottom: 2px; /* Уменьшен отступ между иконкой и текстом */
-            font-size: 20px; /* Размер иконок уменьшен */
+            margin-bottom: 2px;
+            font-size: 20px;
         }
 
-        /* Стили для активной кнопки */
         .active-button {
             background-color: #ffffff !important;
             color: #000000 !important;
@@ -93,41 +92,39 @@
             fill: #000000 !important;
         }
 
-        /* Медиа-запросы для адаптации на меньших экранах */
         @media (max-width: 1200px) {
             .navbar button {
-                flex: 1 1 16.666%; /* Оставляем 1/6 ширины кнопок для больших экранов */
+                flex: 1 1 16.666%;
             }
         }
 
         @media (max-width: 992px) {
             .navbar button {
-                flex: 1 1 16%; /* Немного уменьшаем ширину кнопок при разрешении экрана 992px */
+                flex: 1 1 16%;
             }
         }
 
         @media (max-width: 768px) {
             .navbar button {
-                flex: 1 1 20%; /* При разрешении 768px каждая кнопка занимает 20% */
-                font-size: 14px; /* Уменьшаем размер шрифта на средних экранах */
+                flex: 1 1 20%;
+                font-size: 14px;
             }
         }
 
         @media (max-width: 480px) {
             .navbar button {
-                flex: 1 1 25%; /* При разрешении 480px каждая кнопка занимает 25% */
-                font-size: 12px; /* Уменьшаем размер шрифта для мобильных устройств */
+                flex: 1 1 25%;
+                font-size: 12px;
             }
         }
 
         @media (max-width: 360px) {
             .navbar button {
-                flex: 1 1 33%; /* При очень маленьких экранах кнопки будут занимать 33% ширины */
-                font-size: 10px; /* Еще меньше размер шрифта */
+                flex: 1 1 33%;
+                font-size: 10px;
             }
         }
 
-        /* Стиль для предзагрузки */
         #loading {
             position: absolute;
             top: 50%;
@@ -137,7 +134,6 @@
             color: white;
         }
 
-        /* Скрыть заголовок на время загрузки */
         #heading {
             display: none;
         }
@@ -145,7 +141,6 @@
 </head>
 <body>
     <h1 id="heading">Telegram Web App Validation</h1>
-    <!-- Предзагрузка -->
     <div id="loading">Loading...</div>
 
     <div id="result" style="display: none;">Loading...</div>
@@ -173,7 +168,6 @@
         })
         .then(response => response.json())
         .then(data => {
-            // Задержка на 2 секунды перед скрытием предзагрузки
             setTimeout(() => {
                 const resultElement = document.getElementById('result');
                 const timerBtn = document.getElementById('timer-btn');
@@ -182,14 +176,13 @@
                 const headingElement = document.getElementById('heading');
                 const navbar = document.querySelector('.navbar');
 
-                // Скрываем предзагрузку
                 loadingElement.style.display = 'none';
-                headingElement.style.display = 'block'; // Показываем заголовок
-                navbar.style.display = 'flex'; // Показываем меню
+                headingElement.style.display = 'block';
+                navbar.style.display = 'flex';
 
                 if (data.success) {
                     resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
-                    resultElement.style.display = 'block'; // Показываем результат
+                    resultElement.style.display = 'block';
 
                     let timeLeft = data.time_left;
 
@@ -200,20 +193,21 @@
                             setTimeout(updateTimer, 1000);
                         } else {
                             timerElement.innerText = '';
-                            timerBtn.style.visibility = 'visible';
-                            timerBtn.disabled = false;
+                            timerElement.style.display = 'none'; // Скрыть таймер
+                            timerBtn.style.display = 'block'; // Показать кнопку
+                            timerBtn.disabled = false; // Включить кнопку
                         }
                     }
 
                     if (timeLeft > 0) {
-                        timerBtn.style.visibility = 'hidden';
+                        timerBtn.style.display = 'none'; // Скрыть кнопку
                         updateTimer();
                     } else {
                         timerBtn.disabled = false;
                     }
 
                     timerBtn.addEventListener('click', function() {
-                        timerBtn.style.visibility = 'hidden';
+                        timerBtn.style.display = 'none'; // Скрыть кнопку
 
                         fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
                             method: 'POST',
@@ -225,38 +219,35 @@
                         .then(response => response.json())
                         .then(responseData => {
                             if (responseData.success) {
-                                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
+                                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${responseData.points}`;
                                 timeLeft = responseData.time_left;
                                 updateTimer();
                             } else {
                                 alert(responseData.message);
-                                timerBtn.style.visibility = 'visible';
+                                timerBtn.style.display = 'block'; // Показать кнопку
+                                timerBtn.disabled = false;
                             }
-
-                            window.location.reload();
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            timerBtn.style.visibility = 'visible';
-                            window.location.reload();
+                            timerBtn.style.display = 'block'; // Показать кнопку
+                            timerBtn.disabled = false;
                         });
                     });
-
                 } else {
                     resultElement.innerText = "Validation Failed.";
-                    resultElement.style.display = 'block'; // Показываем результат
+                    resultElement.style.display = 'block';
                 }
-            }, 2000); // Делаем задержку 2 секунды
+            }, 2000); 
         })
         .catch(error => {
             console.error('Error:', error);
             document.getElementById('result').innerText = "An error occurred.";
-            document.getElementById('result').style.display = 'block'; // Показываем результат
-            document.getElementById('loading').style.display = 'none'; // Скрыть Loading
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
         });
     </script>
 
-    <!-- Навигационное меню с Tailwind CSS -->
     <nav class="navbar">
         <button id="btn-main" class="nav-button">
             <span class="material-icons text-3xl mb-2">home</span>
@@ -285,16 +276,11 @@
     </nav>
 
     <script>
-        // Получаем все кнопки меню
         const navButtons = document.querySelectorAll('.nav-button');
 
-        // Добавляем обработчики событий для каждой кнопки
         navButtons.forEach(button => {
             button.addEventListener('click', () => {
-                // Убираем активное состояние с всех кнопок
                 navButtons.forEach(btn => btn.classList.remove('active-button'));
-
-                // Добавляем активное состояние на текущую кнопку
                 button.classList.add('active-button');
             });
         });
