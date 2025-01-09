@@ -48,6 +48,7 @@
             align-items: center;
             padding: 10px 0;
             flex-wrap: nowrap; /* Кнопки не будут переноситься */
+            box-sizing: border-box;
         }
 
         .navbar button {
@@ -89,6 +90,33 @@
 
         .active-button .material-icons {
             fill: #000000 !important;
+        }
+
+        /* Медиа-запросы для адаптации на меньших экранах */
+        @media (max-width: 1200px) {
+            .navbar button {
+                flex: 0 0 16.666%; /* Уменьшаем ширину кнопок для больших экранов */
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar button {
+                flex: 0 0 20%; /* Увеличиваем ширину кнопок при разрешении экрана 992px */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar button {
+                flex: 0 0 25%; /* При разрешении 768px каждая кнопка занимает 25% */
+                font-size: 18px; /* Уменьшаем размер шрифта на средних экранах */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar button {
+                flex: 0 0 33.333%; /* Увеличиваем ширину для мобильных экранов */
+                font-size: 16px; /* Уменьшаем размер шрифта для мобильных устройств */
+            }
         }
     </style>
 </head>
