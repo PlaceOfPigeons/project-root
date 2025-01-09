@@ -44,9 +44,11 @@
             z-index: 999;
             background-color: rgba(0, 0, 0, 0.8);
             display: flex;
-            overflow-x: auto; /* Горизонтальная прокрутка */
+            justify-content: space-between; /* Равномерное распределение кнопок */
+            align-items: center; /* Выравнивание по вертикали */
             padding: 10px 0;
-            justify-content: flex-start;
+            flex-wrap: nowrap; /* Кнопки не будут переноситься на новый ряд */
+            overflow: hidden; /* Избегаем горизонтальной прокрутки */
         }
 
         .navbar button {
@@ -59,6 +61,7 @@
             border-radius: 30px; /* Овальная форма кнопки */
             border: 2px solid transparent; /* Начальный прозрачный бордер */
             margin-right: 15px; /* Расстояние между кнопками */
+            flex: 1 1 16%; /* Каждая кнопка будет занимать минимум 16% ширины, но будет сжиматься при необходимости */
         }
 
         .navbar button:hover {
