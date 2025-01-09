@@ -56,11 +56,12 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
-            padding: 10px;
+            padding: 8px; /* Уменьшены отступы для экономии места */
             border-radius: 30px;
             border: 2px solid transparent;
-            margin-right: 10px; /* Расстояние между кнопками */
+            margin-right: 5px; /* Уменьшено расстояние между кнопками */
             flex: 0 0 16.666%; /* Каждая кнопка будет занимать ровно 1/6 ширины */
+            box-sizing: border-box; /* Учитываем padding и border в расчете ширины */
         }
 
         .navbar button:hover {
@@ -74,7 +75,8 @@
         }
 
         .navbar .material-icons {
-            margin-bottom: 8px;
+            margin-bottom: 5px; /* Уменьшен отступ между иконкой и текстом */
+            font-size: 24px; /* Размер иконок уменьшен */
         }
 
         /* Стили для активной кнопки */
