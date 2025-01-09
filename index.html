@@ -56,6 +56,16 @@
         .navbar button:active {
             transform: scale(0.95);
         }
+
+        /* Стили для активной кнопки */
+        .active-button {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+
+        .active-button .material-icons {
+            fill: #000000 !important;
+        }
     </style>
 </head>
 <body>
@@ -183,24 +193,12 @@
 
         // Добавляем обработчики событий для каждой кнопки
         navButtons.forEach(button => {
-            button.addEventListener('mousedown', () => {
-                button.style.backgroundColor = '#ffffff'; // Меняем фон на белый
-                button.style.color = '#000000'; // Меняем текст на черный
-                const icon = button.querySelector('.material-icons');
-                if (icon) {
-                    icon.style.fill = '#000000'; // Меняем цвет иконки на черный
-                }
-            });
+            button.addEventListener('click', () => {
+                // Убираем класс с других кнопок
+                navButtons.forEach(b => b.classList.remove('active-button'));
 
-            button.addEventListener('mouseup', () => {
-                setTimeout(() => {
-                    button.style.backgroundColor = ''; // Сброс фона
-                    button.style.color = ''; // Сброс текста
-                    const icon = button.querySelector('.material-icons');
-                    if (icon) {
-                        icon.style.fill = ''; // Сброс цвета иконки
-                    }
-                }, 100);
+                // Добавляем класс активной кнопке
+                button.classList.add('active-button');
             });
         });
     </script>
