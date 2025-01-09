@@ -7,17 +7,19 @@
     <title>Telegram Web App Validation</title>
     <!-- Подключаем Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Иконки Google -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         body {
             background-color: black;
             color: white;
             font-family: Arial, sans-serif;
-            padding-bottom: 60px;
-            user-select: none;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
-            height: 100%;
+            padding-bottom: 60px; /* Добавление отступа для видимости меню */
+            user-select: none; /* Отключение выделения текста */
+            overflow: hidden; /* Отключение прокрутки */
+            position: fixed; /* Фиксация позиции */
+            width: 100%; /* Растягиваем на весь экран */
+            height: 100%; /* Растягиваем на весь экран */
         }
 
         h1 {
@@ -44,6 +46,18 @@
             z-index: 999;
             background-color: rgba(0, 0, 0, 0.8); /* полупрозрачный фон для navbar */
         }
+
+        .navbar button {
+            transition: all 0.2s;
+        }
+
+        .navbar button:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar button:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
@@ -64,7 +78,6 @@
 
         const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate';
 
-        // Запрос данных с сервера
         fetch(serverUrl, {
             method: 'POST',
             headers: {
@@ -83,7 +96,6 @@
 
                 let timeLeft = data.time_left;
 
-                // Функция для обновления таймера
                 function updateTimer() {
                     if (timeLeft > 0) {
                         timerElement.innerText = `Wait ${timeLeft}s`;
@@ -145,20 +157,21 @@
 
     <!-- Навигационное меню с Tailwind CSS -->
     <nav class="navbar flex justify-between p-4">
-        <button class="px-6 py-3 bg-yellow-400 text-white rounded-full shadow-md hover:bg-yellow-500 active:bg-yellow-600 transition-all duration-200 transform hover:scale-105">
-            Main
+        <!-- Кнопки навигации -->
+        <button class="flex items-center justify-center px-6 py-3 bg-black text-white rounded-full shadow-md w-1/5 hover:bg-gray-800 active:bg-gray-700 transition-all duration-200">
+            <span class="material-icons mr-2">home</span> Main
         </button>
-        <button class="px-6 py-3 bg-blue-400 text-white rounded-full shadow-md hover:bg-blue-500 active:bg-blue-600 transition-all duration-200 transform hover:scale-105">
-            Lead
+        <button class="flex items-center justify-center px-6 py-3 bg-black text-white rounded-full shadow-md w-1/5 hover:bg-gray-800 active:bg-gray-700 transition-all duration-200">
+            <span class="material-icons mr-2">leaderboard</span> Lead
         </button>
-        <button class="px-6 py-3 bg-green-400 text-white rounded-full shadow-md hover:bg-green-500 active:bg-green-600 transition-all duration-200 transform hover:scale-105">
-            Friends
+        <button class="flex items-center justify-center px-6 py-3 bg-black text-white rounded-full shadow-md w-1/5 hover:bg-gray-800 active:bg-gray-700 transition-all duration-200">
+            <span class="material-icons mr-2">group</span> Friends
         </button>
-        <button class="px-6 py-3 bg-red-400 text-white rounded-full shadow-md hover:bg-red-500 active:bg-red-600 transition-all duration-200 transform hover:scale-105">
-            Task
+        <button class="flex items-center justify-center px-6 py-3 bg-black text-white rounded-full shadow-md w-1/5 hover:bg-gray-800 active:bg-gray-700 transition-all duration-200">
+            <span class="material-icons mr-2">task</span> Task
         </button>
-        <button class="px-6 py-3 bg-purple-400 text-white rounded-full shadow-md hover:bg-purple-500 active:bg-purple-600 transition-all duration-200 transform hover:scale-105">
-            FAQ
+        <button class="flex items-center justify-center px-6 py-3 bg-black text-white rounded-full shadow-md w-1/5 hover:bg-gray-800 active:bg-gray-700 transition-all duration-200">
+            <span class="material-icons mr-2">help</span> FAQ
         </button>
     </nav>
 
