@@ -1,183 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <title>Telegram Web App Validation</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: black;
-            color: white;
-            font-family: Arial, sans-serif;
-            padding-bottom: 60px; /* Добавление отступа для видимости меню */
-            user-select: none; /* Отключение выделения текста */
-            -webkit-user-select: none; /* Для Safari */
-            -moz-user-select: none; /* Для Firefox */
-            -ms-user-select: none; /* Для старых версий IE */
-            overflow: hidden; /* Отключение прокрутки */
-            position: fixed; /* Фиксация позиции */
-            width: 100%; /* Растягиваем на весь экран */
-            height: 100%; /* Растягиваем на весь экран */
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Навигационный бар в стиле Notion</title>
+  <!-- Подключаем Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        h1 {
-            text-align: center;
-        }
+  <!-- Кастомные стили для кнопок в стиле Notion -->
+  <style>
+    .notion-btn {
+      border: 2px solid #E0E0E0; /* светлая серая рамка */
+      border-radius: 30px; /* округлые углы */
+      padding: 10px 20px; /* отступы для кнопки */
+      color: #333; /* темный текст */
+      background-color: white; /* белый фон */
+      text-align: center;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
 
-        #result {
-            text-align: center;
-            margin-top: 20px;
-        }
+    .notion-btn:hover {
+      background-color: #F4F4F4; /* светлый фон при наведении */
+      border-color: #BDBDBD; /* темная рамка при наведении */
+      color: #000; /* темный текст при наведении */
+    }
 
-        #timer {
-            font-size: 24px;
-            color: white;
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        button:focus {
-            outline: 2px solid transparent;  /* Задаем прозрачную обводку */
-            box-shadow: none; /* Убираем тень, если она есть */
-        }
+    .navbar-nav .nav-link {
+      margin-right: 20px; /* немного отступа между кнопками */
+    }
+  </style>
 
-
-
-
-        /* Стили для меню */
-        .navbar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 999;
-        }
-    </style>
 </head>
 <body>
-    <h1>Telegram Web App Validation</h1>
-    <div id="result">Loading...</div>
 
-    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px;">
-        Get 100 points
+<!-- Навигационный бар -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Логотип</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
+      <span class="navbar-toggler-icon"></span>
     </button>
-    <div id="timer"></div>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link notion-btn" href="#">Главная</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link notion-btn" href="#">О нас</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link notion-btn" href="#">Контакты</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        const initData = tg.initData;
-        
-        Telegram.WebApp.setBackgroundColor("#000000");
-        Telegram.WebApp.setHeaderColor("#000000");
-
-        const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate'; // Укажите свой URL
-
-        // Запрос данных у сервера при загрузке
-        fetch(serverUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ initData })
-        })
-        .then(response => response.json())
-        .then(data => {
-            const resultElement = document.getElementById('result');
-            const timerBtn = document.getElementById('timer-btn');
-            const timerElement = document.getElementById('timer');
-
-            if (data.success) {
-                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
-                
-                let timeLeft = data.time_left; // Получаем оставшееся время от сервера
-
-                // Функция для обновления таймера
-                function updateTimer() {
-                    if (timeLeft > 0) {
-                        timerElement.innerText = `Wait ${timeLeft}s`; // Обновляем текст на таймере
-                        timeLeft--;
-                        setTimeout(updateTimer, 1000);
-                    } else {
-                        timerElement.innerText = ''; // Убираем таймер, когда время заканчивается
-                        timerBtn.style.visibility = 'visible'; // Показываем кнопку обратно
-                        timerBtn.disabled = false; // Включаем кнопку для нажатия
-                    }
-                }
-
-                // Если таймер не истек, показываем время до следующего клика
-                if (timeLeft > 0) {
-                    timerBtn.style.visibility = 'hidden'; // Прячем кнопку, пока не пройдет время
-                    updateTimer();
-                } else {
-                    timerBtn.disabled = false; // Разблокируем кнопку сразу, если нет времени на ожидание
-                }
-
-                // Обработчик для кнопки получения очков
-                timerBtn.addEventListener('click', function() {
-                    // Скрыть кнопку сразу после клика, прежде чем отправлять запрос
-                    timerBtn.style.visibility = 'hidden'; 
-
-                    // Делаем запрос на сервер
-                    fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ userId: data.user_id })
-                    })
-                    .then(response => response.json())
-                    .then(responseData => {
-                        if (responseData.success) {
-                            // Обновляем количество очков и время последнего клика
-                            resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
-
-                            // Перезапускаем таймер
-                            timeLeft = responseData.time_left;
-                            updateTimer();
-                        } else {
-                            alert(responseData.message);
-                            // Если не удалось получить очки, показываем кнопку снова
-                            timerBtn.style.visibility = 'visible';
-                        }
-
-                        // Перезагружаем страницу после выполнения запроса
-                        window.location.reload();
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        timerBtn.style.visibility = 'visible'; // Показываем кнопку, если произошла ошибка
-
-                        // Перезагружаем страницу после ошибки
-                        window.location.reload();
-                    });
-                });
-
-            } else {
-                resultElement.innerText = "Validation Failed.";
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('result').innerText = "An error occurred.";
-        });
-    </script>
-
-   <!-- Меню внизу -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #000000;">
-        <div class="container-fluid">
-            <button class="btn btn-dark" onclick="location.href='#main'">Main</button>
-            <button class="btn btn-dark" onclick="location.href='#lead'">Lead</button>
-            <button class="btn btn-dark" onclick="location.href='#friends'">Friends</button>
-            <button class="btn btn-dark" onclick="location.href='#task'">Task</button>
-            <button class="btn btn-dark" onclick="location.href='#faq'">FAQ</button>
-        </div>
-    </nav>
-    
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Подключаем Bootstrap JS (для работы с кнопками, выпадающими меню и т.д.) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
