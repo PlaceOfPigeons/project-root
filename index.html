@@ -168,6 +168,8 @@
         })
         .then(response => response.json())
         .then(data => {
+            console.log("Server response:", data); // Логирование ответа от сервера для отладки
+
             setTimeout(() => {
                 const resultElement = document.getElementById('result');
                 const timerBtn = document.getElementById('timer-btn');
@@ -204,6 +206,7 @@
                         updateTimer();
                     } else {
                         timerBtn.disabled = false;
+                        timerBtn.style.display = 'block'; // Показать кнопку
                     }
 
                     timerBtn.addEventListener('click', function() {
