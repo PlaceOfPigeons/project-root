@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Подключение Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Подключение Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
     <title>Telegram Web App Validation</title>
+    
     <style>
         body {
             background-color: black;
             color: white;
             font-family: Arial, sans-serif;
+            padding-bottom: 60px; /* Для того, чтобы контент не перекрывался панелью */
+            user-select: none;
         }
 
         h1 {
@@ -25,6 +37,63 @@
             text-align: center;
             margin-top: 20px;
             font-size: 18px;
+        }
+
+        /* Стиль для активной кнопки */
+        .active-button {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-radius: 30px;
+            border-color: #000000;
+        }
+
+        .active-button .material-icons {
+            fill: #000000 !important;
+        }
+
+        /* Стили для панели навигации */
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            box-sizing: border-box;
+        }
+
+        .navbar button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            padding: 4px;
+            border-radius: 30px;
+            border: 2px solid transparent;
+            margin: 0 1px;
+            flex: 1 1 16.666%;
+            box-sizing: border-box;
+            min-width: 50px;
+        }
+
+        .navbar button:hover {
+            transform: scale(1.05);
+            border-color: #ffffff;
+        }
+
+        .navbar button:active {
+            transform: scale(0.95);
+            border-color: #ffffff;
+        }
+
+        .navbar .material-icons {
+            margin-bottom: 2px;
+            font-size: 20px;
         }
     </style>
 </head>
@@ -81,5 +150,45 @@
             document.getElementById('result').innerText = "An error occurred.";
         });
     </script>
+
+    <!-- Навигационная панель -->
+    <nav class="navbar">
+        <button id="btn-main" class="nav-button">
+            <span class="material-icons text-3xl mb-2">home</span>
+            Main
+        </button>
+        <button id="btn-lead" class="nav-button">
+            <span class="material-icons text-3xl mb-2">leaderboard</span>
+            Lead
+        </button>
+        <button id="btn-friends" class="nav-button">
+            <span class="material-icons text-3xl mb-2">group</span>
+            Friends
+        </button>
+        <button id="btn-task" class="nav-button">
+            <span class="material-icons text-3xl mb-2">task</span>
+            Task
+        </button>
+        <button id="btn-faq" class="nav-button">
+            <span class="material-icons text-3xl mb-2">help</span>
+            FAQ
+        </button>
+        <button id="btn-shop" class="nav-button">
+            <span class="material-icons text-3xl mb-2">shopping_cart</span>
+            Shop
+        </button>
+    </nav>
+
+    <script>
+        const navButtons = document.querySelectorAll('.nav-button');
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                navButtons.forEach(btn => btn.classList.remove('active-button'));
+                button.classList.add('active-button');
+            });
+        });
+    </script>
 </body>
 </html>
+
