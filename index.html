@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <title>Telegram Web App Validation</title>
     <style>
         body {
@@ -12,32 +11,46 @@
             color: white;
             font-family: Arial, sans-serif;
         }
+
+        h1 {
+            text-align: center;
+        }
+
+        #result {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #userData {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
-    <h1 class="text-center text-2xl mt-8">Telegram Web App Validation</h1>
-    <div id="result" class="text-center mt-8">Loading...</div>
-
-    <div id="pointsSection" class="text-center mt-8">
-        <!-- Кнопка для добавления очков -->
-        <button id="addPoints" class="bg-green-500 text-white py-2 px-4 rounded focus:outline-none hover:bg-green-600 transition-all">
-            Get 100 Points
-        </button>
-        <div id="timer" class="text-yellow-500 mt-4 text-xl hidden">
-            Please wait...
-        </div>
+    <h1>Telegram Web App Validation</h1>
+    <div id="result">Loading...</div>
+    
+    <!-- Блок для отображения данных пользователя -->
+    <div id="userData" style="display: none;">
+        <p id="username"></p>
+        <p id="points"></p>
     </div>
 
     <script>
+        // Получаем объект Telegram Web App
         const tg = window.Telegram.WebApp;
         const initData = tg.initData;
 
+        // Отображаем исходные данные (для отладки)
         console.log("Init Data:", initData);
 
-        const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com'; // Ваш серверный URL
+        // URL вашего сервера для проверки
+        const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate'; // Укажите свой URL
 
-        // Получаем данные с сервера для валидации
-        fetch(`${serverUrl}/validate`, {
+        // Отправка данных на сервер
+        fetch(serverUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -47,85 +60,25 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                document.getElementById('result').innerText = `Validation Successful! Welcome, ${data.username}`;
+                document.getElementById('result').innerText = "Validation Successful!";
+                
+                // Получаем и отображаем данные пользователя
+                const userData = data.user_data;
 
-                const userId = data.user_id;
-                const lastClickTime = data.last_click_time; // время последнего клика
-                updatePoints(data.points);
-
-                // Обработчик нажатия на кнопку
-                document.getElementById('addPoints').addEventListener('click', function() {
-                    fetch(`${serverUrl}/add_points`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ userId })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            updatePoints(data.points);
-                            startTimer(data.last_click_time); // Обновляем таймер после клика
-                        } else {
-                            alert(data.message);
-                        }
-                    });
-                });
-
-                // Обновление информации о баллах и таймере
-                function updatePoints(newPoints) {
-                    document.getElementById('pointsSection').innerHTML = `
-                        <div>
-                            <h2 class="text-xl text-white mt-4">Current Points: ${newPoints}</h2>
-                            <button id="addPoints" class="bg-green-500 text-white py-2 px-4 rounded focus:outline-none hover:bg-green-600 transition-all">
-                                Get 100 Points
-                            </button>
-                            <div id="timer" class="text-yellow-500 mt-4 text-xl hidden">
-                                Please wait...
-                            </div>
-                        </div>
-                    `;
-                    startTimer(lastClickTime); // Запускаем таймер при обновлении
+                if (userData) {
+                    document.getElementById('username').innerText = `Username: ${userData.username}`;
+                    document.getElementById('points').innerText = `Points: ${userData.points}`;
+                    
+                    // Показываем блок с данными пользователя
+                    document.getElementById('userData').style.display = 'block';
                 }
-
-                // Запуск таймера для отображения времени
-                function startTimer(lastClickTime) {
-                    const currentTime = Math.floor(Date.now() / 1000); // Текущее время в секундах
-                    const timeLeft = 60 - (currentTime - lastClickTime); // Время до следующего клика
-
-                    const addPointsButton = document.getElementById('addPoints');
-                    const timerDiv = document.getElementById('timer');
-
-                    if (timeLeft > 0) {
-                        // Если время не прошло, скрываем кнопку и показываем таймер на кнопке
-                        addPointsButton.innerText = `Please wait ${timeLeft} seconds`;  // Обновить текст кнопки
-                        addPointsButton.classList.add('bg-gray-500', 'cursor-not-allowed'); // Сделать кнопку неактивной
-                        addPointsButton.disabled = true;  // Отключить кнопку
-                        timerDiv.classList.add('hidden'); // Скрыть дополнительный таймер
-
-                        // Обновляем таймер каждую секунду
-                        const timerInterval = setInterval(() => {
-                            const remainingTime = timeLeft - Math.floor(Date.now() / 1000) + currentTime;
-                            if (remainingTime <= 0) {
-                                clearInterval(timerInterval);
-                                addPointsButton.innerText = 'Get 100 Points'; // Восстановить текст кнопки
-                                addPointsButton.classList.remove('bg-gray-500', 'cursor-not-allowed'); // Сделать кнопку активной
-                                addPointsButton.disabled = false; // Включить кнопку
-                                timerDiv.classList.add('hidden'); // Скрыть таймер
-                            } else {
-                                addPointsButton.innerText = `Please wait ${remainingTime} seconds`;
-                            }
-                        }, 1000);
-                    } else {
-                        // Если время прошло, показываем кнопку и скрываем таймер
-                        addPointsButton.innerText = 'Get 100 Points'; // Восстановить текст кнопки
-                        addPointsButton.classList.remove('bg-gray-500', 'cursor-not-allowed'); // Сделать кнопку активной
-                        addPointsButton.disabled = false; // Включить кнопку
-                        timerDiv.classList.add('hidden'); // Скрыть таймер
-                    }
-                }
+            } else {
+                document.getElementById('result').innerText = "Validation Failed.";
             }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('result').innerText = "An error occurred.";
         });
     </script>
 </body>
