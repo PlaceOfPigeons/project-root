@@ -145,7 +145,7 @@
 
     <div id="result" style="display: none;">Loading...</div>
 
-    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px; display: none;">
+    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px;">
         Get 100 points
     </button>
     <div id="timer" style="display: none;"></div>
@@ -201,14 +201,17 @@
                         }
                     }
 
+                    // Если есть оставшееся время, показываем таймер, а кнопка скрыта
                     if (timeLeft > 0) {
                         timerBtn.style.display = 'none'; // Скрыть кнопку
+                        timerElement.style.display = 'block'; // Показать таймер
                         updateTimer();
                     } else {
                         timerBtn.disabled = false;
                         timerBtn.style.display = 'block'; // Показать кнопку
                     }
 
+                    // Обработчик для кнопки "Get 100 points"
                     timerBtn.addEventListener('click', function() {
                         timerBtn.style.display = 'none'; // Скрыть кнопку
 
