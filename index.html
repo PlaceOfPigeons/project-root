@@ -98,25 +98,30 @@
                     const timerDiv = document.getElementById('timer');
 
                     if (timeLeft > 0) {
-                        // Если время не прошло, скрываем кнопку и показываем таймер
-                        addPointsButton.classList.add('hidden');  // Скрыть кнопку
-                        timerDiv.classList.remove('hidden'); // Показать таймер
-                        timerDiv.innerText = `Please wait ${timeLeft} seconds.`;
+                        // Если время не прошло, скрываем кнопку и показываем таймер на кнопке
+                        addPointsButton.innerText = `Please wait ${timeLeft} seconds`;  // Обновить текст кнопки
+                        addPointsButton.classList.add('bg-gray-500', 'cursor-not-allowed'); // Сделать кнопку неактивной
+                        addPointsButton.disabled = true;  // Отключить кнопку
+                        timerDiv.classList.add('hidden'); // Скрыть дополнительный таймер
 
                         // Обновляем таймер каждую секунду
                         const timerInterval = setInterval(() => {
                             const remainingTime = timeLeft - Math.floor(Date.now() / 1000) + currentTime;
                             if (remainingTime <= 0) {
                                 clearInterval(timerInterval);
-                                addPointsButton.classList.remove('hidden'); // Показать кнопку
+                                addPointsButton.innerText = 'Get 100 Points'; // Восстановить текст кнопки
+                                addPointsButton.classList.remove('bg-gray-500', 'cursor-not-allowed'); // Сделать кнопку активной
+                                addPointsButton.disabled = false; // Включить кнопку
                                 timerDiv.classList.add('hidden'); // Скрыть таймер
                             } else {
-                                timerDiv.innerText = `Please wait ${remainingTime} seconds.`;
+                                addPointsButton.innerText = `Please wait ${remainingTime} seconds`;
                             }
                         }, 1000);
                     } else {
                         // Если время прошло, показываем кнопку и скрываем таймер
-                        addPointsButton.classList.remove('hidden');  // Показать кнопку
+                        addPointsButton.innerText = 'Get 100 Points'; // Восстановить текст кнопки
+                        addPointsButton.classList.remove('bg-gray-500', 'cursor-not-allowed'); // Сделать кнопку активной
+                        addPointsButton.disabled = false; // Включить кнопку
                         timerDiv.classList.add('hidden'); // Скрыть таймер
                     }
                 }
