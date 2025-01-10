@@ -46,7 +46,6 @@
             margin-top: 10px;
             color: yellow;
         }
-
     </style>
 </head>
 <body>
@@ -60,16 +59,13 @@
     </div>
 
     <script>
-        // Получаем объект Telegram Web App
         const tg = window.Telegram.WebApp;
         const initData = tg.initData;
 
-        // Отображаем исходные данные
         console.log("Init Data:", initData);
 
-        const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com'; // URL вашего сервера
+        const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com'; // Ваш серверный URL
 
-        // Отправка данных на сервер для валидации
         fetch(`${serverUrl}/validate`, {
             method: 'POST',
             headers: {
@@ -81,16 +77,11 @@
         .then(data => {
             if (data.success) {
                 document.getElementById('result').innerText = `Validation Successful! Welcome, ${data.username}`;
-                
-                // Сохраняем user_id для использования при добавлении очков
-                const userId = data.user_id;
-                let points = data.points;
-                let lastClickTime = data.last_click_time;
-                
-                // Обновляем UI для отображения очков
-                updatePoints(points);
 
-                // Обработчик для добавления 100 очков
+                const userId = data.user_id;
+                const lastClickTime = data.last_click_time;
+                updatePoints(data.points);
+
                 document.getElementById('addPoints').addEventListener('click', function() {
                     fetch(`${serverUrl}/add_points`, {
                         method: 'POST',
@@ -102,21 +93,14 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            points = data.points;
-                            lastClickTime = data.last_click_time;  // Обновляем время последнего клика
-                            updatePoints(points);
-                            startTimer(lastClickTime); // Перезапускаем таймер
+                            updatePoints(data.points);
+                            startTimer(data.last_click_time);
                         } else {
                             alert(data.message);
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert("An error occurred while adding points.");
                     });
                 });
 
-                // Функция для обновления отображаемых очков
                 function updatePoints(newPoints) {
                     document.getElementById('pointsSection').innerHTML = `
                         <div>
@@ -125,16 +109,14 @@
                             <div id="timer" style="display:none;">Please wait...</div>
                         </div>
                     `;
-                    startTimer(lastClickTime); // Запуск таймера
+                    startTimer(lastClickTime);
                 }
 
-                // Функция для старта таймера
                 function startTimer(lastClickTime) {
-                    const currentTime = Math.floor(Date.now() / 1000); // Текущее время в секундах
+                    const currentTime = Math.floor(Date.now() / 1000);
                     const timeLeft = 60 - (currentTime - lastClickTime); // Время до следующего клика
 
                     if (timeLeft > 0) {
-                        // Деактивируем кнопку и показываем таймер
                         const addPointsButton = document.getElementById('addPoints');
                         const timerDiv = document.getElementById('timer');
 
@@ -143,7 +125,6 @@
                         timerDiv.style.display = "block"; // Показываем таймер
                         timerDiv.innerText = `Please wait ${timeLeft} seconds.`;
 
-                        // Обновляем таймер каждую секунду
                         const timerInterval = setInterval(() => {
                             const remainingTime = timeLeft - Math.floor(Date.now() / 1000) + currentTime;
                             if (remainingTime <= 0) {
@@ -151,13 +132,13 @@
                                 addPointsButton.disabled = false;
                                 addPointsButton.style.display = "block";  // Показываем кнопку
                                 timerDiv.style.display = "none"; // Скрываем таймер
-                                document.getElementById('timer').innerText = 'You can now click the button again!';
+                                localStorage.removeItem('lastClickTime');
+                                localStorage.removeItem('timeLeft');
                             } else {
                                 timerDiv.innerText = `Please wait ${remainingTime} seconds.`;
                             }
                         }, 1000);
                     } else {
-                        // Если прошло достаточно времени, включаем кнопку
                         const addPointsButton = document.getElementById('addPoints');
                         const timerDiv = document.getElementById('timer');
 
@@ -165,16 +146,11 @@
                         addPointsButton.style.display = "block";  // Показываем кнопку
                         timerDiv.style.display = "none"; // Скрываем таймер
                         document.getElementById('timer').innerText = 'You can now click the button again!';
+                        localStorage.removeItem('lastClickTime');
+                        localStorage.removeItem('timeLeft');
                     }
                 }
-
-            } else {
-                document.getElementById('result').innerText = "Validation Failed.";
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('result').innerText = "An error occurred.";
         });
     </script>
 </body>
