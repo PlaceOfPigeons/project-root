@@ -107,13 +107,16 @@
         <p id="points"></p>
     </div>
 
-    <!-- Добавление кнопок "Купить 100" и "Продать 100" -->
+    <!-- Добавление кнопок "Купить 100", "Продать 100" и "Получить 2 очка" -->
     <div id="actions" class="text-center mt-10">
         <button id="buyBtn" class="btn-action bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">
             Купить 100
         </button>
         <button id="sellBtn" class="btn-action bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded">
             Продать 100
+        </button>
+        <button id="bonusBtn" class="btn-action bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded mt-5">
+            Получить 2 очка
         </button>
     </div>
 
@@ -174,6 +177,11 @@
             handlePointsChange('sell');
         });
 
+        // Обработчик нажатия на кнопку "Получить 2 очка"
+        document.getElementById('bonusBtn').addEventListener('click', function() {
+            handleBonus();
+        });
+
         // Функция для изменения очков
         function handlePointsChange(action) {
             const requestData = {
@@ -194,7 +202,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Обновляем данные пользователя без alert
+                    // Обновляем данные пользователя
                     document.getElementById('points').innerText = `Points: ${data.user_data.points}`;
                 } else {
                     console.error('Ошибка обновления очков');
@@ -203,6 +211,37 @@
             .catch(error => {
                 console.error('Ошибка:', error);
                 alert('Произошла ошибка при изменении очков.');
+            });
+        }
+
+        // Функция для получения бонусных очков раз в сутки
+        function handleBonus() {
+            const requestData = {
+                user_id: userId,
+            };
+
+            // URL сервера для получения бонусных очков
+            const bonusUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/get_bonus_points';
+
+            fetch(bonusUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Обновляем данные пользователя с новыми очками
+                    document.getElementById('points').innerText = `Points: ${data.user_data.points}`;
+                } else {
+                    alert(data.message); // Показываем сообщение от сервера, если бонус уже получен
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при получении бонусных очков.');
             });
         }
     </script>
