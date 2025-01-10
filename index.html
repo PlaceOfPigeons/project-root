@@ -55,7 +55,7 @@
     <div id="pointsSection">
         <!-- Кнопка для добавления очков -->
         <button id="addPoints">Get 100 Points</button>
-        <div id="timer" style="display:none;">Please wait...</div>
+        <div id="timer" style="display:none;"></div> <!-- Таймер скрыт по умолчанию -->
     </div>
 
     <script>
@@ -109,7 +109,7 @@
                         <div>
                             <h2>Current Points: ${newPoints}</h2>
                             <button id="addPoints">Get 100 Points</button>
-                            <div id="timer" style="display:none;">Please wait...</div>
+                            <div id="timer" style="display:none;"></div> <!-- Таймер скрыт по умолчанию -->
                         </div>
                     `;
                     startTimer(lastClickTime); // Запускаем таймер при обновлении
