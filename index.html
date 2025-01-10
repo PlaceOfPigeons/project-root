@@ -215,6 +215,26 @@
                     timerBtn.addEventListener('click', function() {
                         timerBtn.style.display = 'none'; // Скрыть кнопку
 
+                        // Показываем таймер вместо кнопки
+                        timerElement.style.display = 'block';
+                        let timeLeft = 30; // Таймер на 30 секунд (можно изменить)
+
+                        function updateTimer() {
+                            if (timeLeft > 0) {
+                                timerElement.innerText = `Wait ${timeLeft}s`;
+                                timeLeft--;
+                                setTimeout(updateTimer, 1000);
+                            } else {
+                                timerElement.innerText = '';
+                                timerElement.style.display = 'none'; // Скрыть таймер
+                                timerBtn.style.display = 'block'; // Показать кнопку
+                                timerBtn.disabled = false; // Включить кнопку
+                            }
+                        }
+
+                        updateTimer(); // Запуск таймера
+
+                        // Запрос на добавление очков
                         fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
                             method: 'POST',
                             headers: {
