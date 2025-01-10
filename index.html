@@ -54,8 +54,9 @@
     <div id="result">Loading...</div>
 
     <div id="pointsSection">
+        <!-- Кнопка для добавления очков -->
         <button id="addPoints">Add 100 Points</button>
-        <div id="timer">Please wait...</div>
+        <div id="timer" style="display:none;">Please wait...</div>
     </div>
 
     <script>
@@ -121,7 +122,7 @@
                         <div>
                             <h2>Current Points: ${newPoints}</h2>
                             <button id="addPoints">Add 100 Points</button>
-                            <div id="timer">Please wait...</div>
+                            <div id="timer" style="display:none;">Please wait...</div>
                         </div>
                     `;
                     startTimer(lastClickTime); // Запуск таймера
@@ -134,23 +135,35 @@
 
                     if (timeLeft > 0) {
                         // Деактивируем кнопку и показываем таймер
-                        document.getElementById('addPoints').disabled = true;
-                        document.getElementById('timer').innerText = `Please wait ${timeLeft} seconds.`;
+                        const addPointsButton = document.getElementById('addPoints');
+                        const timerDiv = document.getElementById('timer');
+
+                        addPointsButton.disabled = true;
+                        addPointsButton.style.display = "none";  // Прячем кнопку
+                        timerDiv.style.display = "block"; // Показываем таймер
+                        timerDiv.innerText = `Please wait ${timeLeft} seconds.`;
 
                         // Обновляем таймер каждую секунду
                         const timerInterval = setInterval(() => {
                             const remainingTime = timeLeft - Math.floor(Date.now() / 1000) + currentTime;
                             if (remainingTime <= 0) {
                                 clearInterval(timerInterval);
-                                document.getElementById('addPoints').disabled = false;
+                                addPointsButton.disabled = false;
+                                addPointsButton.style.display = "block";  // Показываем кнопку
+                                timerDiv.style.display = "none"; // Скрываем таймер
                                 document.getElementById('timer').innerText = 'You can now click the button again!';
                             } else {
-                                document.getElementById('timer').innerText = `Please wait ${remainingTime} seconds.`;
+                                timerDiv.innerText = `Please wait ${remainingTime} seconds.`;
                             }
                         }, 1000);
                     } else {
                         // Если прошло достаточно времени, включаем кнопку
-                        document.getElementById('addPoints').disabled = false;
+                        const addPointsButton = document.getElementById('addPoints');
+                        const timerDiv = document.getElementById('timer');
+
+                        addPointsButton.disabled = false;
+                        addPointsButton.style.display = "block";  // Показываем кнопку
+                        timerDiv.style.display = "none"; // Скрываем таймер
                         document.getElementById('timer').innerText = 'You can now click the button again!';
                     }
                 }
