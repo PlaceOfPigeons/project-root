@@ -26,6 +26,30 @@
             margin-top: 20px;
             font-size: 18px;
         }
+
+        #lifeButton {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #1e90ff;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #lifeButton.disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
+
+        #timer {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        #points {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -38,6 +62,10 @@
         <p id="points"></p>
     </div>
 
+    <!-- Кнопка 1 ЖИЗНЬ и таймер -->
+    <button id="lifeButton">1 ЖИЗНЬ</button>
+    <div id="timer" style="display: none;"></div>
+
     <script>
         // Получаем объект Telegram Web App
         const tg = window.Telegram.WebApp;
@@ -49,7 +77,11 @@
         // URL вашего сервера для проверки
         const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate'; // Укажите свой URL
 
-        // Отправка данных на сервер
+        // Переменные для отслеживания времени и состояния кнопки
+        let isLifeButtonEnabled = true;
+        let lastLifeButtonClick = null;
+
+        // Отправка данных на сервер для валидации
         fetch(serverUrl, {
             method: 'POST',
             headers: {
@@ -72,6 +104,10 @@
                     // Показываем блок с данными пользователя
                     document.getElementById('userData').style.display = 'block';
                 }
+
+                // Устанавливаем информацию о времени
+                lastLifeButtonClick = userData.lastLifeButtonClick || null; // Предположим, что это поле есть на сервере
+                updateLifeButtonState();
             } else {
                 document.getElementById('result').innerText = "Validation Failed.";
             }
@@ -79,6 +115,77 @@
         .catch(error => {
             console.error('Error:', error);
             document.getElementById('result').innerText = "An error occurred.";
+        });
+
+        // Функция для обновления состояния кнопки "1 ЖИЗНЬ" и таймера
+        function updateLifeButtonState() {
+            const lifeButton = document.getElementById('lifeButton');
+            const timerDisplay = document.getElementById('timer');
+            
+            if (lastLifeButtonClick) {
+                const timeLeft = getTimeLeftToNextLife(lastLifeButtonClick);
+                if (timeLeft > 0) {
+                    lifeButton.classList.add('disabled');
+                    lifeButton.disabled = true;
+                    timerDisplay.style.display = 'block';
+                    timerDisplay.innerText = `Next life in: ${formatTime(timeLeft)}`;
+                } else {
+                    lifeButton.classList.remove('disabled');
+                    lifeButton.disabled = false;
+                    timerDisplay.style.display = 'none';
+                }
+            } else {
+                lifeButton.classList.remove('disabled');
+                lifeButton.disabled = false;
+                timerDisplay.style.display = 'none';
+            }
+        }
+
+        // Функция для вычисления времени до следующей жизни (12 часов)
+        function getTimeLeftToNextLife(lastClickTime) {
+            const currentTime = Date.now();
+            const twelveHours = 12 * 60 * 60 * 1000; // 12 часов в миллисекундах
+            return lastClickTime + twelveHours - currentTime;
+        }
+
+        // Функция для форматирования времени
+        function formatTime(milliseconds) {
+            const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+            const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
+            return `${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        // Обработчик нажатия на кнопку "1 ЖИЗНЬ"
+        document.getElementById('lifeButton').addEventListener('click', function() {
+            if (isLifeButtonEnabled && lastLifeButtonClick === null || getTimeLeftToNextLife(lastLifeButtonClick) <= 0) {
+                // Деактивируем кнопку
+                lastLifeButtonClick = Date.now(); // Записываем текущее время
+
+                // Отправляем информацию на сервер
+                fetch(serverUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        initData,
+                        lastLifeButtonClick
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Обновляем отображение после успешного ответа от сервера
+                    if (data.success) {
+                        updateLifeButtonState();
+                        alert("You got 1 life!");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred while updating life.");
+                });
+            }
         });
     </script>
 </body>
