@@ -26,7 +26,7 @@
             text-align: center;
         }
 
-        #addPoints, #subtractPoints {
+        #addPoints {
             display: block;
             margin: 10px auto;
             padding: 10px 20px;
@@ -36,8 +36,14 @@
             cursor: pointer;
         }
 
-        #subtractPoints {
-            background-color: red;
+        #addPoints:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+
+        #timer {
+            font-size: 24px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -47,10 +53,7 @@
 
     <div id="pointsSection">
         <button id="addPoints">Add 100 Points</button>
-        <div>
-            <input type="text" id="productId" placeholder="Enter Product ID to subtract" />
-            <button id="subtractPoints">Subtract 100 Points</button>
-        </div>
+        <div id="timer">Please wait...</div>
     </div>
 
     <script>
@@ -76,10 +79,11 @@
             if (data.success) {
                 document.getElementById('result').innerText = `Validation Successful! Welcome, ${data.username}`;
                 
-                // Сохраняем user_id для использования при добавлении или вычитании очков
+                // Сохраняем user_id для использования при добавлении очков
                 const userId = data.user_id;
                 let points = data.points;
-
+                let lastClickTime = data.last_click_time;
+                
                 // Обновляем UI для отображения очков
                 updatePoints(points);
 
@@ -96,7 +100,9 @@
                     .then(data => {
                         if (data.success) {
                             points = data.points;
+                            lastClickTime = data.last_click_time;  // Обновляем время последнего клика
                             updatePoints(points);
+                            startTimer(lastClickTime); // Перезапускаем таймер
                         } else {
                             alert(data.message);
                         }
@@ -107,51 +113,46 @@
                     });
                 });
 
-                // Обработчик для вычитания 100 очков
-                document.getElementById('subtractPoints').addEventListener('click', function() {
-                    const productId = document.getElementById('productId').value;
-
-                    if (!productId) {
-                        alert("Please enter a product ID.");
-                        return;
-                    }
-
-                    fetch(`${serverUrl}/subtract_points`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ userId, productId })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            points = data.points;
-                            updatePoints(points);
-                            alert(data.message);
-                        } else {
-                            alert(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert("An error occurred while subtracting points.");
-                    });
-                });
-
                 // Функция для обновления отображаемых очков
                 function updatePoints(newPoints) {
                     document.getElementById('pointsSection').innerHTML = `
                         <div>
                             <h2>Current Points: ${newPoints}</h2>
                             <button id="addPoints">Add 100 Points</button>
-                            <div>
-                                <input type="text" id="productId" placeholder="Enter Product ID to subtract" />
-                                <button id="subtractPoints">Subtract 100 Points</button>
-                            </div>
+                            <div id="timer">Please wait...</div>
                         </div>
                     `;
+                    startTimer(lastClickTime); // Запуск таймера
                 }
+
+                // Функция для старта таймера
+                function startTimer(lastClickTime) {
+                    const currentTime = Math.floor(Date.now() / 1000); // Текущее время в секундах
+                    const timeLeft = 60 - (currentTime - lastClickTime); // Время до следующего клика
+
+                    if (timeLeft > 0) {
+                        // Деактивируем кнопку и показываем таймер
+                        document.getElementById('addPoints').disabled = true;
+                        document.getElementById('timer').innerText = `Please wait ${timeLeft} seconds.`;
+
+                        // Обновляем таймер каждую секунду
+                        const timerInterval = setInterval(() => {
+                            const remainingTime = timeLeft - Math.floor(Date.now() / 1000) + currentTime;
+                            if (remainingTime <= 0) {
+                                clearInterval(timerInterval);
+                                document.getElementById('addPoints').disabled = false;
+                                document.getElementById('timer').innerText = 'You can now click the button again!';
+                            } else {
+                                document.getElementById('timer').innerText = `Please wait ${remainingTime} seconds.`;
+                            }
+                        }, 1000);
+                    } else {
+                        // Если прошло достаточно времени, включаем кнопку
+                        document.getElementById('addPoints').disabled = false;
+                        document.getElementById('timer').innerText = 'You can now click the button again!';
+                    }
+                }
+
             } else {
                 document.getElementById('result').innerText = "Validation Failed.";
             }
