@@ -194,11 +194,10 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(`Ваши очки: ${data.user_data.points}`);
-                    // Обновляем данные пользователя
+                    // Обновляем данные пользователя без alert
                     document.getElementById('points').innerText = `Points: ${data.user_data.points}`;
                 } else {
-                    alert('Ошибка обновления очков');
+                    console.error('Ошибка обновления очков');
                 }
             })
             .catch(error => {
