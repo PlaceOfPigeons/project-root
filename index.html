@@ -54,7 +54,7 @@
 
     <div id="pointsSection">
         <!-- Кнопка для добавления очков -->
-        <button id="addPoints">Add 100 Points</button>
+        <button id="addPoints">Get 100 Points</button>
         <div id="timer" style="display:none;">Please wait...</div>
     </div>
 
@@ -66,6 +66,7 @@
 
         const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com'; // Ваш серверный URL
 
+        // Получаем данные с сервера для валидации
         fetch(`${serverUrl}/validate`, {
             method: 'POST',
             headers: {
@@ -79,9 +80,10 @@
                 document.getElementById('result').innerText = `Validation Successful! Welcome, ${data.username}`;
 
                 const userId = data.user_id;
-                const lastClickTime = data.last_click_time;
+                const lastClickTime = data.last_click_time; // время последнего клика
                 updatePoints(data.points);
 
+                // Обработчик нажатия на кнопку
                 document.getElementById('addPoints').addEventListener('click', function() {
                     fetch(`${serverUrl}/add_points`, {
                         method: 'POST',
@@ -94,44 +96,46 @@
                     .then(data => {
                         if (data.success) {
                             updatePoints(data.points);
-                            startTimer(data.last_click_time);
+                            startTimer(data.last_click_time); // Обновляем таймер после клика
                         } else {
                             alert(data.message);
                         }
                     });
                 });
 
+                // Обновление информации о баллах и таймере
                 function updatePoints(newPoints) {
                     document.getElementById('pointsSection').innerHTML = `
                         <div>
                             <h2>Current Points: ${newPoints}</h2>
-                            <button id="addPoints">Add 100 Points</button>
+                            <button id="addPoints">Get 100 Points</button>
                             <div id="timer" style="display:none;">Please wait...</div>
                         </div>
                     `;
-                    startTimer(lastClickTime);
+                    startTimer(lastClickTime); // Запускаем таймер при обновлении
                 }
 
+                // Запуск таймера для отображения времени
                 function startTimer(lastClickTime) {
-                    const currentTime = Math.floor(Date.now() / 1000);
+                    const currentTime = Math.floor(Date.now() / 1000); // Текущее время в секундах
                     const timeLeft = 60 - (currentTime - lastClickTime); // Время до следующего клика
 
-                    if (timeLeft > 0) {
-                        const addPointsButton = document.getElementById('addPoints');
-                        const timerDiv = document.getElementById('timer');
+                    const addPointsButton = document.getElementById('addPoints');
+                    const timerDiv = document.getElementById('timer');
 
-                        addPointsButton.disabled = true;
-                        addPointsButton.style.display = "none";  // Прячем кнопку
-                        timerDiv.style.display = "block"; // Показываем таймер
+                    if (timeLeft > 0) {
+                        // Если время не прошло, скрываем кнопку и показываем таймер
+                        addPointsButton.style.display = "none";  // Скрыть кнопку
+                        timerDiv.style.display = "block"; // Показать таймер
                         timerDiv.innerText = `Please wait ${timeLeft} seconds.`;
 
+                        // Обновляем таймер каждую секунду
                         const timerInterval = setInterval(() => {
                             const remainingTime = timeLeft - Math.floor(Date.now() / 1000) + currentTime;
                             if (remainingTime <= 0) {
                                 clearInterval(timerInterval);
-                                addPointsButton.disabled = false;
-                                addPointsButton.style.display = "block";  // Показываем кнопку
-                                timerDiv.style.display = "none"; // Скрываем таймер
+                                addPointsButton.style.display = "block"; // Показать кнопку
+                                timerDiv.style.display = "none"; // Скрыть таймер
                                 localStorage.removeItem('lastClickTime');
                                 localStorage.removeItem('timeLeft');
                             } else {
@@ -139,15 +143,9 @@
                             }
                         }, 1000);
                     } else {
-                        const addPointsButton = document.getElementById('addPoints');
-                        const timerDiv = document.getElementById('timer');
-
-                        addPointsButton.disabled = false;
-                        addPointsButton.style.display = "block";  // Показываем кнопку
-                        timerDiv.style.display = "none"; // Скрываем таймер
-                        document.getElementById('timer').innerText = 'You can now click the button again!';
-                        localStorage.removeItem('lastClickTime');
-                        localStorage.removeItem('timeLeft');
+                        // Если время прошло, показываем кнопку и скрываем таймер
+                        addPointsButton.style.display = "block";  // Показать кнопку
+                        timerDiv.style.display = "none"; // Скрыть таймер
                     }
                 }
             }
