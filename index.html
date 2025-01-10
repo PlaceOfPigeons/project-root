@@ -26,6 +26,20 @@
             margin-top: 20px;
             font-size: 18px;
         }
+
+        #claimButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #claimButton:disabled {
+            background-color: gray;
+        }
     </style>
 </head>
 <body>
@@ -38,18 +52,20 @@
         <p id="points"></p>
     </div>
 
+    <!-- Кнопка для начисления очков -->
+    <div id="claimSection" style="display: none;">
+        <button id="claimButton" onclick="claimPoints()" disabled>Claim 100 Points</button>
+        <p id="timer"></p>
+    </div>
+
     <script>
-        // Получаем объект Telegram Web App
         const tg = window.Telegram.WebApp;
         const initData = tg.initData;
 
-        // Отображаем исходные данные (для отладки)
         console.log("Init Data:", initData);
 
-        // URL вашего сервера для проверки
-        const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate'; // Укажите свой URL
+        const serverUrl = 'https://your-server-url/validate'; // Замените на ваш URL
 
-        // Отправка данных на сервер
         fetch(serverUrl, {
             method: 'POST',
             headers: {
@@ -61,16 +77,27 @@
         .then(data => {
             if (data.success) {
                 document.getElementById('result').innerText = "Validation Successful!";
-                
-                // Получаем и отображаем данные пользователя
                 const userData = data.user_data;
+                const canClaim = data.can_claim;
 
                 if (userData) {
                     document.getElementById('username').innerText = `Username: ${userData.username}`;
                     document.getElementById('points').innerText = `Points: ${userData.points}`;
                     
-                    // Показываем блок с данными пользователя
+                    // Показываем данные пользователя
                     document.getElementById('userData').style.display = 'block';
+                    
+                    // Управление кнопкой начисления очков
+                    if (canClaim) {
+                        document.getElementById('claimButton').disabled = false;
+                        document.getElementById('timer').innerText = "";
+                    } else {
+                        document.getElementById('claimButton').disabled = true;
+                        document.getElementById('timer').innerText = "You can claim points again in 60 seconds.";
+                    }
+                    
+                    // Показываем кнопку начисления
+                    document.getElementById('claimSection').style.display = 'block';
                 }
             } else {
                 document.getElementById('result').innerText = "Validation Failed.";
@@ -80,6 +107,12 @@
             console.error('Error:', error);
             document.getElementById('result').innerText = "An error occurred.";
         });
+
+        function claimPoints() {
+            // Логика для начисления 100 очков
+            alert("You have received 100 points!");
+            // Здесь можно отправить запрос на сервер для обновления данных
+        }
     </script>
 </body>
 </html>
