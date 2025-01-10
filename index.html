@@ -5,19 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <title>Telegram Web App Validation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         body {
             background-color: black;
             color: white;
             font-family: Arial, sans-serif;
-            padding-bottom: 60px;
-            user-select: none;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
-            height: 100%;
         }
 
         h1 {
@@ -29,137 +21,50 @@
             margin-top: 20px;
         }
 
-        #timer {
-            font-size: 24px;
-            color: white;
-            text-align: center;
+        #pointsSection {
             margin-top: 20px;
+            text-align: center;
         }
 
-        .navbar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 999;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 0;
-            box-sizing: border-box;
-            display: none;
-        }
-
-        .navbar button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            padding: 4px;
-            border-radius: 30px;
-            border: 2px solid transparent;
-            margin: 0 1px;
-            flex: 1 1 16.666%;
-            box-sizing: border-box;
-            min-width: 50px;
-        }
-
-        .navbar button:hover {
-            transform: scale(1.05);
-            border-color: #ffffff;
-        }
-
-        .navbar button:active {
-            transform: scale(0.95);
-            border-color: #ffffff;
-        }
-
-        .navbar .material-icons {
-            margin-bottom: 2px;
-            font-size: 20px;
-        }
-
-        .active-button {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border-radius: 30px;
-            border-color: #000000;
-        }
-
-        .active-button .material-icons {
-            fill: #000000 !important;
-        }
-
-        @media (max-width: 1200px) {
-            .navbar button {
-                flex: 1 1 16.666%;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .navbar button {
-                flex: 1 1 16%;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .navbar button {
-                flex: 1 1 20%;
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .navbar button {
-                flex: 1 1 25%;
-                font-size: 12px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .navbar button {
-                flex: 1 1 33%;
-                font-size: 10px;
-            }
-        }
-
-        #loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
+        #addPoints, #subtractPoints {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            background-color: green;
             color: white;
+            border: none;
+            cursor: pointer;
         }
 
-        #heading {
-            display: none;
+        #subtractPoints {
+            background-color: red;
         }
     </style>
 </head>
 <body>
-    <h1 id="heading">Telegram Web App Validation</h1>
-    <div id="loading">Loading...</div>
+    <h1>Telegram Web App Validation</h1>
+    <div id="result">Loading...</div>
 
-    <div id="result" style="display: none;">Loading...</div>
-
-    <button id="timer-btn" class="btn btn-dark" style="width: 100%; margin-top: 20px;">
-        Get 100 points
-    </button>
-    <div id="timer" style="display: none;"></div>
+    <div id="pointsSection">
+        <button id="addPoints">Add 100 Points</button>
+        <div>
+            <input type="text" id="productId" placeholder="Enter Product ID to subtract" />
+            <button id="subtractPoints">Subtract 100 Points</button>
+        </div>
+    </div>
 
     <script>
+        // Получаем объект Telegram Web App
         const tg = window.Telegram.WebApp;
         const initData = tg.initData;
 
-        Telegram.WebApp.setBackgroundColor("#000000");
-        Telegram.WebApp.setHeaderColor("#000000");
+        // Отображаем исходные данные
+        console.log("Init Data:", initData);
 
-        const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate';
+        const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com'; // URL вашего сервера
 
-        fetch(serverUrl, {
+        // Отправка данных на сервер для валидации
+        fetch(`${serverUrl}/validate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -168,147 +73,92 @@
         })
         .then(response => response.json())
         .then(data => {
-            console.log("Server response:", data); // Логирование ответа от сервера для отладки
+            if (data.success) {
+                document.getElementById('result').innerText = `Validation Successful! Welcome, ${data.username}`;
+                
+                // Сохраняем user_id для использования при добавлении или вычитании очков
+                const userId = data.user_id;
+                let points = data.points;
 
-            setTimeout(() => {
-                const resultElement = document.getElementById('result');
-                const timerBtn = document.getElementById('timer-btn');
-                const timerElement = document.getElementById('timer');
-                const loadingElement = document.getElementById('loading');
-                const headingElement = document.getElementById('heading');
-                const navbar = document.querySelector('.navbar');
+                // Обновляем UI для отображения очков
+                updatePoints(points);
 
-                loadingElement.style.display = 'none';
-                headingElement.style.display = 'block';
-                navbar.style.display = 'flex';
-
-                if (data.success) {
-                    resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
-                    resultElement.style.display = 'block';
-
-                    let timeLeft = data.time_left;  // Получаем время с сервера
-
-                    function updateTimer() {
-                        if (timeLeft > 0) {
-                            timerElement.innerText = `Wait ${timeLeft}s`;
-                            timeLeft--;
-                            setTimeout(updateTimer, 1000);
+                // Обработчик для добавления 100 очков
+                document.getElementById('addPoints').addEventListener('click', function() {
+                    fetch(`${serverUrl}/add_points`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ userId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            points = data.points;
+                            updatePoints(points);
                         } else {
-                            timerElement.innerText = '';
-                            timerElement.style.display = 'none'; // Скрыть таймер
-                            timerBtn.style.display = 'block'; // Показать кнопку
-                            timerBtn.disabled = false; // Включить кнопку
+                            alert(data.message);
                         }
-                    }
-
-                    // Если есть оставшееся время, показываем таймер, а кнопка скрыта
-                    if (timeLeft > 0) {
-                        timerBtn.style.display = 'none'; // Скрыть кнопку
-                        timerElement.style.display = 'block'; // Показать таймер
-                        updateTimer(); // Запуск таймера
-                    } else {
-                        timerBtn.disabled = false;
-                        timerBtn.style.display = 'block'; // Показать кнопку
-                    }
-
-                    // Обработчик для кнопки "Get 100 points"
-                    timerBtn.addEventListener('click', function() {
-                        timerBtn.style.display = 'none'; // Скрыть кнопку
-
-                        // Показываем таймер вместо кнопки
-                        timerElement.style.display = 'block';
-                        let timeLeft = 30; // Таймер на 30 секунд (можно изменить)
-
-                        function updateTimer() {
-                            if (timeLeft > 0) {
-                                timerElement.innerText = `Wait ${timeLeft}s`;
-                                timeLeft--;
-                                setTimeout(updateTimer, 1000);
-                            } else {
-                                timerElement.innerText = '';
-                                timerElement.style.display = 'none'; // Скрыть таймер
-                                timerBtn.style.display = 'block'; // Показать кнопку
-                                timerBtn.disabled = false; // Включить кнопку
-                            }
-                        }
-
-                        updateTimer(); // Запуск таймера
-
-                        // Запрос на добавление очков
-                        fetch('https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/add_points', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ userId: data.user_id })
-                        })
-                        .then(response => response.json())
-                        .then(responseData => {
-                            if (responseData.success) {
-                                resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${responseData.points}`;
-                                timeLeft = responseData.time_left; // Получаем новое время с сервера
-                                updateTimer(); // Обновляем таймер
-                            } else {
-                                alert(responseData.message);
-                                timerBtn.style.display = 'block'; // Показать кнопку
-                                timerBtn.disabled = false;
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            timerBtn.style.display = 'block'; // Показать кнопку
-                            timerBtn.disabled = false;
-                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("An error occurred while adding points.");
                     });
-                } else {
-                    resultElement.innerText = "Validation Failed.";
-                    resultElement.style.display = 'block';
+                });
+
+                // Обработчик для вычитания 100 очков
+                document.getElementById('subtractPoints').addEventListener('click', function() {
+                    const productId = document.getElementById('productId').value;
+
+                    if (!productId) {
+                        alert("Please enter a product ID.");
+                        return;
+                    }
+
+                    fetch(`${serverUrl}/subtract_points`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ userId, productId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            points = data.points;
+                            updatePoints(points);
+                            alert(data.message);
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("An error occurred while subtracting points.");
+                    });
+                });
+
+                // Функция для обновления отображаемых очков
+                function updatePoints(newPoints) {
+                    document.getElementById('pointsSection').innerHTML = `
+                        <div>
+                            <h2>Current Points: ${newPoints}</h2>
+                            <button id="addPoints">Add 100 Points</button>
+                            <div>
+                                <input type="text" id="productId" placeholder="Enter Product ID to subtract" />
+                                <button id="subtractPoints">Subtract 100 Points</button>
+                            </div>
+                        </div>
+                    `;
                 }
-            }, 2000); 
+            } else {
+                document.getElementById('result').innerText = "Validation Failed.";
+            }
         })
         .catch(error => {
             console.error('Error:', error);
             document.getElementById('result').innerText = "An error occurred.";
-            document.getElementById('result').style.display = 'block';
-            document.getElementById('loading').style.display = 'none';
-        });
-    </script>
-
-    <nav class="navbar">
-        <button id="btn-main" class="nav-button">
-            <span class="material-icons text-3xl mb-2">home</span>
-            Main
-        </button>
-        <button id="btn-lead" class="nav-button">
-            <span class="material-icons text-3xl mb-2">leaderboard</span>
-            Lead
-        </button>
-        <button id="btn-friends" class="nav-button">
-            <span class="material-icons text-3xl mb-2">group</span>
-            Friends
-        </button>
-        <button id="btn-task" class="nav-button">
-            <span class="material-icons text-3xl mb-2">task</span>
-            Task
-        </button>
-        <button id="btn-faq" class="nav-button">
-            <span class="material-icons text-3xl mb-2">help</span>
-            FAQ
-        </button>
-        <button id="btn-shop" class="nav-button">
-            <span class="material-icons text-3xl mb-2">shopping_cart</span>
-            Shop
-        </button>
-    </nav>
-
-    <script>
-        const navButtons = document.querySelectorAll('.nav-button');
-
-        navButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                navButtons.forEach(btn => btn.classList.remove('active-button'));
-                button.classList.add('active-button');
-            });
         });
     </script>
 </body>
