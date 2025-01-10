@@ -26,6 +26,23 @@
             margin-top: 20px;
             font-size: 18px;
         }
+
+        #claimButton {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #claimButton:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -38,6 +55,9 @@
         <p id="points"></p>
     </div>
 
+    <!-- Кнопка для получения очков -->
+    <button id="claimButton" onclick="claimPoints()">Claim 100 Points</button>
+
     <script>
         // Получаем объект Telegram Web App
         const tg = window.Telegram.WebApp;
@@ -49,7 +69,9 @@
         // URL вашего сервера для проверки
         const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate'; // Укажите свой URL
 
-        // Отправка данных на сервер
+        let userData = null;
+
+        // Отправка данных на сервер для валидации
         fetch(serverUrl, {
             method: 'POST',
             headers: {
@@ -63,7 +85,7 @@
                 document.getElementById('result').innerText = "Validation Successful!";
                 
                 // Получаем и отображаем данные пользователя
-                const userData = data.user_data;
+                userData = data.user_data;
 
                 if (userData) {
                     document.getElementById('username').innerText = `Username: ${userData.username}`;
@@ -80,6 +102,37 @@
             console.error('Error:', error);
             document.getElementById('result').innerText = "An error occurred.";
         });
+
+        // Функция для запроса начисления очков
+        function claimPoints() {
+            if (!userData) {
+                alert("User data not loaded yet!");
+                return;
+            }
+
+            const claimUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/claim'; // Укажите свой URL для запроса начисления очков
+
+            fetch(claimUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_id: userData.id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`You have successfully claimed 100 points! Your new balance is ${data.points} points.`);
+                    document.getElementById('points').innerText = `Points: ${data.points}`; // Обновляем отображаемые очки
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while claiming points.");
+            });
+        }
     </script>
 </body>
 </html>
