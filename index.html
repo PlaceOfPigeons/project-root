@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Telegram Web App Validation</title>
     <style>
         body {
@@ -11,51 +12,20 @@
             color: white;
             font-family: Arial, sans-serif;
         }
-
-        h1 {
-            text-align: center;
-        }
-
-        #result {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        #pointsSection {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        #addPoints {
-            display: block;
-            margin: 10px auto;
-            padding: 10px 20px;
-            background-color: green;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        #addPoints:disabled {
-            background-color: gray;
-            cursor: not-allowed;
-        }
-
-        #timer {
-            font-size: 24px;
-            margin-top: 10px;
-            color: yellow;
-        }
     </style>
 </head>
 <body>
-    <h1>Telegram Web App Validation</h1>
-    <div id="result">Loading...</div>
+    <h1 class="text-center text-2xl mt-8">Telegram Web App Validation</h1>
+    <div id="result" class="text-center mt-8">Loading...</div>
 
-    <div id="pointsSection">
+    <div id="pointsSection" class="text-center mt-8">
         <!-- Кнопка для добавления очков -->
-        <button id="addPoints">Get 100 Points</button>
-        <div id="timer" style="display:none;"></div> <!-- Таймер скрыт по умолчанию -->
+        <button id="addPoints" class="bg-green-500 text-white py-2 px-4 rounded focus:outline-none hover:bg-green-600 transition-all">
+            Get 100 Points
+        </button>
+        <div id="timer" class="text-yellow-500 mt-4 text-xl hidden">
+            Please wait...
+        </div>
     </div>
 
     <script>
@@ -107,9 +77,13 @@
                 function updatePoints(newPoints) {
                     document.getElementById('pointsSection').innerHTML = `
                         <div>
-                            <h2>Current Points: ${newPoints}</h2>
-                            <button id="addPoints">Get 100 Points</button>
-                            <div id="timer" style="display:none;"></div> <!-- Таймер скрыт по умолчанию -->
+                            <h2 class="text-xl text-white mt-4">Current Points: ${newPoints}</h2>
+                            <button id="addPoints" class="bg-green-500 text-white py-2 px-4 rounded focus:outline-none hover:bg-green-600 transition-all">
+                                Get 100 Points
+                            </button>
+                            <div id="timer" class="text-yellow-500 mt-4 text-xl hidden">
+                                Please wait...
+                            </div>
                         </div>
                     `;
                     startTimer(lastClickTime); // Запускаем таймер при обновлении
@@ -125,8 +99,8 @@
 
                     if (timeLeft > 0) {
                         // Если время не прошло, скрываем кнопку и показываем таймер
-                        addPointsButton.style.display = "none";  // Скрыть кнопку
-                        timerDiv.style.display = "block"; // Показать таймер
+                        addPointsButton.classList.add('hidden');  // Скрыть кнопку
+                        timerDiv.classList.remove('hidden'); // Показать таймер
                         timerDiv.innerText = `Please wait ${timeLeft} seconds.`;
 
                         // Обновляем таймер каждую секунду
@@ -134,18 +108,16 @@
                             const remainingTime = timeLeft - Math.floor(Date.now() / 1000) + currentTime;
                             if (remainingTime <= 0) {
                                 clearInterval(timerInterval);
-                                addPointsButton.style.display = "block"; // Показать кнопку
-                                timerDiv.style.display = "none"; // Скрыть таймер
-                                localStorage.removeItem('lastClickTime');
-                                localStorage.removeItem('timeLeft');
+                                addPointsButton.classList.remove('hidden'); // Показать кнопку
+                                timerDiv.classList.add('hidden'); // Скрыть таймер
                             } else {
                                 timerDiv.innerText = `Please wait ${remainingTime} seconds.`;
                             }
                         }, 1000);
                     } else {
                         // Если время прошло, показываем кнопку и скрываем таймер
-                        addPointsButton.style.display = "block";  // Показать кнопку
-                        timerDiv.style.display = "none"; // Скрыть таймер
+                        addPointsButton.classList.remove('hidden');  // Показать кнопку
+                        timerDiv.classList.add('hidden'); // Скрыть таймер
                     }
                 }
             }
