@@ -186,7 +186,7 @@
                     resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${data.points}`;
                     resultElement.style.display = 'block';
 
-                    let timeLeft = data.time_left;
+                    let timeLeft = data.time_left;  // Получаем время с сервера
 
                     function updateTimer() {
                         if (timeLeft > 0) {
@@ -205,7 +205,7 @@
                     if (timeLeft > 0) {
                         timerBtn.style.display = 'none'; // Скрыть кнопку
                         timerElement.style.display = 'block'; // Показать таймер
-                        updateTimer();
+                        updateTimer(); // Запуск таймера
                     } else {
                         timerBtn.disabled = false;
                         timerBtn.style.display = 'block'; // Показать кнопку
@@ -246,8 +246,8 @@
                         .then(responseData => {
                             if (responseData.success) {
                                 resultElement.innerText = `Validation Successful! Welcome, ${data.username}! Points: ${responseData.points}`;
-                                timeLeft = responseData.time_left;
-                                updateTimer();
+                                timeLeft = responseData.time_left; // Получаем новое время с сервера
+                                updateTimer(); // Обновляем таймер
                             } else {
                                 alert(responseData.message);
                                 timerBtn.style.display = 'block'; // Показать кнопку
