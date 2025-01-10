@@ -107,18 +107,32 @@
         <p id="points"></p>
     </div>
 
+    <!-- Добавление кнопок "Купить 100" и "Продать 100" -->
+    <div id="actions" class="text-center mt-10">
+        <button id="buyBtn" class="btn-action bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">
+            Купить 100
+        </button>
+        <button id="sellBtn" class="btn-action bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded">
+            Продать 100
+        </button>
+    </div>
+
     <script>
         // Получаем объект Telegram Web App
         const tg = window.Telegram.WebApp;
         const initData = tg.initData;
-
-        // Отображаем исходные данные (для отладки)
+        
+        // Извлекаем информацию о пользователе из initData
         console.log("Init Data:", initData);
+
+        // Получаем данные пользователя (например, user_id)
+        const userId = tg.initDataUnsafe.user.id;
+        console.log("User ID:", userId);
 
         // URL вашего сервера для проверки
         const serverUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/validate'; // Укажите свой URL
 
-        // Отправка данных на сервер
+        // Отправка данных на сервер для проверки
         fetch(serverUrl, {
             method: 'POST',
             headers: {
@@ -149,6 +163,49 @@
             console.error('Error:', error);
             document.getElementById('result').innerText = "An error occurred.";
         });
+
+        // Обработчик нажатия на кнопку "Купить 100"
+        document.getElementById('buyBtn').addEventListener('click', function() {
+            handlePointsChange('buy');
+        });
+
+        // Обработчик нажатия на кнопку "Продать 100"
+        document.getElementById('sellBtn').addEventListener('click', function() {
+            handlePointsChange('sell');
+        });
+
+        // Функция для изменения очков
+        function handlePointsChange(action) {
+            const requestData = {
+                user_id: userId,
+                action: action // 'buy' или 'sell'
+            };
+
+            // URL сервера для обновления данных
+            const updateUrl = 'https://frozen-dawn-48680-9cdb4d5a9403.herokuapp.com/update_points';
+
+            fetch(updateUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Ваши очки: ${data.user_data.points}`);
+                    // Обновляем данные пользователя
+                    document.getElementById('points').innerText = `Points: ${data.user_data.points}`;
+                } else {
+                    alert('Ошибка обновления очков');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при изменении очков.');
+            });
+        }
     </script>
 
     <!-- Навигационная панель -->
@@ -191,4 +248,3 @@
     </script>
 </body>
 </html>
-
